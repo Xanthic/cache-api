@@ -4,6 +4,7 @@ import io.github.iprodigy.cache.providers.AndroidLruProvider;
 import io.github.iprodigy.cache.providers.CacheProvider;
 import io.github.iprodigy.cache.providers.CaffeineProvider;
 import io.github.iprodigy.cache.providers.ExpiringMapProvider;
+import io.github.iprodigy.cache.providers.GuavaProvider;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -70,5 +71,6 @@ public enum CacheApiSettings {
 		loadImpl.accept("androidx.collection.LruCache", AndroidLruProvider::new);
 		loadImpl.accept("com.github.benmanes.caffeine.cache.Caffeine", CaffeineProvider::new);
 		loadImpl.accept("net.jodah.expiringmap.ExpiringMap", ExpiringMapProvider::new);
+		loadImpl.accept("com.google.common.cache.CacheBuilder", GuavaProvider::new);
 	}
 }
