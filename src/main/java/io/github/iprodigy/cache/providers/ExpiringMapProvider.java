@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class ExpiringMapProvider extends AbstractCacheProvider {
+public final class ExpiringMapProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(
 		@Nullable Long maxSize,

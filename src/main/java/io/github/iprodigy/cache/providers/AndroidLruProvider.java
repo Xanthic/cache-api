@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 
-public class AndroidLruProvider extends AbstractCacheProvider {
+public final class AndroidLruProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(
 		@Nullable Long maxSize,
