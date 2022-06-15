@@ -9,7 +9,7 @@ public enum RemovalCause {
 	TIME(true),
 	REPLACED(false),
 	MANUAL(false),
-	OTHER(false);
+	OTHER(true);
 
 	@Getter
 	private final boolean eviction;

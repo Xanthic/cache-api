@@ -8,7 +8,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @Data
-abstract class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
+class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
 	private final Map<K, V> map;
 
 	@Override

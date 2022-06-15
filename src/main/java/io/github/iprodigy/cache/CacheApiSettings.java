@@ -3,6 +3,7 @@ package io.github.iprodigy.cache;
 import io.github.iprodigy.cache.providers.AndroidLruProvider;
 import io.github.iprodigy.cache.providers.CacheProvider;
 import io.github.iprodigy.cache.providers.CaffeineProvider;
+import io.github.iprodigy.cache.providers.ExpiringMapProvider;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -40,7 +41,7 @@ public enum CacheApiSettings {
 		if (clazz == null) clazz = CaffeineProvider.class;
 		CacheProvider provider = providers.get(clazz);
 		if (provider == null) {
-			provider = clazz.newInstance();
+			provider = clazz.getDeclaredConstructor().newInstance();
 			providers.put(clazz, provider);
 		}
 		return provider;
@@ -68,5 +69,6 @@ public enum CacheApiSettings {
 
 		loadImpl.accept("androidx.collection.LruCache", AndroidLruProvider::new);
 		loadImpl.accept("com.github.benmanes.caffeine.cache.Caffeine", CaffeineProvider::new);
+		loadImpl.accept("net.jodah.expiringmap.ExpiringMap", ExpiringMapProvider::new);
 	}
 }

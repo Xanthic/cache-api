@@ -7,6 +7,11 @@ plugins {
 group 'io.github.iprodigy.cache'
 version '1.0.0'
 
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
 repositories {
     mavenCentral()
     google()
@@ -17,9 +22,11 @@ dependencies {
 
     compileOnly 'com.github.ben-manes.caffeine:caffeine:2.9.3'
     compileOnly 'androidx.collection:collection:1.2.0'
+    compileOnly 'net.jodah:expiringmap:0.5.10'
 
     testImplementation 'com.github.ben-manes.caffeine:caffeine:2.9.3'
     testImplementation 'androidx.collection:collection:1.2.0'
+    testImplementation 'net.jodah:expiringmap:0.5.10'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'

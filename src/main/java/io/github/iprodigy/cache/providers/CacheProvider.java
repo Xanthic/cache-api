@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 
+@FunctionalInterface
 public interface CacheProvider {
 	<K, V> Cache<K, V> build(
 		@Nullable Long maxSize,
