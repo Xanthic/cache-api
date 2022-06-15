@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'io.freefair.lombok' version '6.4.3.1'
+}
+
+group 'io.github.iprodigy.cache'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+dependencies {
+    compileOnly 'org.jetbrains:annotations:23.0.0'
+
+    compileOnly 'com.github.ben-manes.caffeine:caffeine:2.9.3'
+    compileOnly 'androidx.collection:collection:1.2.0'
+
+    testImplementation 'com.github.ben-manes.caffeine:caffeine:2.9.3'
+    testImplementation 'androidx.collection:collection:1.2.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+test {
+    useJUnitPlatform()
+}
