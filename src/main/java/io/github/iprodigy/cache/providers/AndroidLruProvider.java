@@ -2,10 +2,7 @@ package io.github.iprodigy.cache.providers;
 
 import androidx.collection.LruCache;
 import io.github.iprodigy.cache.Cache;
-import io.github.iprodigy.cache.CacheApiSettings;
 import io.github.iprodigy.cache.ExpiryType;
-import io.github.iprodigy.cache.MisconfigurationPolicy;
-import io.github.iprodigy.cache.MisconfiguredCacheException;
 import io.github.iprodigy.cache.RemovalCause;
 import io.github.iprodigy.cache.RemovalListener;
 import lombok.EqualsAndHashCode;
@@ -16,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 
-public class AndroidLruProvider implements CacheProvider {
+public class AndroidLruProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(
 		@Nullable Long maxSize,
@@ -25,10 +22,7 @@ public class AndroidLruProvider implements CacheProvider {
 		@Nullable RemovalListener<K, V> removalListener,
 		@Nullable ScheduledExecutorService executor
 	) {
-		MisconfigurationPolicy configPolicy = CacheApiSettings.getInstance().getDefaultMisconfigurationPolicy();
-
-		if (expiryTime != null && configPolicy == MisconfigurationPolicy.REJECT)
-			throw new MisconfiguredCacheException("Expiration is not natively supported in Android's LRU Cache");
+		handleUnsupportedExpiry(expiryTime);
 
 		int size = maxSize != null ? maxSize.intValue() : Integer.MAX_VALUE;
 		LruCache<K, V> cache = new LruCache<K, V>(size) {

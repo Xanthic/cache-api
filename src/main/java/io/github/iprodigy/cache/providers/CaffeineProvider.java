@@ -3,10 +3,7 @@ package io.github.iprodigy.cache.providers;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Scheduler;
 import io.github.iprodigy.cache.Cache;
-import io.github.iprodigy.cache.CacheApiSettings;
 import io.github.iprodigy.cache.ExpiryType;
-import io.github.iprodigy.cache.MisconfigurationPolicy;
-import io.github.iprodigy.cache.MisconfiguredCacheException;
 import io.github.iprodigy.cache.RemovalCause;
 import io.github.iprodigy.cache.RemovalListener;
 import lombok.EqualsAndHashCode;
@@ -17,7 +14,7 @@ import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Function;
 
-public final class CaffeineProvider implements CacheProvider {
+public final class CaffeineProvider extends AbstractCacheProvider {
 
 	@Override
 	public <K, V> Cache<K, V> build(
@@ -29,17 +26,14 @@ public final class CaffeineProvider implements CacheProvider {
 	) {
 		Caffeine<Object, Object> builder = Caffeine.newBuilder();
 		if (maxSize != null) builder.maximumSize(maxSize);
-		if (expiryTime != null) {
-			ExpiryType type = expiryType != null ? expiryType : CacheApiSettings.getInstance().getDefaultExpiryType();
-			if (type == ExpiryType.POST_WRITE)
-				builder.expireAfterWrite(expiryTime);
-			else if (type == ExpiryType.POST_ACCESS || CacheApiSettings.getInstance().getDefaultMisconfigurationPolicy() != MisconfigurationPolicy.REJECT)
-				builder.expireAfterAccess(expiryTime);
-			else
-				throw new MisconfiguredCacheException("Expiry time was set without an expiry type specified, even as a default");
-		}
 		if (executor != null) builder.scheduler(Scheduler.forScheduledExecutorService(executor));
 		if (removalListener != null) builder.<K, V>removalListener((key, value, cause) -> removalListener.onRemoval(key, value, getCause(cause)));
+		handleExpiration(expiryTime, expiryType, (time, type) -> {
+			if (type == ExpiryType.POST_WRITE)
+				builder.expireAfterWrite(time);
+			else
+				builder.expireAfterAccess(time);
+		});
 
 		return new CaffeineDelegate<>(builder.build());
 	}

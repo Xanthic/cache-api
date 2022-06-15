@@ -1,10 +1,7 @@
 package io.github.iprodigy.cache.providers;
 
 import io.github.iprodigy.cache.Cache;
-import io.github.iprodigy.cache.CacheApiSettings;
 import io.github.iprodigy.cache.ExpiryType;
-import io.github.iprodigy.cache.MisconfigurationPolicy;
-import io.github.iprodigy.cache.MisconfiguredCacheException;
 import io.github.iprodigy.cache.RemovalCause;
 import io.github.iprodigy.cache.RemovalListener;
 import net.jodah.expiringmap.ExpirationPolicy;
@@ -15,7 +12,7 @@ import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class ExpiringMapProvider implements CacheProvider {
+public class ExpiringMapProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(
 		@Nullable Long maxSize,
@@ -26,18 +23,14 @@ public class ExpiringMapProvider implements CacheProvider {
 	) {
 		ExpiringMap.Builder<Object, Object> builder = ExpiringMap.builder();
 		if (maxSize != null) builder.maxSize(maxSize.intValue());
-		if (expiryTime != null) {
-			builder.expiration(expiryTime.toNanos(), TimeUnit.NANOSECONDS);
-
-			ExpiryType type = expiryType != null ? expiryType : CacheApiSettings.getInstance().getDefaultExpiryType();
+		if (removalListener != null) builder.<K, V>expirationListener((key, value) -> removalListener.onRemoval(key, value, RemovalCause.OTHER));
+		handleExpiration(expiryTime, expiryType, (time, type) -> {
+			builder.expiration(time.toNanos(), TimeUnit.NANOSECONDS);
 			if (type == ExpiryType.POST_WRITE)
 				builder.expirationPolicy(ExpirationPolicy.CREATED);
-			else if (type == ExpiryType.POST_ACCESS || CacheApiSettings.getInstance().getDefaultMisconfigurationPolicy() != MisconfigurationPolicy.REJECT)
-				builder.expirationPolicy(ExpirationPolicy.ACCESSED);
 			else
-				throw new MisconfiguredCacheException("Expiry time was set without an expiry type specified, even as a default");
-		}
-		if (removalListener != null) builder.<K, V>expirationListener((key, value) -> removalListener.onRemoval(key, value, RemovalCause.OTHER));
+				builder.expirationPolicy(ExpirationPolicy.ACCESSED);
+		});
 
 		return new GenericMapCacheDelegate<>(builder.build());
 	}
