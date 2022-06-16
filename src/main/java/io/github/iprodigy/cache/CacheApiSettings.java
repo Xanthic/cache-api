@@ -3,6 +3,7 @@ package io.github.iprodigy.cache;
 import io.github.iprodigy.cache.providers.AndroidLruProvider;
 import io.github.iprodigy.cache.providers.CacheProvider;
 import io.github.iprodigy.cache.providers.CaffeineProvider;
+import io.github.iprodigy.cache.providers.EhcacheProvider;
 import io.github.iprodigy.cache.providers.ExpiringMapProvider;
 import io.github.iprodigy.cache.providers.GuavaProvider;
 import lombok.Getter;
@@ -72,5 +73,6 @@ public enum CacheApiSettings {
 		loadImpl.accept("com.github.benmanes.caffeine.cache.Caffeine", CaffeineProvider::new);
 		loadImpl.accept("net.jodah.expiringmap.ExpiringMap", ExpiringMapProvider::new);
 		loadImpl.accept("com.google.common.cache.CacheBuilder", GuavaProvider::new);
+		loadImpl.accept("org.ehcache.Cache", EhcacheProvider::new);
 	}
 }

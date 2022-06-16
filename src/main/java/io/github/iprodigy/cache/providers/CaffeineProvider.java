@@ -38,6 +38,7 @@ public final class CaffeineProvider extends AbstractCacheProvider {
 		return new CaffeineDelegate<>(builder.build());
 	}
 
+	@SuppressWarnings("DuplicatedCode")
 	private static RemovalCause getCause(com.github.benmanes.caffeine.cache.RemovalCause cause) {
 		switch (cause) {
 			case EXPLICIT:
