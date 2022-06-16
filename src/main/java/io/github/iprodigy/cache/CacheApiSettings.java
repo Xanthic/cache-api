@@ -6,6 +6,7 @@ import io.github.iprodigy.cache.providers.CaffeineProvider;
 import io.github.iprodigy.cache.providers.EhcacheProvider;
 import io.github.iprodigy.cache.providers.ExpiringMapProvider;
 import io.github.iprodigy.cache.providers.GuavaProvider;
+import io.github.iprodigy.cache.providers.InfinispanProvider;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -73,6 +74,7 @@ public enum CacheApiSettings {
 		loadImpl.accept("com.github.benmanes.caffeine.cache.Caffeine", CaffeineProvider::new);
 		loadImpl.accept("net.jodah.expiringmap.ExpiringMap", ExpiringMapProvider::new);
 		loadImpl.accept("com.google.common.cache.CacheBuilder", GuavaProvider::new);
+		loadImpl.accept("org.infinispan.Cache", InfinispanProvider::new);
 		loadImpl.accept("org.ehcache.Cache", EhcacheProvider::new);
 	}
 }

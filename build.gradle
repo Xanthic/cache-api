@@ -25,12 +25,14 @@ dependencies {
     compileOnly 'net.jodah:expiringmap:0.5.10'
     compileOnly 'com.google.guava:guava:31.1-jre'
     compileOnly 'org.ehcache:ehcache:3.10.0'
+    compileOnly 'org.infinispan:infinispan-core:13.0.10.Final'
 
     testImplementation 'com.github.ben-manes.caffeine:caffeine:2.9.3'
     testImplementation 'androidx.collection:collection:1.2.0'
     testImplementation 'net.jodah:expiringmap:0.5.10'
     testImplementation 'com.google.guava:guava:31.1-jre'
     testImplementation 'org.ehcache:ehcache:3.10.0'
+    testImplementation 'org.infinispan:infinispan-core:13.0.10.Final'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
