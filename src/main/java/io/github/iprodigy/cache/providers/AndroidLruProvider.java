@@ -23,9 +23,12 @@ public final class AndroidLruProvider extends AbstractCacheProvider {
 		@Nullable ScheduledExecutorService executor
 	) {
 		handleUnsupportedExpiry(expiryTime);
+		return new LruDelegate<>(build(maxSize, removalListener));
+	}
 
+	static <K, V> LruCache<K, V> build(Long maxSize, RemovalListener<K, V> listener) {
 		int size = maxSize != null ? maxSize.intValue() : Integer.MAX_VALUE;
-		LruCache<K, V> cache = new LruCache<K, V>(size) {
+		return new LruCache<K, V>(size) {
 			@Override
 			protected void entryRemoved(boolean evicted, @NotNull K key, @NotNull V oldValue, @Nullable V newValue) {
 				RemovalCause cause;
@@ -37,17 +40,15 @@ public final class AndroidLruProvider extends AbstractCacheProvider {
 					cause = RemovalCause.MANUAL;
 				}
 
-				if (removalListener != null)
-					removalListener.onRemoval(key, oldValue, cause);
+				if (listener != null)
+					listener.onRemoval(key, oldValue, cause);
 			}
 		};
-
-		return new LruDelegate<>(cache);
 	}
 
 	@Value
 	@EqualsAndHashCode(callSuper = false)
-	private static class LruDelegate<K, V> extends AbstractCache<K, V> {
+	static class LruDelegate<K, V> extends AbstractCache<K, V> {
 		LruCache<K, V> cache;
 
 		@Override

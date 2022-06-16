@@ -1,6 +1,6 @@
 package io.github.iprodigy.cache;
 
-import io.github.iprodigy.cache.providers.AndroidLruProvider;
+import io.github.iprodigy.cache.providers.AndroidExpiringLruProvider;
 import io.github.iprodigy.cache.providers.CaffeineProvider;
 import io.github.iprodigy.cache.providers.EhcacheProvider;
 import org.junit.jupiter.api.Assertions;
@@ -17,7 +17,7 @@ public class CacheApiTest {
 		CacheApiSettings.getInstance().setDefaultCacheProvider(new CaffeineProvider());
 
 		Cache<String, Integer> cache = CacheApi.<String, Integer>builder()
-			.provider(new AndroidLruProvider())
+			.provider(new AndroidExpiringLruProvider())
 			.maxSize(69L)
 			.expiryTime(Duration.ofSeconds(420))
 			.removalListener((key, value, cause) -> {})
