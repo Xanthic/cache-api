@@ -49,9 +49,9 @@ Cache<String, Integer> cache = CacheApi.<String, Integer>builder()
 	.expiryTime(Duration.ofMinutes(5L))
 	.expiryType(ExpiryType.POST_ACCESS)
 	.removalListener((key, value, cause) -> {
-        if (cause.isEviction()) {
-            // do something
-        }
+		if (cause.isEviction()) {
+			// do something
+		}
 	})
 	.build();
 ```
