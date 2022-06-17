@@ -2,9 +2,11 @@ package io.github.iprodigy.cache;
 
 import io.github.iprodigy.cache.providers.CacheProvider;
 import lombok.Builder;
+import org.checkerframework.checker.units.qual.K;
 
 import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Consumer;
 
 public final class CacheApi {
 
@@ -12,17 +14,9 @@ public final class CacheApi {
 		// prevent direct instantiation
 	}
 
-	@Builder
-	private static <K, V> Cache<K, V> create(
-		CacheProvider provider,
-		Long maxSize,
-		Duration expiryTime,
-		ExpiryType expiryType,
-		RemovalListener<K, V> removalListener,
-		ScheduledExecutorService executor
-	) {
-		CacheProvider cacheProvider = provider != null ? provider : CacheApiSettings.getInstance().getDefaultCacheProvider();
-		return cacheProvider.build(maxSize, expiryTime, expiryType, removalListener, executor);
+	public static <K, V> Cache<K, V> create(Consumer<CacheApiSpec<K, V>> spec) {
+		CacheApiSpec<K, V> finalSpec = CacheApiSpec.process(spec);
+		return finalSpec.provider().build(finalSpec.maxSize(), finalSpec.expiryTime(), finalSpec.expiryType(), finalSpec.removalListener(), finalSpec.executor());
 	}
 
 }
