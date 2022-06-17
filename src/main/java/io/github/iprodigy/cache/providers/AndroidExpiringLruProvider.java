@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +32,8 @@ public final class AndroidExpiringLruProvider extends AbstractCacheProvider {
 		if (executor == null) handleUnsupportedExpiry(expiryTime);
 		LruCache<K, V> cache = AndroidLruProvider.build(maxSize, removalListener);
 		if (expiryTime == null) return new AndroidLruProvider.LruDelegate<>(cache);
-		return new ExpiringLruDelegate<>(cache, expiryTime.toNanos(), getExpiryType(expiryType), executor);
+		ScheduledExecutorService exec = executor != null ? executor : Executors.newSingleThreadScheduledExecutor();
+		return new ExpiringLruDelegate<>(cache, expiryTime.toNanos(), getExpiryType(expiryType), exec);
 	}
 
 	@Value
