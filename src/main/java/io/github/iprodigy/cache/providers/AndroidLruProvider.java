@@ -2,7 +2,7 @@ package io.github.iprodigy.cache.providers;
 
 import androidx.collection.LruCache;
 import io.github.iprodigy.cache.Cache;
-import io.github.iprodigy.cache.ExpiryType;
+import io.github.iprodigy.cache.ICacheSpec;
 import io.github.iprodigy.cache.RemovalCause;
 import io.github.iprodigy.cache.RemovalListener;
 import lombok.EqualsAndHashCode;
@@ -10,20 +10,11 @@ import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Duration;
-import java.util.concurrent.ScheduledExecutorService;
-
 public final class AndroidLruProvider extends AbstractCacheProvider {
 	@Override
-	public <K, V> Cache<K, V> build(
-		@Nullable Long maxSize,
-		@Nullable Duration expiryTime,
-		@Nullable ExpiryType expiryType,
-		@Nullable RemovalListener<K, V> removalListener,
-		@Nullable ScheduledExecutorService executor
-	) {
-		handleUnsupportedExpiry(expiryTime);
-		return new LruDelegate<>(build(maxSize, removalListener));
+	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
+		handleUnsupportedExpiry(spec.expiryTime());
+		return new LruDelegate<>(build(spec.maxSize(), spec.removalListener()));
 	}
 
 	static <K, V> LruCache<K, V> build(Long maxSize, RemovalListener<K, V> listener) {

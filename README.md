@@ -44,16 +44,16 @@ CacheApiSettings.getInstance().setDefaultCacheProvider(new CaffeineProvider());
 Define a generic cache:
 
 ```java
-Cache<String, Integer> cache = CacheApi.<String, Integer>builder()
-	.maxSize(2048L) // setting a size constraint is highly recommended
-	.expiryTime(Duration.ofMinutes(5L))
-	.expiryType(ExpiryType.POST_ACCESS)
-	.removalListener((key, value, cause) -> {
+Cache<String, Integer> cache = CacheApi.create(spec -> {
+	spec.maxSize(2048L); // setting a size constraint is highly recommended
+	spec.expiryTime(Duration.ofMinutes(5L));
+	spec.expiryType(ExpiryType.POST_ACCESS);
+	spec.removalListener((key, value, cause) -> {
 		if (cause.isEviction()) {
 			// do something
 		}
-	})
-	.build();
+	});
+});
 ```
 
 Here, the default provider will be used as `CacheBuilder#provider(CacheProvider)` was not called (note: this builder option is meant for end users rather than library devs).

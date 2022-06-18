@@ -8,7 +8,7 @@ import io.github.iprodigy.cache.MisconfiguredCacheException;
 import java.time.Duration;
 import java.util.function.BiConsumer;
 
-abstract class AbstractCacheProvider implements CacheProvider {
+public abstract class AbstractCacheProvider implements CacheProvider {
 
 	protected void handleUnsupportedExpiry(Duration expiryTime) {
 		if (expiryTime != null && CacheApiSettings.getInstance().getDefaultMisconfigurationPolicy() == MisconfigurationPolicy.REJECT)

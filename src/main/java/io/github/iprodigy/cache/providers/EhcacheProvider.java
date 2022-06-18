@@ -2,8 +2,8 @@ package io.github.iprodigy.cache.providers;
 
 import io.github.iprodigy.cache.Cache;
 import io.github.iprodigy.cache.ExpiryType;
+import io.github.iprodigy.cache.ICacheSpec;
 import io.github.iprodigy.cache.RemovalCause;
-import io.github.iprodigy.cache.RemovalListener;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.ehcache.CacheManager;
@@ -14,41 +14,32 @@ import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.event.EventType;
-import org.jetbrains.annotations.Nullable;
 
-import java.time.Duration;
 import java.util.UUID;
-import java.util.concurrent.ScheduledExecutorService;
 
 public final class EhcacheProvider extends AbstractCacheProvider {
 	@Override
-	public <K, V> Cache<K, V> build(
-		@Nullable Long maxSize,
-		@Nullable Duration expiryTime,
-		@Nullable ExpiryType expiryType,
-		@Nullable RemovalListener<K, V> removalListener,
-		@Nullable ScheduledExecutorService executor
-	) {
+	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
 		CacheManager manager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
 
 		//noinspection unchecked
 		final CacheConfigurationBuilder<Object, Object>[] builder = new CacheConfigurationBuilder[] {
-			CacheConfigurationBuilder.newCacheConfigurationBuilder(Object.class, Object.class, poolBuilder(maxSize))
+			CacheConfigurationBuilder.newCacheConfigurationBuilder(Object.class, Object.class, poolBuilder(spec.maxSize()))
 		};
 
-		handleExpiration(expiryTime, expiryType, (time, type) -> {
+		handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
 			if (type == ExpiryType.POST_WRITE)
 				builder[0] = builder[0].withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(time));
 			else
 				builder[0] = builder[0].withExpiry(ExpiryPolicyBuilder.timeToIdleExpiration(time));
 		});
 
-		if (removalListener != null) {
+		if (spec.removalListener() != null) {
 			builder[0] = builder[0].withService(
 				CacheEventListenerConfigurationBuilder.newEventListenerConfiguration(
 					e -> {
 						//noinspection unchecked
-						removalListener.onRemoval((K) e.getKey(), (V) e.getOldValue(), getCause(e.getType()));
+						spec.removalListener().onRemoval((K) e.getKey(), (V) e.getOldValue(), getCause(e.getType()));
 					},
 					EventType.EVICTED, EventType.EXPIRED, EventType.REMOVED, EventType.UPDATED
 				)

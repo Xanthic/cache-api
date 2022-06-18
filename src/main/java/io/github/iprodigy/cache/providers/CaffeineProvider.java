@@ -4,31 +4,22 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Scheduler;
 import io.github.iprodigy.cache.Cache;
 import io.github.iprodigy.cache.ExpiryType;
+import io.github.iprodigy.cache.ICacheSpec;
 import io.github.iprodigy.cache.RemovalCause;
-import io.github.iprodigy.cache.RemovalListener;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.jetbrains.annotations.Nullable;
 
-import java.time.Duration;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Function;
 
 public final class CaffeineProvider extends AbstractCacheProvider {
 
 	@Override
-	public <K, V> Cache<K, V> build(
-		@Nullable Long maxSize,
-		@Nullable Duration expiryTime,
-		@Nullable ExpiryType expiryType,
-		@Nullable RemovalListener<K, V> removalListener,
-		@Nullable ScheduledExecutorService executor
-	) {
+	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
 		Caffeine<Object, Object> builder = Caffeine.newBuilder();
-		if (maxSize != null) builder.maximumSize(maxSize);
-		if (executor != null) builder.scheduler(Scheduler.forScheduledExecutorService(executor));
-		if (removalListener != null) builder.<K, V>removalListener((key, value, cause) -> removalListener.onRemoval(key, value, getCause(cause)));
-		handleExpiration(expiryTime, expiryType, (time, type) -> {
+		if (spec.maxSize() != null) builder.maximumSize(spec.maxSize());
+		if (spec.executor() != null) builder.scheduler(Scheduler.forScheduledExecutorService(spec.executor()));
+		if (spec.removalListener() != null) builder.<K, V>removalListener((key, value, cause) -> spec.removalListener().onRemoval(key, value, getCause(cause)));
+		handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
 			if (type == ExpiryType.POST_WRITE)
 				builder.expireAfterWrite(time);
 			else
