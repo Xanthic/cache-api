@@ -19,12 +19,17 @@ import java.util.function.Consumer;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 
-	public static <K, V> @NotNull CacheApiSpec<K, V> process(@NotNull Consumer<CacheApiSpec<K, V>> spec) {
-		CacheApiSpec<K, V> data = new CacheApiSpec<>();
-		spec.accept(data);
-		data.validate();
-		return data;
-	}
+	private CacheProvider provider = CacheApiSettings.getInstance().getDefaultCacheProvider();
+
+	private Long maxSize;
+
+	private Duration expiryTime;
+
+	private ExpiryType expiryType;
+
+	private RemovalListener<K, V> removalListener;
+
+	private ScheduledExecutorService executor;
 
 	/**
 	 * Ensure the config is valid
@@ -42,16 +47,11 @@ public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 			log.warn("Cache specification enables expiry time but does not specify ExpiryType");
 	}
 
-	private CacheProvider provider = CacheApiSettings.getInstance().getDefaultCacheProvider();
-
-	private Long maxSize;
-
-	private Duration expiryTime;
-
-	private ExpiryType expiryType;
-
-	private RemovalListener<K, V> removalListener;
-
-	private ScheduledExecutorService executor;
+	public static <K, V> @NotNull CacheApiSpec<K, V> process(@NotNull Consumer<CacheApiSpec<K, V>> spec) {
+		CacheApiSpec<K, V> data = new CacheApiSpec<>();
+		spec.accept(data);
+		data.validate();
+		return data;
+	}
 
 }
