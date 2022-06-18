@@ -3,12 +3,11 @@ package io.github.iprodigy.cache.providers;
 import androidx.collection.LruCache;
 import io.github.iprodigy.cache.Cache;
 import io.github.iprodigy.cache.ExpiryType;
-import io.github.iprodigy.cache.RemovalListener;
+import io.github.iprodigy.cache.ICacheSpec;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.util.AbstractMap;
@@ -22,18 +21,14 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public final class AndroidExpiringLruProvider extends AbstractCacheProvider {
 	@Override
-	public <K, V> Cache<K, V> build(
-		@Nullable Long maxSize,
-		@Nullable Duration expiryTime,
-		@Nullable ExpiryType expiryType,
-		@Nullable RemovalListener<K, V> removalListener,
-		@Nullable ScheduledExecutorService executor
-	) {
+	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
+		ScheduledExecutorService executor = spec.executor();
+		Duration expiryTime = spec.expiryTime();
 		if (executor == null) handleUnsupportedExpiry(expiryTime);
-		LruCache<K, V> cache = AndroidLruProvider.build(maxSize, removalListener);
+		LruCache<K, V> cache = AndroidLruProvider.build(spec.maxSize(), spec.removalListener());
 		if (expiryTime == null) return new AndroidLruProvider.LruDelegate<>(cache);
 		ScheduledExecutorService exec = executor != null ? executor : Executors.newSingleThreadScheduledExecutor();
-		return new ExpiringLruDelegate<>(cache, expiryTime.toNanos(), getExpiryType(expiryType), exec);
+		return new ExpiringLruDelegate<>(cache, expiryTime.toNanos(), getExpiryType(spec.expiryType()), exec);
 	}
 
 	@Value

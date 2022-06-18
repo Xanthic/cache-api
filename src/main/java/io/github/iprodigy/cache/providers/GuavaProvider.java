@@ -3,37 +3,28 @@ package io.github.iprodigy.cache.providers;
 import com.google.common.cache.CacheBuilder;
 import io.github.iprodigy.cache.Cache;
 import io.github.iprodigy.cache.ExpiryType;
+import io.github.iprodigy.cache.ICacheSpec;
 import io.github.iprodigy.cache.RemovalCause;
-import io.github.iprodigy.cache.RemovalListener;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import lombok.Value;
-import org.jetbrains.annotations.Nullable;
 
-import java.time.Duration;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Function;
 
 public final class GuavaProvider extends AbstractCacheProvider {
 	@Override
-	public <K, V> Cache<K, V> build(
-		@Nullable Long maxSize,
-		@Nullable Duration expiryTime,
-		@Nullable ExpiryType expiryType,
-		@Nullable RemovalListener<K, V> removalListener,
-		@Nullable ScheduledExecutorService executor
-	) {
+	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
 		CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder();
-		if (maxSize != null) builder.maximumSize(maxSize);
-		if (removalListener != null) {
+		if (spec.maxSize() != null) builder.maximumSize(spec.maxSize());
+		if (spec.removalListener() != null) {
 			//noinspection ConstantConditions
 			builder = builder.removalListener(e -> {
 				//noinspection unchecked
-				removalListener.onRemoval((K) e.getKey(), (V) e.getCause(), getCause(e.getCause()));
+				spec.removalListener().onRemoval((K) e.getKey(), (V) e.getCause(), getCause(e.getCause()));
 			});
 		}
 		CacheBuilder<Object, Object> finalBuilder = builder;
-		handleExpiration(expiryTime, expiryType, (time, type) -> {
+		handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
 			if (type == ExpiryType.POST_WRITE)
 				finalBuilder.expireAfterWrite(time);
 			else

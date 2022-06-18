@@ -2,6 +2,7 @@ package io.github.iprodigy.cache.providers;
 
 import io.github.iprodigy.cache.Cache;
 import io.github.iprodigy.cache.ExpiryType;
+import io.github.iprodigy.cache.ICacheSpec;
 import io.github.iprodigy.cache.RemovalCause;
 import io.github.iprodigy.cache.RemovalListener;
 import lombok.Value;
@@ -20,35 +21,26 @@ import org.infinispan.notifications.cachelistener.event.CacheEntryInvalidatedEve
 import org.infinispan.notifications.cachelistener.event.CacheEntryModifiedEvent;
 import org.infinispan.notifications.cachelistener.event.CacheEntryRemovedEvent;
 import org.infinispan.notifications.cachelistener.event.Event;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
-import java.time.Duration;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public final class InfinispanProvider extends AbstractCacheProvider {
 	@Override
-	public <K, V> Cache<K, V> build(
-		@Nullable Long maxSize,
-		@Nullable Duration expiryTime,
-		@Nullable ExpiryType expiryType,
-		@Nullable RemovalListener<K, V> removalListener,
-		@Nullable ScheduledExecutorService executor
-	) {
+	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
 		GlobalConfigurationBuilder global = GlobalConfigurationBuilder.defaultClusteredBuilder();
 		DefaultCacheManager manager = new DefaultCacheManager(global.build());
 
 		ConfigurationBuilder builder = new ConfigurationBuilder();
-		if (maxSize != null) builder.memory().maxCount(maxSize);
-		handleExpiration(expiryTime, expiryType, (time, type) -> {
+		if (spec.maxSize() != null) builder.memory().maxCount(spec.maxSize());
+		handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
 			if (type == ExpiryType.POST_WRITE)
 				builder.expiration().lifespan(time.toNanos(), TimeUnit.NANOSECONDS);
 			else
@@ -59,9 +51,9 @@ public final class InfinispanProvider extends AbstractCacheProvider {
 			.withFlags(CacheContainerAdmin.AdminFlag.VOLATILE)
 			.getOrCreateCache(UUID.randomUUID().toString(), builder.build());
 
-		if (removalListener != null) {
+		if (spec.removalListener() != null) {
 			cache.addFilteredListener(
-				new InfinispanListener<>(removalListener),
+				new InfinispanListener<>(spec.removalListener()),
 				(key, oldValue, oldMeta, newValue, newMeta, eventType) -> eventType != null && InfinispanListener.EVENTS.contains(eventType.getType()),
 				null,
 				InfinispanListener.ANNOTATIONS
