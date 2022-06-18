@@ -32,7 +32,7 @@ public class CacheApiTest {
 			spec.provider(new EhcacheProvider());
 			spec.maxSize(32L);
 			spec.expiryTime(Duration.ofMinutes(1));
-			spec.removalListener((key, value, cause) -> System.out.println(key + ":" + value + "=" + cause));
+			spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
 		});
 
 		cache.put("4/20", 420);
