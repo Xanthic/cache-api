@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
-import static io.github.iprodigy.cache.CacheApiSpec.process;
-
 @Tag("integration")
 @Slf4j
 public class CacheApiTest {
