@@ -49,10 +49,10 @@ Cache<String, Integer> cache = CacheApi.create(spec -> {
 	spec.expiryTime(Duration.ofMinutes(5L));
 	spec.expiryType(ExpiryType.POST_ACCESS);
 	spec.removalListener((key, value, cause) -> {
-	    if (cause.isEviction()) {
-	        // do something
-	    }
-    });
+		if (cause.isEviction()) {
+			// do something
+		}
+	});
 });
 ```
 
