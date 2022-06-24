@@ -19,7 +19,7 @@ public class CacheRegistrationTest {
 
         // check default
         CacheProvider defaultCacheProvider = CacheApiSettings.getInstance().getDefaultCacheProvider();
-        Assertions.assertEquals("io.github.iprodigy.cache.core.provider.SimpleMapProvider", defaultCacheProvider.getClass().getCanonicalName());
+        Assertions.assertEquals(SimpleMapProvider.class.getCanonicalName(), defaultCacheProvider.getClass().getCanonicalName());
     }
 
     @Test
