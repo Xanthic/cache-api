@@ -22,7 +22,7 @@ public final class GuavaProvider extends AbstractCacheProvider {
 			//noinspection ConstantConditions
 			builder = builder.removalListener(e -> {
 				//noinspection unchecked
-				spec.removalListener().onRemoval((K) e.getKey(), (V) e.getCause(), getCause(e.getCause()));
+				spec.removalListener().onRemoval((K) e.getKey(), (V) e.getValue(), getCause(e.getCause()));
 			});
 		}
 		CacheBuilder<Object, Object> finalBuilder = builder;
