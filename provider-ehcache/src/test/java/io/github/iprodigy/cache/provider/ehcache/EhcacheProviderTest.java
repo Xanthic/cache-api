@@ -28,7 +28,7 @@ public class EhcacheProviderTest {
     }
 
     @Test
-    void testRegisteredAsDefault() {
+    void registeredAsDefaultTest() {
         Assertions.assertEquals(EhcacheProvider.class.getCanonicalName(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass().getCanonicalName());
     }
 

@@ -28,7 +28,7 @@ public class Caffeine2ProviderTest {
     }
 
     @Test
-    void testRegisteredAsDefault() {
+    void registeredAsDefaultTest() {
         Assertions.assertEquals(Caffeine2Provider.class.getCanonicalName(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass().getCanonicalName());
     }
 

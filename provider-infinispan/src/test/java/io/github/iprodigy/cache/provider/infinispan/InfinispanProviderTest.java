@@ -29,7 +29,7 @@ public class InfinispanProviderTest {
     }
 
     @Test
-    void testRegisteredAsDefault() {
+    void registeredAsDefaultTest() {
         Assertions.assertEquals(InfinispanProvider.class.getCanonicalName(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass().getCanonicalName());
     }
 

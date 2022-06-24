@@ -28,7 +28,7 @@ public class ExpiringMapProviderTest {
     }
 
     @Test
-    void testRegisteredAsDefault() {
+    void registeredAsDefaultTest() {
         Assertions.assertEquals(ExpiringMapProvider.class.getCanonicalName(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass().getCanonicalName());
     }
 

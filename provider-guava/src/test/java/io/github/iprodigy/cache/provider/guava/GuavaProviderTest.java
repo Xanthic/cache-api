@@ -28,7 +28,7 @@ public class GuavaProviderTest {
     }
 
     @Test
-    void testRegisteredAsDefault() {
+    void registeredAsDefaultTest() {
         Assertions.assertEquals(GuavaProvider.class.getCanonicalName(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass().getCanonicalName());
     }
 
