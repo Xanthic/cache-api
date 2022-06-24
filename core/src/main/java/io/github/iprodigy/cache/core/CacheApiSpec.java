@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 
-	private CacheProvider provider = CacheApiSettings.getInstance().getDefaultCacheProvider();
+	private CacheProvider provider;
 
 	private Long maxSize;
 
@@ -54,6 +54,13 @@ public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 	public static <K, V> @NotNull CacheApiSpec<K, V> process(@NotNull Consumer<CacheApiSpec<K, V>> spec) {
 		CacheApiSpec<K, V> data = new CacheApiSpec<>();
 		spec.accept(data);
+
+		// set / init default cache provider if nothing is set
+		if (data.provider() == null) {
+			data.provider(CacheApiSettings.getInstance().getDefaultCacheProvider());
+			log.warn("no cache provider set, cache defaults to {}!", CacheApiSettings.getInstance().getDefaultCacheProvider().getClass().getCanonicalName());
+		}
+
 		data.validate();
 		return data;
 	}
