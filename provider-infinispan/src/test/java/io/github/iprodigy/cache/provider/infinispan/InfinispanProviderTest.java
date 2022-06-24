@@ -18,8 +18,7 @@ public class InfinispanProviderTest {
             spec.provider(new InfinispanProvider());
             spec.maxSize(32L);
             spec.expiryTime(Duration.ofMinutes(1));
-            // spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
-            // TODO: fix org.infinispan.notifications.IncorrectListenerException: Cache listener class io.github.iprodigy.cache.provider.infinispan.InfinispanProvider$InfinispanListener must be annotated with org.infinispan.notifications.Listener
+            spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
         });
 
         cache.put("4/20", 420);

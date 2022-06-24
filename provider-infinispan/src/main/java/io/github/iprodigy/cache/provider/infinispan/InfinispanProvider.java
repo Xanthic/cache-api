@@ -11,6 +11,7 @@ import org.infinispan.commons.api.CacheContainerAdmin;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
+import org.infinispan.notifications.Listener;
 import org.infinispan.notifications.cachelistener.annotation.CacheEntriesEvicted;
 import org.infinispan.notifications.cachelistener.annotation.CacheEntryExpired;
 import org.infinispan.notifications.cachelistener.annotation.CacheEntryInvalidated;
@@ -65,6 +66,7 @@ public final class InfinispanProvider extends AbstractCacheProvider {
 	}
 
 	@Value
+	@Listener
 	private static class InfinispanListener<K, V> {
 		static final Set<Event.Type> EVENTS;
 		static final Set<Class<? extends Annotation>> ANNOTATIONS;
