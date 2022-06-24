@@ -23,7 +23,17 @@ public class CacheRegistrationTest {
     }
 
     @Test
-    void cacheWithDefaultProviderTest() {
+    void setDefaultCacheProviderTest() {
+        // set default cache provider
+        CacheApiSettings.getInstance().setDefaultCacheProvider(new SimpleMapProvider());
+
+        // check default
+        CacheProvider defaultCacheProvider = CacheApiSettings.getInstance().getDefaultCacheProvider();
+        Assertions.assertEquals(SimpleMapProvider.class.getCanonicalName(), defaultCacheProvider.getClass().getCanonicalName());
+    }
+
+    @Test
+    void specDefaultCacheProviderTest() {
         // register simple map provider
         CacheApiSettings.getInstance().registerCacheProvider(SimpleMapProvider.class, new SimpleMapProvider());
 
