@@ -3,6 +3,7 @@ package io.github.iprodigy.cache.core;
 import io.github.iprodigy.cache.api.CacheProvider;
 import io.github.iprodigy.cache.api.domain.ExpiryType;
 import io.github.iprodigy.cache.api.domain.MisconfigurationPolicy;
+import io.github.iprodigy.cache.api.exception.NoDefaultCacheImplementationException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -15,8 +16,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-public enum CacheApiSettings {
-	INSTANCE; // thread-safe singleton
+public class CacheApiSettings {
+	private static CacheApiSettings INSTANCE;
 
 	private final Map<Class<? extends CacheProvider>, CacheProvider> providers = Collections.synchronizedMap(new IdentityHashMap<>(16));
 	private final AtomicReference<Class<? extends CacheProvider>> defaultCacheProvider = new AtomicReference<>();
@@ -36,6 +37,10 @@ public enum CacheApiSettings {
 	@NotNull
 	@SneakyThrows
 	public CacheProvider getDefaultCacheProvider() {
+		if (this.defaultCacheProvider.get() == null) {
+			throw new NoDefaultCacheImplementationException("default cache provider is not set, no cache implementations available!");
+		}
+
 		Class<? extends CacheProvider> clazz = this.defaultCacheProvider.get();
 		CacheProvider provider = providers.get(clazz);
 		if (provider == null) {
@@ -52,24 +57,27 @@ public enum CacheApiSettings {
 	}
 
 	public static CacheApiSettings getInstance() {
+		if (INSTANCE == null) {
+			CacheApiSettings cacheApiSettings = new CacheApiSettings();
+
+			Consumer<String> loadImpl = (providerClass) -> {
+				try {
+					Class<? extends CacheProvider> clazz = Class.forName(providerClass).asSubclass(CacheProvider.class);
+					cacheApiSettings.registerCacheProvider(clazz, null); // lazy, init if needed
+				} catch (Exception ignored) {
+				}
+			};
+
+			loadImpl.accept("io.github.iprodigy.cache.provider.androidx.AndroidLruProvider");
+			loadImpl.accept("io.github.iprodigy.cache.provider.androidx.AndroidExpiringLruProvider");
+			loadImpl.accept("io.github.iprodigy.cache.provider.caffeine2.Caffeine2Provider");
+			loadImpl.accept("io.github.iprodigy.cache.provider.ehcache.EhcacheProvider");
+			loadImpl.accept("io.github.iprodigy.cache.provider.expiringmap.ExpiringMapProvider");
+			loadImpl.accept("io.github.iprodigy.cache.provider.guava.GuavaProvider");
+			loadImpl.accept("io.github.iprodigy.cache.provider.infinispan.InfinispanProvider");
+
+			INSTANCE = cacheApiSettings;
+		}
 		return INSTANCE;
-	}
-
-	static {
-		Consumer<String> loadImpl = (providerClass) -> {
-			try {
-				Class<? extends CacheProvider> clazz = Class.forName(providerClass).asSubclass(CacheProvider.class);
-				INSTANCE.registerCacheProvider(clazz, null); // lazy, init if needed
-			} catch (Exception ignored) {
-			}
-		};
-
-		loadImpl.accept("io.github.iprodigy.cache.provider.androidx.AndroidLruProvider");
-		loadImpl.accept("io.github.iprodigy.cache.provider.androidx.AndroidExpiringLruProvider");
-		loadImpl.accept("io.github.iprodigy.cache.provider.caffeine2.Caffeine2Provider");
-		loadImpl.accept("io.github.iprodigy.cache.provider.ehcache.EhcacheProvider");
-		loadImpl.accept("io.github.iprodigy.cache.provider.expiringmap.ExpiringMapProvider");
-		loadImpl.accept("io.github.iprodigy.cache.provider.guava.GuavaProvider");
-		loadImpl.accept("io.github.iprodigy.cache.provider.infinispan.InfinispanProvider");
 	}
 }
