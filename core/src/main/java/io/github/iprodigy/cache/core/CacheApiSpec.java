@@ -58,7 +58,7 @@ public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 		// set / init default cache provider if nothing is set
 		if (data.provider() == null) {
 			data.provider(CacheApiSettings.getInstance().getDefaultCacheProvider());
-			log.warn("no cache provider set, cache defaults to {}!", CacheApiSettings.getInstance().getDefaultCacheProvider().getClass().getCanonicalName());
+			log.debug("no cache provider set, cache defaults to {}!", data.provider.getClass().getCanonicalName());
 		}
 
 		data.validate();
