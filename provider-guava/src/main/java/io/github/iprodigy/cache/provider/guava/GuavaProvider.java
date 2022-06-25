@@ -6,12 +6,6 @@ import io.github.iprodigy.cache.api.ICacheSpec;
 import io.github.iprodigy.cache.api.domain.ExpiryType;
 import io.github.iprodigy.cache.api.domain.RemovalCause;
 import io.github.iprodigy.cache.core.AbstractCacheProvider;
-import io.github.iprodigy.cache.core.delegate.GenericMapCacheDelegate;
-import lombok.EqualsAndHashCode;
-import lombok.SneakyThrows;
-import lombok.Value;
-
-import java.util.function.Function;
 
 public final class GuavaProvider extends AbstractCacheProvider {
 	@Override
@@ -50,39 +44,6 @@ public final class GuavaProvider extends AbstractCacheProvider {
 			case COLLECTED:
 			default:
 				return RemovalCause.OTHER;
-		}
-	}
-
-	@Value
-	@EqualsAndHashCode(callSuper = false)
-	private static class GuavaDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
-		com.google.common.cache.Cache<K, V> cache;
-
-		public GuavaDelegate(com.google.common.cache.Cache<K, V> cache) {
-			super(cache.asMap());
-			this.cache = cache;
-		}
-
-		@Override
-		public V get(K key) {
-			return cache.getIfPresent(key);
-		}
-
-		@Override
-		@SneakyThrows
-		public V computeIfAbsent(K key, Function<K, V> computeFunc) {
-			return cache.get(key, () -> computeFunc.apply(key));
-		}
-
-		@Override
-		public void clear() {
-			cache.invalidateAll();
-		}
-
-		@Override
-		public long size() {
-			cache.cleanUp();
-			return cache.size();
 		}
 	}
 }
