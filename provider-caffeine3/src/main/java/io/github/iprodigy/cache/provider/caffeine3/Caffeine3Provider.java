@@ -1,4 +1,4 @@
-package io.github.iprodigy.cache.provider.caffeine2;
+package io.github.iprodigy.cache.provider.caffeine3;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Scheduler;
@@ -8,7 +8,7 @@ import io.github.iprodigy.cache.api.domain.ExpiryType;
 import io.github.iprodigy.cache.api.domain.RemovalCause;
 import io.github.iprodigy.cache.core.AbstractCacheProvider;
 
-public final class Caffeine2Provider extends AbstractCacheProvider {
+public final class Caffeine3Provider extends AbstractCacheProvider {
 
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {

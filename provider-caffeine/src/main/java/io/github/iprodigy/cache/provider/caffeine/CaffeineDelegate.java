@@ -1,4 +1,4 @@
-package io.github.iprodigy.cache.provider.caffeine2;
+package io.github.iprodigy.cache.provider.caffeine;
 
 import io.github.iprodigy.cache.core.delegate.GenericMapCacheDelegate;
 import lombok.EqualsAndHashCode;

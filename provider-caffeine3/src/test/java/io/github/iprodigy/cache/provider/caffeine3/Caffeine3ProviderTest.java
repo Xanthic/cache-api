@@ -1,4 +1,4 @@
-package io.github.iprodigy.cache.provider.caffeine2;
+package io.github.iprodigy.cache.provider.caffeine3;
 
 import io.github.iprodigy.cache.api.Cache;
 import io.github.iprodigy.cache.core.CacheApi;
@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 
 @Slf4j
-public class Caffeine2ProviderTest {
+public class Caffeine3ProviderTest {
 
     @Test
     void putGetClearTest() {
         Cache<String, Integer> cache = CacheApi.create(spec -> {
-            spec.provider(new Caffeine2Provider());
+            spec.provider(new Caffeine3Provider());
             spec.maxSize(32L);
             spec.expiryTime(Duration.ofMinutes(1));
             spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
@@ -29,7 +29,7 @@ public class Caffeine2ProviderTest {
 
     @Test
     void registeredAsDefaultTest() {
-        Assertions.assertEquals(Caffeine2Provider.class.getCanonicalName(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass().getCanonicalName());
+        Assertions.assertEquals(Caffeine3Provider.class.getCanonicalName(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass().getCanonicalName());
     }
 
 }
