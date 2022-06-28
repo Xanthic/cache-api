@@ -11,19 +11,19 @@ import java.time.Duration;
 @Slf4j
 public class AndroidExpiringLruProviderTest {
 
-    @Test
-    void putGetClearTest() {
-        Cache<String, Integer> cache = CacheApi.create(spec -> {
-            spec.provider(new AndroidExpiringLruProvider());
-            spec.maxSize(32L);
-            spec.expiryTime(Duration.ofMinutes(1));
-            spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
-        });
+	@Test
+	void putGetClearTest() {
+		Cache<String, Integer> cache = CacheApi.create(spec -> {
+			spec.provider(new AndroidExpiringLruProvider());
+			spec.maxSize(32L);
+			spec.expiryTime(Duration.ofMinutes(1));
+			spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
+		});
 
-        cache.put("4/20", 420);
-        Assertions.assertEquals(420, cache.get("4/20"));
-        cache.clear();
-        Assertions.assertNull(cache.get("4/20"));
-    }
+		cache.put("4/20", 420);
+		Assertions.assertEquals(420, cache.get("4/20"));
+		cache.clear();
+		Assertions.assertNull(cache.get("4/20"));
+	}
 
 }

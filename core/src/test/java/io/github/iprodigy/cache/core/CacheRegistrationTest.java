@@ -18,59 +18,59 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Slf4j
 public class CacheRegistrationTest {
 
-    @BeforeEach
-    @SneakyThrows
-    void beforeEachTest() {
-        // reset cache settings singleton
-        Field instanceField = CacheApiSettings.class.getDeclaredField("INSTANCE");
-        instanceField.setAccessible(true);
-        instanceField.set(null, null);
+	@BeforeEach
+	@SneakyThrows
+	void beforeEachTest() {
+		// reset cache settings singleton
+		Field instanceField = CacheApiSettings.class.getDeclaredField("INSTANCE");
+		instanceField.setAccessible(true);
+		instanceField.set(null, null);
 		CacheApiSettings.getInstance();
-    }
+	}
 
-    @Test
-    void noDefaultCacheImplementationError() {
-        Exception exception = assertThrows(NoDefaultCacheImplementationException.class, () -> {
-            Cache<String, Integer> cache = CacheApi.create(spec -> {
-                spec.maxSize(32L);
-                spec.expiryTime(Duration.ofMinutes(1));
-                spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
-            });
-        });
+	@Test
+	void noDefaultCacheImplementationError() {
+		Exception exception = assertThrows(NoDefaultCacheImplementationException.class, () -> {
+			Cache<String, Integer> cache = CacheApi.create(spec -> {
+				spec.maxSize(32L);
+				spec.expiryTime(Duration.ofMinutes(1));
+				spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
+			});
+		});
 
-        Assertions.assertEquals("default cache provider is not set, no cache implementations available!", exception.getMessage());
-    }
+		Assertions.assertEquals("default cache provider is not set, no cache implementations available!", exception.getMessage());
+	}
 
-    @Test
-    void registerAndDefaultCacheProviderTest() {
-        // register simple map provider
-        CacheApiSettings.getInstance().registerCacheProvider(SimpleMapProvider.class, new SimpleMapProvider());
+	@Test
+	void registerAndDefaultCacheProviderTest() {
+		// register simple map provider
+		CacheApiSettings.getInstance().registerCacheProvider(SimpleMapProvider.class, new SimpleMapProvider());
 
-        // check default
-        CacheProvider defaultCacheProvider = CacheApiSettings.getInstance().getDefaultCacheProvider();
-        Assertions.assertEquals(SimpleMapProvider.class.getCanonicalName(), defaultCacheProvider.getClass().getCanonicalName());
-    }
+		// check default
+		CacheProvider defaultCacheProvider = CacheApiSettings.getInstance().getDefaultCacheProvider();
+		Assertions.assertEquals(SimpleMapProvider.class.getCanonicalName(), defaultCacheProvider.getClass().getCanonicalName());
+	}
 
-    @Test
-    void setDefaultCacheProviderTest() {
-        // set default cache provider
-        CacheApiSettings.getInstance().setDefaultCacheProvider(new SimpleMapProvider());
+	@Test
+	void setDefaultCacheProviderTest() {
+		// set default cache provider
+		CacheApiSettings.getInstance().setDefaultCacheProvider(new SimpleMapProvider());
 
-        // check default
-        CacheProvider defaultCacheProvider = CacheApiSettings.getInstance().getDefaultCacheProvider();
-        Assertions.assertEquals(SimpleMapProvider.class.getCanonicalName(), defaultCacheProvider.getClass().getCanonicalName());
-    }
+		// check default
+		CacheProvider defaultCacheProvider = CacheApiSettings.getInstance().getDefaultCacheProvider();
+		Assertions.assertEquals(SimpleMapProvider.class.getCanonicalName(), defaultCacheProvider.getClass().getCanonicalName());
+	}
 
-    @Test
-    void specDefaultCacheProviderTest() {
-        // register simple map provider
-        CacheApiSettings.getInstance().registerCacheProvider(SimpleMapProvider.class, new SimpleMapProvider());
+	@Test
+	void specDefaultCacheProviderTest() {
+		// register simple map provider
+		CacheApiSettings.getInstance().registerCacheProvider(SimpleMapProvider.class, new SimpleMapProvider());
 
-        // init cache
-        Cache<String, Integer> cache = CacheApi.create(spec -> {
-            spec.maxSize(32L);
-            spec.expiryTime(Duration.ofMinutes(1));
-            spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
-        });
-    }
+		// init cache
+		Cache<String, Integer> cache = CacheApi.create(spec -> {
+			spec.maxSize(32L);
+			spec.expiryTime(Duration.ofMinutes(1));
+			spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
+		});
+	}
 }
