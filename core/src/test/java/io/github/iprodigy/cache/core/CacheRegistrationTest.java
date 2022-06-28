@@ -22,9 +22,10 @@ public class CacheRegistrationTest {
     @SneakyThrows
     void beforeEachTest() {
         // reset cache settings singleton
-        Field instanceField = CacheApiSettings.getInstance().getClass().getDeclaredField("INSTANCE");
+        Field instanceField = CacheApiSettings.class.getDeclaredField("INSTANCE");
         instanceField.setAccessible(true);
-        instanceField.set(CacheApiSettings.getInstance(), new CacheApiSettings());
+        instanceField.set(null, null);
+		CacheApiSettings.getInstance();
     }
 
     @Test
