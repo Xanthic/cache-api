@@ -22,7 +22,7 @@ example), so it is safer to code against this API for long-term flexibility*
 
 The following backing cache implementations have bindings already provided by this library:
 
-* [Caffeine](https://github.com/ben-manes/caffeine/wiki) via `CaffeineProvider`
+* [Caffeine](https://github.com/ben-manes/caffeine/wiki) via `CaffeineProvider` or `Caffeine3Provider`
 * [Guava](https://github.com/google/guava/wiki/CachesExplained) via `GuavaProvider`
 * [AndroidX](https://developer.android.com/reference/androidx/collection/LruCache) via `AndroidExpiringLruProvider` or `AndroidLruProvider`
 * [ExpiringMap](https://github.com/jhalterman/expiringmap#expiringmap) via `ExpiringMapProvider`
@@ -34,8 +34,8 @@ Fear not, it is not difficult to create your own binding, and we'd be happy to a
 
 ## Example Usage
 
-Users should include at least one backing implementation in the runtime class-path.
-Further, they can (optionally) do (but replace `CaffeineProvider` with the desired [provider](https://github.com/iProdigy/cache-api/tree/main/src/main/java/io/github/iprodigy/cache/providers)):
+Users should include at least one provider module in the runtime class-path.
+Further, they can (optionally) do (but replace `CaffeineProvider` with the desired provider):
 
 ```java
 CacheApiSettings.getInstance().setDefaultCacheProvider(new CaffeineProvider());
