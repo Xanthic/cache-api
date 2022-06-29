@@ -1,12 +1,16 @@
 package io.github.iprodigy.cache.provider.androidx;
 
 import androidx.collection.LruCache;
+import io.github.iprodigy.cache.api.RemovalListener;
 import io.github.iprodigy.cache.api.domain.ExpiryType;
+import io.github.iprodigy.cache.api.domain.RemovalCause;
 import io.github.iprodigy.cache.core.AbstractCache;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -20,7 +24,10 @@ import java.util.concurrent.atomic.AtomicReference;
 @Getter(AccessLevel.PRIVATE)
 @EqualsAndHashCode(callSuper = false)
 class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
-	LruCache<K, V> cache;
+	@EqualsAndHashCode.Exclude
+	Long maxSize;
+	@EqualsAndHashCode.Exclude
+	RemovalListener<K, V> listener;
 	@EqualsAndHashCode.Exclude
 	long expiry;
 	@EqualsAndHashCode.Exclude
@@ -29,6 +36,28 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 	ScheduledExecutorService exec;
 	@EqualsAndHashCode.Exclude
 	Map<Map.Entry<K, V>, Future<?>> tracker = new ConcurrentHashMap<>();
+
+	LruCache<K, V> cache = new LruCache<K, V>(getMaxSize() != null ? getMaxSize().intValue() : Integer.MAX_VALUE) {
+		@Override
+		protected void entryRemoved(boolean evicted, @NotNull K key, @NotNull V oldValue, @Nullable V newValue) {
+			RemovalCause cause;
+			if (evicted) {
+				cause = RemovalCause.SIZE;
+			} else if (newValue != null) {
+				cause = RemovalCause.REPLACED;
+			} else {
+				Future<?> fut = tracker.get(new AbstractMap.SimpleEntry<>(key, oldValue));
+				if (fut != null && !fut.isCancelled()) {
+					cause = RemovalCause.TIME;
+				} else {
+					cause = RemovalCause.MANUAL;
+				}
+			}
+
+			if (listener != null)
+				listener.onRemoval(key, oldValue, cause);
+		}
+	};
 
 	@Override
 	public V get(K key) {
@@ -52,9 +81,8 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 	@Override
 	public V remove(K key) {
 		synchronized (getLock()) {
-			V removed = cache.remove(key);
-			cancelIfRunning(key, removed); // mapping was already removed
-			return removed;
+			cancelIfRunning(key, cache.get(key)); // mapping is being removed already
+			return cache.remove(key);
 		}
 	}
 
@@ -86,9 +114,8 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 		final Future<?> future = exec.schedule(() -> {
 			synchronized (getLock()) {
 				if (!Thread.interrupted()) {
-					V removed = cache.remove(key);
-					if (removed != null && removed != value)
-						cache.put(key, removed);
+					if (value == cache.get(key))
+						cache.remove(key);
 				}
 			}
 			tracker.remove(entry, futRef.get());
