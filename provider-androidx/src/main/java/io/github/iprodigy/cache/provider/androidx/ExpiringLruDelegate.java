@@ -37,7 +37,7 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 	@EqualsAndHashCode.Exclude
 	Map<Map.Entry<K, V>, Future<?>> tracker = new ConcurrentHashMap<>();
 
-	LruCache<K, V> cache = new LruCache<K, V>(maxSize != null ? maxSize.intValue() : Integer.MAX_VALUE) {
+	LruCache<K, V> cache = new LruCache<K, V>(getMaxSize() != null ? getMaxSize().intValue() : Integer.MAX_VALUE) {
 		@Override
 		protected void entryRemoved(boolean evicted, @NotNull K key, @NotNull V oldValue, @Nullable V newValue) {
 			RemovalCause cause;
