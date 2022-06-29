@@ -24,6 +24,7 @@ The following backing cache implementations have bindings already provided by th
 
 * [Caffeine](https://github.com/ben-manes/caffeine/wiki) via `CaffeineProvider` or `Caffeine3Provider`
 * [Guava](https://github.com/google/guava/wiki/CachesExplained) via `GuavaProvider`
+* [Cache2k](https://cache2k.org) via `Cache2kProvider`
 * [AndroidX](https://developer.android.com/reference/androidx/collection/LruCache) via `AndroidExpiringLruProvider` or `AndroidLruProvider`
 * [ExpiringMap](https://github.com/jhalterman/expiringmap#expiringmap) via `ExpiringMapProvider`
 * [Ehcache v3 (heap)](https://www.ehcache.org/documentation/3.0/index.html) via `EhcacheProvider`

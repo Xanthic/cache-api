@@ -88,6 +88,7 @@ public class CacheApiSettings {
 		loadImpl.accept("io.github.iprodigy.cache.provider.androidx.AndroidLruProvider");
 		loadImpl.accept("io.github.iprodigy.cache.provider.caffeine3.Caffeine3Provider");
 		loadImpl.accept("io.github.iprodigy.cache.provider.caffeine.CaffeineProvider");
+		loadImpl.accept("io.github.iprodigy.cache.provider.cache2k.Cache2kProvider");
 		loadImpl.accept("io.github.iprodigy.cache.provider.infinispan.InfinispanProvider");
 		loadImpl.accept("io.github.iprodigy.cache.provider.expiringmap.ExpiringMapProvider");
 		loadImpl.accept("io.github.iprodigy.cache.provider.guava.GuavaProvider");
