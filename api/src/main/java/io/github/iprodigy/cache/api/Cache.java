@@ -1,5 +1,8 @@
 package io.github.iprodigy.cache.api;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -28,6 +31,7 @@ public interface Cache<K, V> {
 	 * @return the value associated with the key in the cache, or null if no such mapping was found
 	 * @throws NullPointerException if the specified key is null and this implementation does not permit null keys
 	 */
+	@Nullable
 	V get(K key);
 
 	/**
@@ -39,6 +43,7 @@ public interface Cache<K, V> {
 	 * @return the previous value associated with the key, or null if no prior mapping existed
 	 * @throws NullPointerException if the specified key or value is null and this cache does not permit null keys or values
 	 */
+	@Nullable
 	V put(K key, V value);
 
 	/**
@@ -48,6 +53,7 @@ public interface Cache<K, V> {
 	 * @return the value in the removed mapping, or null if no mapping existed
 	 * @throws NullPointerException if the specified key is null and this cache does not permit null keys
 	 */
+	@Nullable
 	V remove(K key);
 
 	/**
@@ -67,9 +73,9 @@ public interface Cache<K, V> {
 	 * @param key         the key whose mapping should be created or returned
 	 * @param computeFunc the value supplier for a given key, if no mapping already existed
 	 * @return the current (existing or computed) value associated with the key
-	 * @throws NullPointerException if the specified key is null and this cache does not permit null keys
+	 * @throws NullPointerException if the specified key is null and this cache does not permit null keys, or the compute function is null
 	 */
-	V computeIfAbsent(K key, Function<K, V> computeFunc);
+	V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc);
 
 	/**
 	 * Creates a mapping from the specified key to the specified value,
@@ -80,6 +86,7 @@ public interface Cache<K, V> {
 	 * @return the previous value associated with the key, or null if no mapping already existed
 	 * @throws NullPointerException if the specified key or value is null and this cache does not permit null keys or values
 	 */
+	@Nullable
 	V putIfAbsent(K key, V value);
 
 	/**
@@ -91,6 +98,6 @@ public interface Cache<K, V> {
 	 * @return the latest value associated with the specified key
 	 * @throws NullPointerException if the specified key is null and this cache does not support null keys or the value or mergeFunc is null
 	 */
-	V merge(K key, V value, BiFunction<V, V, V> mergeFunc);
+	V merge(K key, V value, @NotNull BiFunction<V, V, V> mergeFunc);
 
 }

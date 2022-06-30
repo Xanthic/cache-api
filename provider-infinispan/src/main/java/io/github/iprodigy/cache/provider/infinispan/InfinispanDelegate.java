@@ -2,6 +2,7 @@ package io.github.iprodigy.cache.provider.infinispan;
 
 import io.github.iprodigy.cache.api.Cache;
 import lombok.Value;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -36,7 +37,7 @@ class InfinispanDelegate<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public V computeIfAbsent(K key, Function<K, V> computeFunc) {
+	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
 		return cache.computeIfAbsent(key, computeFunc);
 	}
 
@@ -46,7 +47,7 @@ class InfinispanDelegate<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public V merge(K key, V value, BiFunction<V, V, V> mergeFunc) {
+	public V merge(K key, V value, @NotNull BiFunction<V, V, V> mergeFunc) {
 		return cache.merge(key, value, mergeFunc);
 	}
 }

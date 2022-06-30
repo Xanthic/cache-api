@@ -3,6 +3,7 @@ package io.github.iprodigy.cache.provider.caffeine;
 import io.github.iprodigy.cache.core.delegate.GenericMapCacheDelegate;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
@@ -22,7 +23,7 @@ class CaffeineDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
 	}
 
 	@Override
-	public V computeIfAbsent(K key, Function<K, V> computeFunc) {
+	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
 		return cache.get(key, computeFunc);
 	}
 
