@@ -2,6 +2,7 @@ package io.github.iprodigy.cache.core.delegate;
 
 import io.github.iprodigy.cache.api.Cache;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -22,7 +23,7 @@ public class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public V computeIfAbsent(K key, Function<K, V> computeFunc) {
+	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
 		return map.computeIfAbsent(key, computeFunc);
 	}
 
@@ -47,7 +48,7 @@ public class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public V merge(K key, V value, BiFunction<V, V, V> mergeFunc) {
+	public V merge(K key, V value, @NotNull BiFunction<V, V, V> mergeFunc) {
 		return map.merge(key, value, mergeFunc);
 	}
 }

@@ -4,6 +4,7 @@ import io.github.iprodigy.cache.core.delegate.GenericMapCacheDelegate;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.cache2k.Cache;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
@@ -38,7 +39,7 @@ class Cache2kDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
 	}
 
 	@Override
-	public V computeIfAbsent(K key, Function<K, V> computeFunc) {
+	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
 		return cache.computeIfAbsent(key, computeFunc);
 	}
 }

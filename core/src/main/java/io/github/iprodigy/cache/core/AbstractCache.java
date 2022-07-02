@@ -1,13 +1,15 @@
 package io.github.iprodigy.cache.core;
 
 import io.github.iprodigy.cache.api.Cache;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
-	public V computeIfAbsent(K key, Function<K, V> computeFunc) {
+	@Override
+	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
 		synchronized (getLock()) {
 			V old = this.get(key);
 			if (old != null) return old;
@@ -15,6 +17,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 		}
 	}
 
+	@Override
 	public V putIfAbsent(K key, V value) {
 		synchronized (getLock()) {
 			V old = this.get(key);
@@ -25,7 +28,8 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 		}
 	}
 
-	public V merge(K key, V value, BiFunction<V, V, V> mergeFunc) {
+	@Override
+	public V merge(K key, V value, @NotNull BiFunction<V, V, V> mergeFunc) {
 		synchronized (getLock()) {
 			V old = putIfAbsent(key, value);
 			if (old == null) return value;
