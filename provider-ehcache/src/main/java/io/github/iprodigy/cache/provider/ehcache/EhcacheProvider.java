@@ -16,6 +16,7 @@ import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.event.EventType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -121,6 +122,7 @@ public final class EhcacheProvider extends AbstractCacheProvider {
 			return (V) cache.putIfAbsent(key, value);
 		}
 
+		@NotNull
 		@Override
 		protected Object getLock() {
 			return this.cache;

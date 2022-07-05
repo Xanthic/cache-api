@@ -6,6 +6,21 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+/**
+ * Provides a common implementation of:
+ * <li>
+ *     <ul>{@link Cache#computeIfAbsent(Object, Function)}</ul>
+ *     <ul>{@link Cache#putIfAbsent(Object, Object)}</ul>
+ *     <ul>{@link Cache#merge(Object, Object, BiFunction)}</ul>
+ * </li>
+ * <p>
+ * Subclasses ought to employ the same degree of locking for correctness.
+ * <p>
+ * Avoid this abstraction if the backing cache provider already provides an implementation for these methods.
+ *
+ * @param <K> The type of keys that form the cache
+ * @param <V> The type of values contained in the cache
+ */
 public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
 	@Override
@@ -37,6 +52,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 		}
 	}
 
+	@NotNull
 	protected Object getLock() {
 		return this;
 	}

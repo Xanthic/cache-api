@@ -8,6 +8,9 @@ import io.github.iprodigy.cache.api.exception.MisconfiguredCacheException;
 import java.time.Duration;
 import java.util.function.BiConsumer;
 
+/**
+ * Provides helper methods commonly used for implementing {@link CacheProvider}.
+ */
 public abstract class AbstractCacheProvider implements CacheProvider {
 
 	protected void handleUnsupportedExpiry(Duration expiryTime) {
