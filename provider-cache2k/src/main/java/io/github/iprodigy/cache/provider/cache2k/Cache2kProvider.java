@@ -43,13 +43,18 @@ public final class Cache2kProvider extends AbstractCacheProvider {
 			if (type == ExpiryType.POST_WRITE)
 				builder.expireAfterWrite(time);
 			else
-				builder.idleScanTime(time);
+				builder.idleScanTime(Math.round(time.toNanos() / 3.0 * 2), TimeUnit.NANOSECONDS); // https://github.com/cache2k/cache2k/issues/39
 
 			if (exec != null)
 				builder.sharpExpiry(true);
 		});
 
 		return new Cache2kDelegate<>(builder.build());
+	}
+
+	@Override
+	protected ExpiryType preferredType() {
+		return ExpiryType.POST_WRITE; // POST_ACCESS isn't precisely offered out-of-the-box by cache2k
 	}
 
 	private static <K, V> ScheduledExecutorService populateExecutor(Cache2kBuilder<K, V> builder, ScheduledExecutorService exec) {
