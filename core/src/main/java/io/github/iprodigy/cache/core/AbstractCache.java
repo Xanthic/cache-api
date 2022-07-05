@@ -8,11 +8,11 @@ import java.util.function.Function;
 
 /**
  * Provides a common implementation of:
- * <li>
- *     <ul>{@link Cache#computeIfAbsent(Object, Function)}</ul>
- *     <ul>{@link Cache#putIfAbsent(Object, Object)}</ul>
- *     <ul>{@link Cache#merge(Object, Object, BiFunction)}</ul>
- * </li>
+ * <ul>
+ *     <li>{@link Cache#computeIfAbsent(Object, Function)}</li>
+ *     <li>{@link Cache#putIfAbsent(Object, Object)}</li>
+ *     <li>{@link Cache#merge(Object, Object, BiFunction)}</li>
+ * </ul>
  * <p>
  * Subclasses ought to employ the same degree of locking for correctness.
  * <p>
