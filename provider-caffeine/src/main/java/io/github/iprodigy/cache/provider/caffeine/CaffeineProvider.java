@@ -8,6 +8,15 @@ import io.github.iprodigy.cache.api.domain.ExpiryType;
 import io.github.iprodigy.cache.api.domain.RemovalCause;
 import io.github.iprodigy.cache.core.AbstractCacheProvider;
 
+/**
+ * Provides {@link Cache} instances using {@link Caffeine}.
+ * <p>
+ * Implements size and time-based eviction.
+ * <p>
+ * For timely {@link ICacheSpec#removalListener()} calls, {@link ICacheSpec#executor()} should be specified.
+ * <p>
+ * This module depends on Caffeine version 2.x for Java 8 compatibility.
+ */
 public final class CaffeineProvider extends AbstractCacheProvider {
 
 	@Override

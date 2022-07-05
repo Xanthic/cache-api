@@ -20,6 +20,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+/**
+ * Provides {@link Cache} instances using {@link org.ehcache.core.Ehcache} in heap-mode.
+ * <p>
+ * Implements size and time-based expiry.
+ * <p>
+ * Specifying {@link ICacheSpec#maxSize()} is highly recommended.
+ */
 public final class EhcacheProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {

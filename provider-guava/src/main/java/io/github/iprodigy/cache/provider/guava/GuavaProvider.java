@@ -7,6 +7,13 @@ import io.github.iprodigy.cache.api.domain.ExpiryType;
 import io.github.iprodigy.cache.api.domain.RemovalCause;
 import io.github.iprodigy.cache.core.AbstractCacheProvider;
 
+/**
+ * Provides {@link Cache} instances using Guava's {@link CacheBuilder}.
+ * <p>
+ * Implements size and time-based expiry.
+ * <p>
+ * Consider using Caffeine over Guava, if not targeting Android, for better performance.
+ */
 public final class GuavaProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {

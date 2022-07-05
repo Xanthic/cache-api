@@ -8,6 +8,13 @@ import io.github.iprodigy.cache.api.domain.ExpiryType;
 import io.github.iprodigy.cache.api.domain.RemovalCause;
 import io.github.iprodigy.cache.core.AbstractCacheProvider;
 
+/**
+ * Provides {@link Cache} instances using {@link Caffeine}.
+ * <p>
+ * Implements size and time-based eviction.
+ * <p>
+ * For timely {@link ICacheSpec#removalListener()} calls, {@link ICacheSpec#executor()} should be specified.
+ */
 public final class Caffeine3Provider extends AbstractCacheProvider {
 
 	@Override

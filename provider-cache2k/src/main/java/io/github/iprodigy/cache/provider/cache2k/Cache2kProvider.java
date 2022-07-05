@@ -21,6 +21,12 @@ import java.util.Collections;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Provides {@link Cache} instances using {@link Cache2kBuilder}.
+ * <p>
+ * Implements size and time-based eviction, but {@link ExpiryType#POST_ACCESS} is
+ * <a href="https://cache2k.org/docs/latest/apidocs/cache2k-api/org/cache2k/Cache2kBuilder.html#idleScanTime(java.time.Duration)">imprecisely</a> handled.
+ */
 public final class Cache2kProvider extends AbstractCacheProvider {
 
 	@Override

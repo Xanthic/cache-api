@@ -10,6 +10,11 @@ import io.github.iprodigy.cache.core.AbstractCacheProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Provides {@link Cache} instances using {@link LruCache}.
+ * <p>
+ * Does not support time-based expiry, so {@link AndroidExpiringLruProvider} should be preferred.
+ */
 public final class AndroidLruProvider extends AbstractCacheProvider {
 
 	@Override
