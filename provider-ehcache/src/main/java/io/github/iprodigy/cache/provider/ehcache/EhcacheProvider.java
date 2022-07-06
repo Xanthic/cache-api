@@ -4,10 +4,7 @@ import io.github.iprodigy.cache.api.Cache;
 import io.github.iprodigy.cache.api.ICacheSpec;
 import io.github.iprodigy.cache.api.domain.ExpiryType;
 import io.github.iprodigy.cache.api.domain.RemovalCause;
-import io.github.iprodigy.cache.core.AbstractCache;
 import io.github.iprodigy.cache.core.AbstractCacheProvider;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
 import org.ehcache.CacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheEventListenerConfigurationBuilder;
@@ -28,6 +25,7 @@ import java.util.UUID;
  * Specifying {@link ICacheSpec#maxSize()} is highly recommended.
  */
 public final class EhcacheProvider extends AbstractCacheProvider {
+
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
 		CacheManager manager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
@@ -81,58 +79,4 @@ public final class EhcacheProvider extends AbstractCacheProvider {
 		}
 	}
 
-	@Value
-	@EqualsAndHashCode(callSuper = false)
-	@SuppressWarnings("unchecked")
-	private static class EhcacheDelegate<K, V> extends AbstractCache<K, V> {
-		org.ehcache.Cache<Object, Object> cache;
-
-		@Override
-		public V get(K key) {
-			return (V) cache.get(key);
-		}
-
-		@Override
-		public V put(K key, V value) {
-			synchronized (getLock()) {
-				V old = this.get(key);
-				cache.put(key, value);
-				return old;
-			}
-		}
-
-		@Override
-		public V remove(K key) {
-			synchronized (getLock()) {
-				V old = this.get(key);
-				cache.remove(key);
-				return old;
-			}
-		}
-
-		@Override
-		public void clear() {
-			cache.clear();
-		}
-
-		@Override
-		public long size() {
-			long n = 0;
-			for (org.ehcache.Cache.Entry<Object, Object> ignored : cache) {
-				n++;
-			}
-			return n;
-		}
-
-		@Override
-		public V putIfAbsent(K key, V value) {
-			return (V) cache.putIfAbsent(key, value);
-		}
-
-		@NotNull
-		@Override
-		protected Object getLock() {
-			return this.cache;
-		}
-	}
 }
