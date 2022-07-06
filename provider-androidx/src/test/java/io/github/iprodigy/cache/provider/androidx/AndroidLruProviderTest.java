@@ -1,29 +1,13 @@
 package io.github.iprodigy.cache.provider.androidx;
 
-import io.github.iprodigy.cache.api.Cache;
-import io.github.iprodigy.cache.core.CacheApi;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import io.github.iprodigy.cache.core.CacheApiSettings;
+import io.github.iprodigy.cache.core.provider.ProviderTestBase;
 
-import java.time.Duration;
+public class AndroidLruProviderTest extends ProviderTestBase {
 
-@Slf4j
-public class AndroidLruProviderTest {
-
-	@Test
-	void putGetClearTest() {
-		Cache<String, Integer> cache = CacheApi.create(spec -> {
-			spec.provider(new AndroidLruProvider());
-			spec.maxSize(32L);
-			spec.expiryTime(Duration.ofMinutes(1));
-			spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
-		});
-
-		cache.put("4/20", 420);
-		Assertions.assertEquals(420, cache.get("4/20"));
-		cache.clear();
-		Assertions.assertNull(cache.get("4/20"));
+	public AndroidLruProviderTest() {
+		super(new AndroidLruProvider());
+		CacheApiSettings.getInstance().setDefaultCacheProvider(provider); // since AndroidExpiringLruProvider takes precedence
 	}
 
 }
