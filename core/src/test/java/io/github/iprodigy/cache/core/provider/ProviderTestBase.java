@@ -19,6 +19,7 @@ public abstract class ProviderTestBase {
 
 	@Test
 	public void putGetClearTest() {
+		// Build cache
 		Cache<String, Integer> cache = CacheApi.create(spec -> {
 			spec.provider(provider);
 			spec.maxSize(32L);
@@ -26,8 +27,15 @@ public abstract class ProviderTestBase {
 			spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
 		});
 
-		cache.put("4/20", 420);
+		// Test put/get
+		Assertions.assertNull(cache.put("4/20", 420));
 		Assertions.assertEquals(420, cache.get("4/20"));
+
+		// Test putIfAbsent
+		Assertions.assertEquals(420, cache.putIfAbsent("4/20", 69));
+		Assertions.assertEquals(420, cache.get("4/20"));
+
+		// Test clear
 		cache.clear();
 		Assertions.assertNull(cache.get("4/20"));
 	}
@@ -35,7 +43,7 @@ public abstract class ProviderTestBase {
 	@Test
 	public void registeredAsDefaultTest() {
 		if (!(provider instanceof SimpleMapProvider)) {
-			Assertions.assertEquals(provider.getClass().getCanonicalName(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass().getCanonicalName());
+			Assertions.assertEquals(provider.getClass(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass());
 		}
 	}
 
