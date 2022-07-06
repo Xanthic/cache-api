@@ -41,7 +41,7 @@ public abstract class ProviderTestBase {
 	}
 
 	@Test
-	public void computeMergeTest() {
+	public void computeMergeRemoveTest() {
 		// Build cache
 		Cache<String, Integer> cache = CacheApi.create(spec -> {
 			spec.provider(provider);
@@ -56,7 +56,10 @@ public abstract class ProviderTestBase {
 
 		// Test merge
 		Assertions.assertEquals(420 + 69, cache.merge("4/20", 69, Integer::sum));
-		Assertions.assertEquals(420 + 69, cache.get("4/20"));
+
+		// Test remove
+		Assertions.assertEquals(420 + 69, cache.remove("4/20"));
+		Assertions.assertNull(cache.get("4/20"));
 	}
 
 	@Test
