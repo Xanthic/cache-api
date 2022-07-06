@@ -61,9 +61,7 @@ public abstract class ProviderTestBase {
 
 	@Test
 	public void registeredAsDefaultTest() {
-		if (!(provider instanceof SimpleMapProvider)) {
-			Assertions.assertEquals(provider.getClass(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass());
-		}
+		Assertions.assertEquals(provider.getClass(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass());
 	}
 
 }

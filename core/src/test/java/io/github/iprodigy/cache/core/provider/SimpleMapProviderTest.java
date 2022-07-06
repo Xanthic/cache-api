@@ -6,4 +6,9 @@ public class SimpleMapProviderTest extends ProviderTestBase {
 		super(new SimpleMapProvider());
 	}
 
+	@Override
+	public void registeredAsDefaultTest() {
+		// skip test; SimpleMapProvider is deliberately not automatically set as a possible default
+	}
+
 }
