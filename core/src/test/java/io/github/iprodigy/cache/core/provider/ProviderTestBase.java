@@ -41,6 +41,25 @@ public abstract class ProviderTestBase {
 	}
 
 	@Test
+	public void computeMergeTest() {
+		// Build cache
+		Cache<String, Integer> cache = CacheApi.create(spec -> {
+			spec.provider(provider);
+			spec.maxSize(32L);
+			spec.expiryTime(Duration.ofMinutes(1));
+			spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
+		});
+
+		// Test computeIfAbsent
+		Assertions.assertEquals(420, cache.computeIfAbsent("4/20", k -> 420));
+		Assertions.assertEquals(420, cache.get("4/20"));
+
+		// Test merge
+		Assertions.assertEquals(420 + 69, cache.merge("4/20", 69, Integer::sum));
+		Assertions.assertEquals(420 + 69, cache.get("4/20"));
+	}
+
+	@Test
 	public void registeredAsDefaultTest() {
 		if (!(provider instanceof SimpleMapProvider)) {
 			Assertions.assertEquals(provider.getClass(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass());
