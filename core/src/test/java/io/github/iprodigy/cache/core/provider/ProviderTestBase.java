@@ -4,12 +4,14 @@ import io.github.iprodigy.cache.api.Cache;
 import io.github.iprodigy.cache.api.CacheProvider;
 import io.github.iprodigy.cache.core.CacheApi;
 import io.github.iprodigy.cache.core.CacheApiSettings;
+import io.github.iprodigy.cache.core.CacheApiSpec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.util.function.Consumer;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,12 +22,7 @@ public abstract class ProviderTestBase {
 	@Test
 	public void putGetClearTest() {
 		// Build cache
-		Cache<String, Integer> cache = CacheApi.create(spec -> {
-			spec.provider(provider);
-			spec.maxSize(32L);
-			spec.expiryTime(Duration.ofMinutes(1));
-			spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
-		});
+		Cache<String, Integer> cache = build(null);
 
 		// Test put/get
 		Assertions.assertNull(cache.put("4/20", 420));
@@ -43,12 +40,7 @@ public abstract class ProviderTestBase {
 	@Test
 	public void computeMergeRemoveTest() {
 		// Build cache
-		Cache<String, Integer> cache = CacheApi.create(spec -> {
-			spec.provider(provider);
-			spec.maxSize(32L);
-			spec.expiryTime(Duration.ofMinutes(1));
-			spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
-		});
+		Cache<String, Integer> cache = build(null);
 
 		// Test computeIfAbsent
 		Assertions.assertEquals(420, cache.computeIfAbsent("4/20", k -> 420));
@@ -65,6 +57,17 @@ public abstract class ProviderTestBase {
 	@Test
 	public void registeredAsDefaultTest() {
 		Assertions.assertEquals(provider.getClass(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass());
+	}
+
+	protected <K, V> Cache<K, V> build(Consumer<CacheApiSpec<K, V>> additionalSpec) {
+		Consumer<CacheApiSpec<K, V>> baseSpec = spec -> {
+			spec.provider(provider);
+			spec.maxSize(32L);
+			spec.expiryTime(Duration.ofMinutes(1));
+			spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
+		};
+		Consumer<CacheApiSpec<K, V>> spec = additionalSpec == null ? baseSpec : baseSpec.andThen(additionalSpec);
+		return CacheApi.create(spec);
 	}
 
 }
