@@ -2,6 +2,8 @@ package io.github.iprodigy.cache.core.provider;
 
 import io.github.iprodigy.cache.api.Cache;
 import io.github.iprodigy.cache.api.CacheProvider;
+import io.github.iprodigy.cache.api.domain.ExpiryType;
+import io.github.iprodigy.cache.api.domain.RemovalCause;
 import io.github.iprodigy.cache.core.CacheApi;
 import io.github.iprodigy.cache.core.CacheApiSettings;
 import io.github.iprodigy.cache.core.CacheApiSpec;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static org.awaitility.Awaitility.await;
@@ -64,7 +67,7 @@ public abstract class ProviderTestBase {
 	@DisplayName("Test that cache size constraint is respected")
 	public void sizeEvictionTest() {
 		// Build cache
-		Cache<String, Integer> cache = build(spec -> spec.maxSize(4L));
+		Cache<String, Integer> cache = build(spec -> spec.maxSize(4L).expiryType(ExpiryType.POST_WRITE));
 
 		// Add entries
 		for (int i = 0; i < 5; i++) {
@@ -78,6 +81,33 @@ public abstract class ProviderTestBase {
 		for (int i = 1; i < 5; i++) {
 			Assertions.assertEquals(i, cache.get(String.valueOf(i)));
 		}
+	}
+
+	@Test
+	@DisplayName("Test that removal listener is called on size-based eviction")
+	public void sizeEvictionListenerTest() {
+		// Track size-related evictions
+		final int capacity = 16;
+		final int expectedEvictions = 8;
+		final int additions = capacity + expectedEvictions;
+		final AtomicInteger removals = new AtomicInteger();
+
+		// Build cache
+		Cache<String, Integer> cache = build(spec -> {
+			spec.maxSize((long) capacity);
+			spec.removalListener((key, value, cause) -> {
+				if (cause == RemovalCause.SIZE || cause == RemovalCause.OTHER)
+					removals.incrementAndGet();
+			});
+		});
+
+		// Add entries
+		for (int i = 0; i < additions; i++) {
+			cache.put(String.valueOf(i), i);
+		}
+
+		// Ensure listener is called the appropriate number of times
+		await().atMost(30, TimeUnit.SECONDS).until(() -> removals.get() == expectedEvictions);
 	}
 
 	@Test

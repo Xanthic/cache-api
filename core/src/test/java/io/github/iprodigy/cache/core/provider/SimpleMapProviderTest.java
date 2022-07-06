@@ -16,6 +16,12 @@ public class SimpleMapProviderTest extends ProviderTestBase {
 
 	@Disabled
 	@Override
+	public void sizeEvictionListenerTest() {
+		// skip test; SimpleMapProvider does not implement a size constraint
+	}
+
+	@Disabled
+	@Override
 	public void registeredAsDefaultTest() {
 		// skip test; SimpleMapProvider is deliberately not automatically set as a possible default
 	}
