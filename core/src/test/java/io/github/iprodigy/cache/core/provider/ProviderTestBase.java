@@ -58,6 +58,28 @@ public abstract class ProviderTestBase {
 	}
 
 	@Test
+	@DisplayName("Test that cache size constraint is respected")
+	public void sizeEvictionTest() throws InterruptedException {
+		// Build cache
+		Cache<String, Integer> cache = build(spec -> spec.maxSize(4L));
+
+		// Add entries
+		for (int i = 0; i < 5; i++) {
+			cache.put(String.valueOf(i), i);
+		}
+
+		Thread.sleep(1000L); // TODO: use awaitility
+
+		// Ensure eldest entry was removed
+		Assertions.assertNull(cache.get("0"));
+
+		// Ensure other entries are present
+		for (int i = 1; i < 5; i++) {
+			Assertions.assertEquals(i, cache.get(String.valueOf(i)));
+		}
+	}
+
+	@Test
 	@DisplayName("Tests whether the provider has been set as the default")
 	public void registeredAsDefaultTest() {
 		Assertions.assertEquals(provider.getClass(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass());

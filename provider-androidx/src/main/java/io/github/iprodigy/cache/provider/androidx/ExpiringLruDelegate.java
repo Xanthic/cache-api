@@ -74,6 +74,7 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 			V prev = cache.put(key, value);
 			start(key, value);
 			if (prev != value) cancelIfRunning(key, prev); // mapping was already removed
+			if (maxSize != null) cache.trimToSize(maxSize.intValue());
 			return prev;
 		}
 	}
