@@ -111,6 +111,28 @@ public abstract class ProviderTestBase {
 	}
 
 	@Test
+	@DisplayName("Test that cache time constraint is respected")
+	public void timeEvictionTest() {
+		final long expiry = 2500L;
+
+		// Build cache
+		Cache<String, Integer> cache = build(spec -> {
+			spec.expiryTime(Duration.ofMillis(expiry));
+			spec.expiryType(ExpiryType.POST_WRITE);
+		});
+
+		// Populate cache
+		for (int i = 0; i < 16; i++) {
+			cache.put(String.valueOf(i), i);
+		}
+
+		// Ensure entries are removed over time
+		await().atLeast(expiry, TimeUnit.MILLISECONDS)
+			.atMost(expiry * 10, TimeUnit.SECONDS)
+			.until(() -> cache.size() == 0);
+	}
+
+	@Test
 	@DisplayName("Tests whether the provider has been set as the default")
 	public void registeredAsDefaultTest() {
 		Assertions.assertEquals(provider.getClass(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass());
