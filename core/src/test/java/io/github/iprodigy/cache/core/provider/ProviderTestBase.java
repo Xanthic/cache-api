@@ -12,7 +12,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+
+import static org.awaitility.Awaitility.await;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -59,7 +62,7 @@ public abstract class ProviderTestBase {
 
 	@Test
 	@DisplayName("Test that cache size constraint is respected")
-	public void sizeEvictionTest() throws InterruptedException {
+	public void sizeEvictionTest() {
 		// Build cache
 		Cache<String, Integer> cache = build(spec -> spec.maxSize(4L));
 
@@ -68,10 +71,8 @@ public abstract class ProviderTestBase {
 			cache.put(String.valueOf(i), i);
 		}
 
-		Thread.sleep(1000L); // TODO: use awaitility
-
 		// Ensure eldest entry was removed
-		Assertions.assertNull(cache.get("0"));
+		await().atMost(30, TimeUnit.SECONDS).until(() -> cache.get("0") == null);
 
 		// Ensure other entries are present
 		for (int i = 1; i < 5; i++) {
