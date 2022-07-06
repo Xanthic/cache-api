@@ -8,6 +8,7 @@ import io.github.iprodigy.cache.core.CacheApiSpec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -20,6 +21,7 @@ public abstract class ProviderTestBase {
 	protected final CacheProvider provider;
 
 	@Test
+	@DisplayName("Tests cache get, put, putIfAbsent, and clear")
 	public void putGetClearTest() {
 		// Build cache
 		Cache<String, Integer> cache = build(null);
@@ -38,6 +40,7 @@ public abstract class ProviderTestBase {
 	}
 
 	@Test
+	@DisplayName("Tests cache computeIfAbsent, merge, and remove")
 	public void computeMergeRemoveTest() {
 		// Build cache
 		Cache<String, Integer> cache = build(null);
@@ -55,6 +58,7 @@ public abstract class ProviderTestBase {
 	}
 
 	@Test
+	@DisplayName("Tests whether the provider has been set as the default")
 	public void registeredAsDefaultTest() {
 		Assertions.assertEquals(provider.getClass(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass());
 	}
