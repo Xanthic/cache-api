@@ -46,10 +46,12 @@ public final class Cache2kProvider extends AbstractCacheProvider {
 		});
 
 		handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
-			if (type == ExpiryType.POST_WRITE)
+			if (type == ExpiryType.POST_WRITE) {
 				builder.expireAfterWrite(time);
-			else
-				builder.idleScanTime(Math.round(time.toNanos() / 3.0 * 2), TimeUnit.NANOSECONDS); // https://github.com/cache2k/cache2k/issues/39
+			} else {
+				long t = time.toNanos();
+				builder.idleScanTime(t / 3 * 2 + (t % 3 == 0 ? 0 : 1), TimeUnit.NANOSECONDS); // https://github.com/cache2k/cache2k/issues/39
+			}
 
 			if (exec != null)
 				builder.sharpExpiry(true);
