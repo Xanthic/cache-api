@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Implements size and time-based expiry.
  * <p>
+ * Note: listeners will always receive {@link RemovalCause#OTHER} due to limitations of the backing library.
+ * <p>
  * Consider using Caffeine or Cache2k for better performance.
  */
 public final class ExpiringMapProvider extends AbstractCacheProvider {

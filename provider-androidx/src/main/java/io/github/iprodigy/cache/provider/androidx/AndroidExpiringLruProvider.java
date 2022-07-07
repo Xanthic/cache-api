@@ -14,6 +14,9 @@ import java.util.concurrent.ScheduledExecutorService;
  * <p>
  * Supports size and time-based eviction.
  * <p>
+ * Note: on {@link Cache#clear()}, listeners will receive {@link io.github.iprodigy.cache.api.domain.RemovalCause#SIZE}
+ * due to backing library limitations.
+ * <p>
  * Consider using Cache2k for better performance.
  */
 public final class AndroidExpiringLruProvider extends AbstractCacheProvider {

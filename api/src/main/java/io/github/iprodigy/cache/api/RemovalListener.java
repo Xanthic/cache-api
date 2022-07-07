@@ -15,6 +15,9 @@ public interface RemovalListener<K, V> {
 	 * Called when an entry is removed.
 	 * <p>
 	 * No guarantee is made whether this is executed synchronously or asynchronously.
+	 * <p>
+	 * For optimal compatibility across backing implementations, prefer using
+	 * {@link RemovalCause#isEviction()} to checking against specific states.
 	 *
 	 * @param key   the key whose mapping was removed or updated
 	 * @param value the mapped value that was removed
