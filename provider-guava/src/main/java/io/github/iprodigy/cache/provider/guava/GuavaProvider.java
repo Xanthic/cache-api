@@ -7,6 +7,9 @@ import io.github.iprodigy.cache.api.domain.ExpiryType;
 import io.github.iprodigy.cache.api.domain.RemovalCause;
 import io.github.iprodigy.cache.core.AbstractCacheProvider;
 
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
 public final class GuavaProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
@@ -27,7 +30,19 @@ public final class GuavaProvider extends AbstractCacheProvider {
 				finalBuilder.expireAfterAccess(time);
 		});
 
-		return new GuavaDelegate<>(finalBuilder.build());
+		com.google.common.cache.Cache<K, V> cache = finalBuilder.build();
+
+		// background thread for faster eviction events since guava does not offer prompt expiration
+		if (spec.removalListener() != null && spec.executor() != null && spec.expiryTime() != null && !spec.expiryTime().isZero()) {
+			spec.executor().scheduleAtFixedRate(
+				cache::cleanUp,
+				spec.expiryTime().toNanos(),
+				Math.min(spec.expiryTime().toNanos(), Duration.ofMinutes(1L).toNanos()),
+				TimeUnit.NANOSECONDS
+			);
+		}
+
+		return new GuavaDelegate<>(cache);
 	}
 
 	@SuppressWarnings("DuplicatedCode")
