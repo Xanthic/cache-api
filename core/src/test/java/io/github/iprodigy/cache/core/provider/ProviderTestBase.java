@@ -75,7 +75,7 @@ public abstract class ProviderTestBase {
 			cache.put(String.valueOf(i), i);
 		}
 
-		// Ensure eldest entry was removed
+		// Ensure the eldest entry was removed
 		await().atMost(30, TimeUnit.SECONDS).until(() -> cache.get("0") == null);
 
 		// Ensure other entries are present
@@ -135,6 +135,7 @@ public abstract class ProviderTestBase {
 	}
 
 	@Test
+	@DisplayName("Test that removal listener is called after time-based eviction")
 	public void timeEvictionListenerTest() {
 		final long expiry = 1000L;
 		final int n = 16;
@@ -164,6 +165,36 @@ public abstract class ProviderTestBase {
 	}
 
 	@Test
+	@DisplayName("Test that removal listener is called after value replacements")
+	public void replacedListenerTest() {
+		final int n = 4;
+		AtomicInteger replacements = new AtomicInteger();
+
+		// Build cache
+		Cache<String, Integer> cache = build(spec -> {
+			spec.expiryTime(null);
+			spec.maxSize(n * 2L);
+			spec.removalListener((key, value, cause) -> {
+				if (cause == RemovalCause.REPLACED && value < n)
+					replacements.incrementAndGet();
+			});
+		});
+
+		// Populate cache
+		for (int i = 0; i < n; i++) {
+			cache.put(String.valueOf(i), i);
+		}
+
+		// Perform replacements
+		for (int i = 0; i < n; i++) {
+			cache.put(String.valueOf(i), i + 100);
+		}
+
+		// Ensure listener was called the appropriate number of times
+		await().atMost(30, TimeUnit.SECONDS).until(() -> replacements.get() == n);
+	}
+
+	@Test
 	@DisplayName("Tests whether the provider has been set as the default")
 	public void registeredAsDefaultTest() {
 		Assertions.assertEquals(provider.getClass(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass());
@@ -173,7 +204,7 @@ public abstract class ProviderTestBase {
 		Consumer<CacheApiSpec<K, V>> baseSpec = spec -> {
 			spec.provider(provider);
 			spec.maxSize(32L);
-			spec.expiryTime(Duration.ofMinutes(1));
+			spec.expiryTime(Duration.ofMinutes(1L));
 			spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
 		};
 		Consumer<CacheApiSpec<K, V>> spec = additionalSpec == null ? baseSpec : baseSpec.andThen(additionalSpec);
