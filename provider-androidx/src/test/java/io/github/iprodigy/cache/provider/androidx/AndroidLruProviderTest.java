@@ -14,7 +14,13 @@ public class AndroidLruProviderTest extends ProviderTestBase {
 	@Disabled
 	@Override
 	public void timeEvictionTest() {
-		// skip test; AndroidLruProvider does not implement a size constraint
+		// skip test; AndroidLruProvider does not implement a time constraint
+	}
+
+	@Disabled
+	@Override
+	public void timeEvictionListenerTest() {
+		// skip test; AndroidLruProvider does not implement a time constraint
 	}
 
 }

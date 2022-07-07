@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -113,12 +114,13 @@ public abstract class ProviderTestBase {
 	@Test
 	@DisplayName("Test that cache time constraint is respected")
 	public void timeEvictionTest() {
-		final long expiry = 2500L;
+		final long expiry = 1000L;
 
 		// Build cache
 		Cache<String, Integer> cache = build(spec -> {
 			spec.expiryTime(Duration.ofMillis(expiry));
 			spec.expiryType(ExpiryType.POST_WRITE);
+			spec.executor(Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors()));
 		});
 
 		// Populate cache
@@ -127,9 +129,38 @@ public abstract class ProviderTestBase {
 		}
 
 		// Ensure entries are removed over time
-		await().atLeast(expiry, TimeUnit.MILLISECONDS)
-			.atMost(expiry * 10, TimeUnit.SECONDS)
+		await().atLeast(expiry * 3 / 4, TimeUnit.MILLISECONDS)
+			.atMost(90, TimeUnit.SECONDS)
 			.until(() -> cache.size() == 0);
+	}
+
+	@Test
+	public void timeEvictionListenerTest() {
+		final long expiry = 1000L;
+		final int n = 16;
+		final AtomicInteger evictions = new AtomicInteger();
+
+		// Build cache
+		Cache<String, Integer> cache = build(spec -> {
+			spec.maxSize(n * 2L);
+			spec.expiryTime(Duration.ofMillis(expiry));
+			spec.expiryType(ExpiryType.POST_WRITE);
+			spec.executor(Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors()));
+			spec.removalListener((key, value, cause) -> {
+				if (cause == RemovalCause.TIME || cause == RemovalCause.OTHER)
+					evictions.incrementAndGet();
+			});
+		});
+
+		// Populate cache
+		for (int i = 0; i < n; i++) {
+			cache.put(String.valueOf(i), i);
+		}
+
+		// Ensure listener is called the appropriate number of times
+		await().atLeast(expiry * 3 / 4, TimeUnit.MILLISECONDS)
+			.atMost(90, TimeUnit.SECONDS)
+			.until(() -> evictions.get() == n);
 	}
 
 	@Test
