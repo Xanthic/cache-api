@@ -40,6 +40,12 @@ public class SimpleMapProviderTest extends ProviderTestBase {
 
 	@Disabled
 	@Override
+	public void manualRemovalListenerTest() {
+		// skip test; SimpleMapProvider does not implement removal listener
+	}
+
+	@Disabled
+	@Override
 	public void registeredAsDefaultTest() {
 		// skip test; SimpleMapProvider is deliberately not automatically set as a possible default
 	}

@@ -15,4 +15,10 @@ public class ExpiringMapProviderTest extends ProviderTestBase {
 		// skip test; library limitations of ExpiringMap don't allow for this granularity
 	}
 
+	@Disabled
+	@Override
+	public void manualRemovalListenerTest() {
+		// skip test; library limitations of ExpiringMap don't allow for this granularity
+	}
+
 }

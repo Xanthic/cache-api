@@ -68,7 +68,7 @@ public abstract class ProviderTestBase {
 	@DisplayName("Test that cache size constraint is respected")
 	public void sizeEvictionTest() {
 		// Build cache
-		Cache<String, Integer> cache = build(spec -> spec.maxSize(4L).expiryType(ExpiryType.POST_WRITE));
+		Cache<String, Integer> cache = build(spec -> spec.maxSize(4L).expiryTime(null));
 
 		// Add entries
 		for (int i = 0; i < 5; i++) {
@@ -192,6 +192,36 @@ public abstract class ProviderTestBase {
 
 		// Ensure listener was called the appropriate number of times
 		await().atMost(30, TimeUnit.SECONDS).until(() -> replacements.get() == n);
+	}
+
+	@Test
+	@DisplayName("Test that removal listener is called after manual removals")
+	public void manualRemovalListenerTest() {
+		final int n = 4;
+		AtomicInteger removals = new AtomicInteger();
+
+		// Build cache
+		Cache<String, Integer> cache = build(spec -> {
+			spec.expiryTime(null);
+			spec.maxSize(n * 2L);
+			spec.removalListener((key, value, cause) -> {
+				if (cause == RemovalCause.MANUAL)
+					removals.incrementAndGet();
+			});
+		});
+
+		// Populate cache
+		for (int i = 0; i < n; i++) {
+			cache.put(String.valueOf(i), i);
+		}
+
+		// Perform removals
+		for (int i = 0; i < n; i++) {
+			cache.remove(String.valueOf(i));
+		}
+
+		// Ensure listener was called the appropriate number of times
+		await().atMost(90, TimeUnit.SECONDS).until(() -> removals.get() == n);
 	}
 
 	@Test
