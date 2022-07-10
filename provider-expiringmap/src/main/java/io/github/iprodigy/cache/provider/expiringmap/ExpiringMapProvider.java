@@ -11,6 +11,15 @@ import net.jodah.expiringmap.ExpiringMap;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Provides {@link Cache} instances using {@link ExpiringMap}.
+ * <p>
+ * Implements size and time-based expiry.
+ * <p>
+ * Note: listeners will always receive {@link RemovalCause#OTHER} due to limitations of the backing library.
+ * <p>
+ * Consider using Caffeine or Cache2k for better performance.
+ */
 public final class ExpiringMapProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {

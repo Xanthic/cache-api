@@ -65,7 +65,7 @@ Aside: the `removalListener` in the example above technically has no effect, but
 
 This API is still in alpha development stage. The current TODO list includes:
 
-- [ ] Add Javadocs
+- [x] Add Javadocs
 - [ ] Incorporate logging (via SLF4J)
 - [ ] Create test suite (via JUnit)
 - [ ] Consider if any more bindings should be added for initial release
