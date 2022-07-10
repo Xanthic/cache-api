@@ -8,6 +8,14 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+/**
+ * Delegates cache calls to a {@link Map} view that already conforms to a desired {@link io.github.iprodigy.cache.api.ICacheSpec}.
+ * <p>
+ * This class should only be used when implementing a {@link io.github.iprodigy.cache.api.CacheProvider}, which yields a {@link Map} view.
+ *
+ * @param <K> The type of keys that form the cache
+ * @param <V> The type of values contained in the cache
+ */
 @Data
 public class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
 	private final Map<K, V> map;

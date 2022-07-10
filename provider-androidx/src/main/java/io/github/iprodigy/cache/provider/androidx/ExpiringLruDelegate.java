@@ -101,6 +101,7 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 		return cache.size();
 	}
 
+	@NotNull
 	@Override
 	protected Object getLock() {
 		return this.cache;

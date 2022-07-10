@@ -10,6 +10,15 @@ import io.github.iprodigy.cache.core.AbstractCacheProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Provides {@link Cache} instances using {@link LruCache}.
+ * <p>
+ * Supports size-based eviction.
+ * However, time-based expiry is <i>not</i> supported, so {@link AndroidExpiringLruProvider} should be preferred.
+ * <p>
+ * Note: on {@link Cache#clear()}, listeners will receive {@link io.github.iprodigy.cache.api.domain.RemovalCause#SIZE}
+ * due to backing library limitations.
+ */
 public final class AndroidLruProvider extends AbstractCacheProvider {
 
 	@Override

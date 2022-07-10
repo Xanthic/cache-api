@@ -12,6 +12,11 @@ import org.infinispan.manager.DefaultCacheManager;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Provides {@link Cache} instances using Infinispan's {@link org.infinispan.Cache} in heap-mode.
+ * <p>
+ * Implements size and time-based expiry.
+ */
 public final class InfinispanProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {

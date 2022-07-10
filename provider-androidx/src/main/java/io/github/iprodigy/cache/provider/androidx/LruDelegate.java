@@ -4,6 +4,7 @@ import androidx.collection.LruCache;
 import io.github.iprodigy.cache.core.AbstractCache;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import org.jetbrains.annotations.NotNull;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -35,6 +36,7 @@ class LruDelegate<K, V> extends AbstractCache<K, V> {
 		return cache.size();
 	}
 
+	@NotNull
 	@Override
 	protected Object getLock() {
 		return this.cache;

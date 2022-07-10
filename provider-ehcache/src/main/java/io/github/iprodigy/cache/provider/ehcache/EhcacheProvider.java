@@ -13,11 +13,19 @@ import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.event.EventType;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Provides {@link Cache} instances using {@link org.ehcache.core.Ehcache} in heap-mode.
+ * <p>
+ * Implements size and time-based expiry.
+ * <p>
+ * Specifying {@link ICacheSpec#maxSize()} is highly recommended.
+ */
 public final class EhcacheProvider extends AbstractCacheProvider {
 
 	@Override

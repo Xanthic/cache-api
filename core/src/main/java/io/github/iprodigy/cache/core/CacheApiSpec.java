@@ -5,6 +5,7 @@ import io.github.iprodigy.cache.api.ICacheSpec;
 import io.github.iprodigy.cache.api.RemovalListener;
 import io.github.iprodigy.cache.api.domain.ExpiryType;
 import io.github.iprodigy.cache.api.exception.MisconfiguredCacheException;
+import io.github.iprodigy.cache.api.exception.NoDefaultCacheImplementationException;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,14 @@ import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 
+/**
+ * Fluent implementation of {@link ICacheSpec}.
+ * <p>
+ * Use {@link #process(Consumer)} to obtain validated instances of the spec.
+ *
+ * @param <K> the type of keys that form the cache
+ * @param <V> the type of values that are contained in the cache
+ */
 @Data
 @Slf4j
 @Accessors(fluent = true)
@@ -36,7 +45,10 @@ public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 	private ScheduledExecutorService executor;
 
 	/**
-	 * Ensure the config is valid
+	 * Ensures the configured specification is valid.
+	 *
+	 * @throws NullPointerException        if a provider is not specified and no default provider has been set
+	 * @throws MisconfiguredCacheException if the cache settings are invalid (e.g., negative max size or expiry time)
 	 */
 	public void validate() {
 		Objects.requireNonNull(provider, "provider may not be null!");
@@ -51,7 +63,18 @@ public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 			log.warn("Cache specification enables expiry time but does not specify ExpiryType");
 	}
 
-	public static <K, V> @NotNull CacheApiSpec<K, V> process(@NotNull Consumer<CacheApiSpec<K, V>> spec) {
+	/**
+	 * Constructs a validated implementation of {@link ICacheSpec}.
+	 *
+	 * @param spec consumer in which the desired cache settings should be specified
+	 * @param <K>  the type of keys that form the cache
+	 * @param <V>  the type of values that are contained in the cache
+	 * @return CacheApiSpec
+	 * @throws NoDefaultCacheImplementationException if a provider is not specified and no default provider has been set
+	 * @throws MisconfiguredCacheException           if the cache settings are invalid (e.g., negative max size or expiry time)
+	 */
+	@NotNull
+	public static <K, V> CacheApiSpec<K, V> process(@NotNull Consumer<CacheApiSpec<K, V>> spec) {
 		CacheApiSpec<K, V> data = new CacheApiSpec<>();
 		spec.accept(data);
 
