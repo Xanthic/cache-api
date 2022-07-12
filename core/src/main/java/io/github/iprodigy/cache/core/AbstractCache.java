@@ -28,7 +28,9 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 		synchronized (getLock()) {
 			V old = this.get(key);
 			if (old != null) return old;
-			return this.put(key, computeFunc.apply(key));
+			V computed = computeFunc.apply(key);
+			this.put(key, computed);
+			return computed;
 		}
 	}
 
@@ -48,7 +50,9 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 		synchronized (getLock()) {
 			V old = putIfAbsent(key, value);
 			if (old == null) return value;
-			return this.put(key, mergeFunc.apply(old, value));
+			V merged = mergeFunc.apply(old, value);
+			this.put(key, merged);
+			return merged;
 		}
 	}
 

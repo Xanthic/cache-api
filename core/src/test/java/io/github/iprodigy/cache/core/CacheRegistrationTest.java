@@ -8,6 +8,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -29,6 +30,7 @@ public class CacheRegistrationTest {
 	}
 
 	@Test
+	@DisplayName("Test that NoDefaultCacheImplementationException is thrown when default cache provider is not set")
 	void noDefaultCacheImplementationError() {
 		Exception exception = assertThrows(NoDefaultCacheImplementationException.class, () -> {
 			Cache<String, Integer> cache = CacheApi.create(spec -> {
@@ -42,6 +44,7 @@ public class CacheRegistrationTest {
 	}
 
 	@Test
+	@DisplayName("Test that default cache provider is set on first register")
 	void registerAndDefaultCacheProviderTest() {
 		// register simple map provider
 		CacheApiSettings.getInstance().registerCacheProvider(SimpleMapProvider.class, new SimpleMapProvider());
@@ -52,6 +55,7 @@ public class CacheRegistrationTest {
 	}
 
 	@Test
+	@DisplayName("Test that default cache provider can be explicitly set")
 	void setDefaultCacheProviderTest() {
 		// set default cache provider
 		CacheApiSettings.getInstance().setDefaultCacheProvider(new SimpleMapProvider());
@@ -62,6 +66,7 @@ public class CacheRegistrationTest {
 	}
 
 	@Test
+	@DisplayName("Test that default cache provider is used when creating cache without explicit provider")
 	void specDefaultCacheProviderTest() {
 		// register simple map provider
 		CacheApiSettings.getInstance().registerCacheProvider(SimpleMapProvider.class, new SimpleMapProvider());
@@ -73,4 +78,5 @@ public class CacheRegistrationTest {
 			spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
 		});
 	}
+
 }

@@ -15,7 +15,9 @@ import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.event.EventType;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Provides {@link Cache} instances using {@link org.ehcache.core.Ehcache} in heap-mode.
@@ -55,7 +57,19 @@ public final class EhcacheProvider extends AbstractCacheProvider {
 		}
 
 		org.ehcache.Cache<Object, Object> cache = manager.createCache(UUID.randomUUID().toString(), builder[0]);
-		return new EhcacheDelegate<>(cache);
+		EhcacheDelegate<K, V> delegate = new EhcacheDelegate<>(cache);
+
+		// background thread for faster eviction events since ehcache does not offer prompt expiration
+		if (spec.removalListener() != null && spec.executor() != null && spec.expiryTime() != null && !spec.expiryTime().isZero()) {
+			spec.executor().scheduleAtFixedRate(
+				delegate::size,
+				spec.expiryTime().toNanos(),
+				Math.min(spec.expiryTime().toNanos(), Duration.ofMinutes(1L).toNanos()),
+				TimeUnit.NANOSECONDS
+			);
+		}
+
+		return delegate;
 	}
 
 	private static ResourcePoolsBuilder poolBuilder(Long maxSize) {

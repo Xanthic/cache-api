@@ -1,29 +1,53 @@
 package io.github.iprodigy.cache.core.provider;
 
-import io.github.iprodigy.cache.api.Cache;
-import io.github.iprodigy.cache.core.CacheApi;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
-import java.time.Duration;
+public class SimpleMapProviderTest extends ProviderTestBase {
 
-@Slf4j
-public class SimpleMapProviderTest {
+	public SimpleMapProviderTest() {
+		super(new SimpleMapProvider());
+	}
 
-	@Test
-	void putGetClearTest() {
-		Cache<String, Integer> cache = CacheApi.create(spec -> {
-			spec.provider(new SimpleMapProvider());
-			spec.maxSize(32L);
-			spec.expiryTime(Duration.ofMinutes(1));
-			spec.removalListener((key, value, cause) -> log.info(key + ":" + value + "=" + cause));
-		});
+	@Disabled
+	@Override
+	public void sizeEvictionTest() {
+		// skip test; SimpleMapProvider does not implement a size constraint
+	}
 
-		cache.put("4/20", 420);
-		Assertions.assertEquals(420, cache.get("4/20"));
-		cache.clear();
-		Assertions.assertNull(cache.get("4/20"));
+	@Disabled
+	@Override
+	public void sizeEvictionListenerTest() {
+		// skip test; SimpleMapProvider does not implement a size constraint
+	}
+
+	@Disabled
+	@Override
+	public void timeEvictionTest() {
+		// skip test; SimpleMapProvider does not implement a time constraint
+	}
+
+	@Disabled
+	@Override
+	public void timeEvictionListenerTest() {
+		// skip test; SimpleMapProvider does not implement a time constraint
+	}
+
+	@Disabled
+	@Override
+	public void replacedListenerTest() {
+		// skip test; SimpleMapProvider does not implement removal listener
+	}
+
+	@Disabled
+	@Override
+	public void manualRemovalListenerTest() {
+		// skip test; SimpleMapProvider does not implement removal listener
+	}
+
+	@Disabled
+	@Override
+	public void registeredAsDefaultTest() {
+		// skip test; SimpleMapProvider is deliberately not automatically set as a possible default
 	}
 
 }
