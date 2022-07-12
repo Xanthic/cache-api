@@ -3,5 +3,5 @@ dependencies {
 
     implementation("org.cache2k:cache2k-core:2.6.1.Final")
 
-    testImplementation(project(":cache-core").dependencyProject.sourceSets.test.get().runtimeClasspath)
+    testImplementation(testFixtures(project(":cache-core")))
 }

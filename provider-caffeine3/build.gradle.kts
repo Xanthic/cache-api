@@ -3,7 +3,7 @@ dependencies {
 
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
 
-    testImplementation(project(":cache-core").dependencyProject.sourceSets.test.get().runtimeClasspath)
+    testImplementation(testFixtures(project(":cache-core")))
 }
 
 java {

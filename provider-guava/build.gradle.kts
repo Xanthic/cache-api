@@ -3,5 +3,5 @@ dependencies {
 
     implementation("com.google.guava:guava:31.1-jre")
 
-    testImplementation(project(":cache-core").dependencyProject.sourceSets.test.get().runtimeClasspath)
+    testImplementation(testFixtures(project(":cache-core")))
 }
