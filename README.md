@@ -1,3 +1,5 @@
+<img src=".github/logo.png?raw=true" alt="Xanthic logo" width="652" />
+
 # Cache API
 
 This library provides a simplified interface for interacting with in-memory cache implementations on the JVM.
