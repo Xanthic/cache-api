@@ -1,4 +1,4 @@
-<img src=".github/logo.png?raw=true" alt="Xanthic logo" width="652" />
+<img src=".github/logo.png?raw=true" alt="Xanthic logo" width="500" />
 
 # Cache API
 
