@@ -128,14 +128,14 @@ public final class CacheApiSettings {
 			}
 		};
 
-		loadImpl.accept("io.github.xanthic.provider.androidx.AndroidExpiringLruProvider");
-		loadImpl.accept("io.github.xanthic.provider.androidx.AndroidLruProvider");
-		loadImpl.accept("io.github.xanthic.provider.caffeine3.Caffeine3Provider");
-		loadImpl.accept("io.github.xanthic.provider.caffeine.CaffeineProvider");
-		loadImpl.accept("io.github.xanthic.provider.cache2k.Cache2kProvider");
-		loadImpl.accept("io.github.xanthic.provider.infinispan.InfinispanProvider");
-		loadImpl.accept("io.github.xanthic.provider.expiringmap.ExpiringMapProvider");
-		loadImpl.accept("io.github.xanthic.provider.guava.GuavaProvider");
-		loadImpl.accept("io.github.xanthic.provider.ehcache.EhcacheProvider");
+		loadImpl.accept("io.github.xanthic.cache.provider.androidx.AndroidExpiringLruProvider");
+		loadImpl.accept("io.github.xanthic.cache.provider.androidx.AndroidLruProvider");
+		loadImpl.accept("io.github.xanthic.cache.provider.caffeine3.Caffeine3Provider");
+		loadImpl.accept("io.github.xanthic.cache.provider.caffeine.CaffeineProvider");
+		loadImpl.accept("io.github.xanthic.cache.provider.cache2k.Cache2kProvider");
+		loadImpl.accept("io.github.xanthic.cache.provider.infinispan.InfinispanProvider");
+		loadImpl.accept("io.github.xanthic.cache.provider.expiringmap.ExpiringMapProvider");
+		loadImpl.accept("io.github.xanthic.cache.provider.guava.GuavaProvider");
+		loadImpl.accept("io.github.xanthic.cache.provider.ehcache.EhcacheProvider");
 	}
 }
