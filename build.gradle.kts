@@ -5,7 +5,7 @@ plugins {
     id("io.freefair.lombok") version "6.4.3.1"
 }
 
-group = "io.github.xanthic"
+group = "io.github.xanthic.cache"
 version = "1.0.0"
 
 allprojects {
