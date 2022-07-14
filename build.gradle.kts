@@ -1,12 +1,12 @@
 // Plugins
 plugins {
-    `java`
+    java
     `java-library`
     id("io.freefair.lombok") version "6.4.3.1"
 }
 
-group = "io.github.iprodigy.cache"
-version = "1.0.0"
+group = "io.github.xanthic.cache"
+version = "1.0.0-SNAPSHOT"
 
 allprojects {
     repositories {
@@ -38,7 +38,6 @@ subprojects {
         // logging and tests
         api(group = "org.slf4j", name = "slf4j-api", version = "1.7.36")
         testImplementation(group = "org.slf4j", name = "slf4j-simple", version = "1.7.36")
-
     }
 
     tasks {

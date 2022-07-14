@@ -1,3 +1,5 @@
+<img src=".github/logo.png?raw=true" alt="Xanthic logo" width="500" />
+
 # Cache API
 
 This library provides a simplified interface for interacting with in-memory cache implementations on the JVM.
@@ -85,3 +87,9 @@ As a maintainer of the [twitch4j](https://github.com/twitch4j/twitch4j) library,
 While this worked well for the server-side use case, Android users later reported incompatibilities, rendering twitch4j unusable for this platform.
 Thus spawned the desire for a simple cache api where specific implementations can be dynamically chosen at runtime by the end developer's choice
 (allowing some to use Caffeine while others can use LruCache, for example).
+
+### What's in a name?
+
+The library name, Xanthic, is a reference to [Xanthine](https://en.wikipedia.org/wiki/Xanthine).
+Taking inspiration from the [Caffeine](https://github.com/ben-manes/caffeine/wiki) cache library, Xanthine broadly includes the class of methylated xanthines that numerous cognitive stimulants (such as caffeine) belong to.
+Further, these compounds have been shown to [improve](https://doi.org/10.1002/hup.218) memory recall, creating an apt parallel for this library.
