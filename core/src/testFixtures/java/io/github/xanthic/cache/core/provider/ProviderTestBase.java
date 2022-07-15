@@ -73,6 +73,11 @@ public abstract class ProviderTestBase {
 		// Add entries
 		for (int i = 0; i < 5; i++) {
 			cache.put(String.valueOf(i), i);
+
+			// Hint to LRU/LFU impls like ehcache that 0 should be selected for eviction
+			for (int j = 0; j < i; j++) {
+				cache.get(String.valueOf(i));
+			}
 		}
 
 		// Ensure the eldest entry was removed
