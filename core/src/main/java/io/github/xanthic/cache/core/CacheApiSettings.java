@@ -27,15 +27,6 @@ public final class CacheApiSettings {
 	private final AtomicReference<Class<? extends CacheProvider>> defaultCacheProvider = new AtomicReference<>();
 
 	/**
-	 * The default expiry type to use when none is specified.
-	 *
-	 * @see ExpiryType
-	 */
-	@Getter
-	@Setter
-	private volatile ExpiryType defaultExpiryType = ExpiryType.POST_ACCESS;
-
-	/**
 	 * The default misconfiguration policy.
 	 *
 	 * @see MisconfigurationPolicy
