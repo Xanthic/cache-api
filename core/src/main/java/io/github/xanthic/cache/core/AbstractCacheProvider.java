@@ -19,12 +19,11 @@ public abstract class AbstractCacheProvider implements CacheProvider {
 	}
 
 	protected ExpiryType getExpiryType(ExpiryType type) {
-		ExpiryType et = type != null ? type : CacheApiSettings.getInstance().getDefaultExpiryType();
-		if (et == null) {
-			et = this.preferredType();
-			if (et == null || CacheApiSettings.getInstance().getDefaultMisconfigurationPolicy() == MisconfigurationPolicy.REJECT)
-				throw new MisconfiguredCacheException("Expiry time was set without an expiry type specified, even as a default");
-		}
+		if (type != null) return type;
+
+		ExpiryType et = this.preferredType();
+		if (et == null || CacheApiSettings.getInstance().getDefaultMisconfigurationPolicy() == MisconfigurationPolicy.REJECT)
+			throw new MisconfiguredCacheException("Expiry time was set without an expiry type specified, even as a default");
 		return et;
 	}
 
