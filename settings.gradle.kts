@@ -1,6 +1,7 @@
 rootProject.name = "cache"
 
 include(
+    ":bom",
     ":api",
     ":core",
     ":provider-androidx",
@@ -13,6 +14,7 @@ include(
     ":provider-infinispan",
 )
 
+project(":bom").name = "cache-bom"
 project(":api").name = "cache-api"
 project(":core").name = "cache-core"
 project(":provider-androidx").name = "cache-provider-androidx"
