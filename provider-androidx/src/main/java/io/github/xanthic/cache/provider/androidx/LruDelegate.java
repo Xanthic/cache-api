@@ -2,11 +2,14 @@ package io.github.xanthic.cache.provider.androidx;
 
 import androidx.collection.LruCache;
 import io.github.xanthic.cache.core.AbstractCache;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 
 @Value
+@Getter(AccessLevel.PRIVATE)
 @EqualsAndHashCode(callSuper = false)
 class LruDelegate<K, V> extends AbstractCache<K, V> {
 	LruCache<K, V> cache;
