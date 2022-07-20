@@ -4,35 +4,38 @@ import androidx.collection.LruCache;
 import io.github.xanthic.cache.api.Cache;
 import io.github.xanthic.cache.api.ICacheSpec;
 import io.github.xanthic.cache.api.RemovalListener;
-import io.github.xanthic.cache.api.domain.ExpiryType;
-import io.github.xanthic.cache.api.domain.RemovalCause;
 import io.github.xanthic.cache.core.AbstractCacheProvider;
+import io.github.xanthic.cache.api.domain.RemovalCause;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.time.Duration;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Provides {@link Cache} instances using {@link LruCache}.
  * <p>
- * Supports size-based eviction.
- * However, time-based expiry is <i>not</i> supported, so {@link AndroidExpiringLruProvider} should be preferred.
+ * Supports size and time-based eviction.
  * <p>
  * Note: on {@link Cache#clear()}, listeners will receive {@link RemovalCause#SIZE}
  * due to backing library limitations.
+ * <p>
+ * Consider using Cache2k for better performance.
  */
 public final class AndroidLruProvider extends AbstractCacheProvider {
 
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
-		handleUnsupportedExpiry(spec.expiryTime());
-		return new LruDelegate<>(build(spec.maxSize(), spec.removalListener()));
+		ScheduledExecutorService executor = spec.executor();
+		Duration expiryTime = spec.expiryTime();
+		if (executor == null) handleUnsupportedExpiry(expiryTime);
+		if (expiryTime == null) return new LruDelegate<>(buildSimple(spec.maxSize(), spec.removalListener()));
+		ScheduledExecutorService exec = executor != null ? executor : Executors.newSingleThreadScheduledExecutor();
+		return new ExpiringLruDelegate<>(spec.maxSize(), spec.removalListener(), expiryTime.toNanos(), getExpiryType(spec.expiryType()), exec);
 	}
 
-	@Override
-	protected ExpiryType preferredType() {
-		return null; // expiry is not supported by this provider
-	}
-
-	static <K, V> LruCache<K, V> build(Long maxSize, RemovalListener<K, V> listener) {
+	private static <K, V> LruCache<K, V> buildSimple(Long maxSize, RemovalListener<K, V> listener) {
 		int size = maxSize != null ? maxSize.intValue() : Integer.MAX_VALUE;
 		return new LruCache<K, V>(size) {
 			@Override

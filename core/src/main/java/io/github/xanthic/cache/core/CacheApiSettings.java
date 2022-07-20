@@ -1,7 +1,6 @@
 package io.github.xanthic.cache.core;
 
 import io.github.xanthic.cache.api.CacheProvider;
-import io.github.xanthic.cache.api.domain.ExpiryType;
 import io.github.xanthic.cache.api.domain.MisconfigurationPolicy;
 import io.github.xanthic.cache.api.exception.NoDefaultCacheImplementationException;
 import lombok.Getter;
@@ -119,7 +118,6 @@ public final class CacheApiSettings {
 			}
 		};
 
-		loadImpl.accept("io.github.xanthic.cache.provider.androidx.AndroidExpiringLruProvider");
 		loadImpl.accept("io.github.xanthic.cache.provider.androidx.AndroidLruProvider");
 		loadImpl.accept("io.github.xanthic.cache.provider.caffeine3.Caffeine3Provider");
 		loadImpl.accept("io.github.xanthic.cache.provider.caffeine.CaffeineProvider");
