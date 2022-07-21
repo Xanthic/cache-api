@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -50,7 +51,7 @@ public final class CacheApiSettings {
 		Class<? extends @NotNull CacheProvider> clazz = provider.getClass();
 		this.registerCacheProvider(clazz, provider);
 		this.defaultCacheProvider.set(clazz);
-		log.debug("Xanthic: Default cache provider set to {}.", clazz.getSimpleName());
+		log.debug("Xanthic: Default cache provider was set to {}.", clazz.getSimpleName());
 	}
 
 	/**
@@ -119,10 +120,14 @@ public final class CacheApiSettings {
 	}
 
 	private static void populateProviders(CacheApiSettings cacheApiSettings) {
+		log.debug("Xanthic: Registering canonical cache providers from the classpath...");
+
+		AtomicInteger registered = new AtomicInteger();
 		Consumer<String> loadImpl = (providerClass) -> {
 			try {
 				Class<? extends CacheProvider> clazz = Class.forName(providerClass).asSubclass(CacheProvider.class);
 				cacheApiSettings.registerCacheProvider(clazz, null); // lazy, init if needed
+				registered.incrementAndGet();
 			} catch (Exception ignored) {
 			}
 		};
@@ -135,5 +140,7 @@ public final class CacheApiSettings {
 		loadImpl.accept("io.github.xanthic.cache.provider.expiringmap.ExpiringMapProvider");
 		loadImpl.accept("io.github.xanthic.cache.provider.guava.GuavaProvider");
 		loadImpl.accept("io.github.xanthic.cache.provider.ehcache.EhcacheProvider");
+
+		log.debug("Xanthic: Loaded {} canonical cache provider(s) on settings construction!", registered.get());
 	}
 }
