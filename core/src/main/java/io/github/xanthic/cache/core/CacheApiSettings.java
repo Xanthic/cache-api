@@ -7,18 +7,21 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 /**
  * Holds a registry of default settings and cache providers.
  */
+@Slf4j
 public final class CacheApiSettings {
 	private static volatile CacheApiSettings INSTANCE;
 
@@ -48,6 +51,7 @@ public final class CacheApiSettings {
 		Class<? extends @NotNull CacheProvider> clazz = provider.getClass();
 		this.registerCacheProvider(clazz, provider);
 		this.defaultCacheProvider.set(clazz);
+		log.debug("Xanthic: Default cache provider was set to {}.", clazz.getSimpleName());
 	}
 
 	/**
@@ -68,6 +72,7 @@ public final class CacheApiSettings {
 
 		CacheProvider provider = providers.get(clazz);
 		if (provider == null) {
+			log.trace("Xanthic: Constructing lazily registered cache provider {}...", clazz.getSimpleName());
 			provider = clazz.getDeclaredConstructor().newInstance();
 			providers.put(clazz, provider);
 		}
@@ -88,8 +93,13 @@ public final class CacheApiSettings {
 	 * @throws NullPointerException if cacheProviderClass is null
 	 */
 	public void registerCacheProvider(@NonNull Class<? extends CacheProvider> cacheProviderClass, @Nullable CacheProvider cacheProvider) {
-		providers.put(cacheProviderClass, cacheProvider);
-		defaultCacheProvider.compareAndSet(null, cacheProviderClass);
+		if (providers.put(cacheProviderClass, cacheProvider) == null) {
+			log.trace("Xanthic: Initially registered cache provider {}", cacheProviderClass.getCanonicalName());
+		}
+
+		if (defaultCacheProvider.compareAndSet(null, cacheProviderClass)) {
+			log.info("Xanthic: Automatically set default cache provider to {}.", cacheProviderClass.getSimpleName());
+		}
 	}
 
 	/**
@@ -110,10 +120,14 @@ public final class CacheApiSettings {
 	}
 
 	private static void populateProviders(CacheApiSettings cacheApiSettings) {
+		log.debug("Xanthic: Registering canonical cache providers from the classpath...");
+
+		AtomicInteger registered = new AtomicInteger();
 		Consumer<String> loadImpl = (providerClass) -> {
 			try {
 				Class<? extends CacheProvider> clazz = Class.forName(providerClass).asSubclass(CacheProvider.class);
 				cacheApiSettings.registerCacheProvider(clazz, null); // lazy, init if needed
+				registered.incrementAndGet();
 			} catch (Exception ignored) {
 			}
 		};
@@ -126,5 +140,7 @@ public final class CacheApiSettings {
 		loadImpl.accept("io.github.xanthic.cache.provider.expiringmap.ExpiringMapProvider");
 		loadImpl.accept("io.github.xanthic.cache.provider.guava.GuavaProvider");
 		loadImpl.accept("io.github.xanthic.cache.provider.ehcache.EhcacheProvider");
+
+		log.debug("Xanthic: Loaded {} canonical cache provider(s) on settings construction!", registered.get());
 	}
 }
