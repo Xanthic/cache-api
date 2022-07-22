@@ -4,6 +4,7 @@ include(
     ":bom",
     ":api",
     ":core",
+    ":kotlin",
     ":provider-androidx",
     ":provider-cache2k",
     ":provider-caffeine",
@@ -17,6 +18,7 @@ include(
 project(":bom").name = "cache-bom"
 project(":api").name = "cache-api"
 project(":core").name = "cache-core"
+project(":kotlin").name = "cache-kotlin"
 project(":provider-androidx").name = "cache-provider-androidx"
 project(":provider-cache2k").name = "cache-provider-cache2k"
 project(":provider-caffeine").name = "cache-provider-caffeine"
