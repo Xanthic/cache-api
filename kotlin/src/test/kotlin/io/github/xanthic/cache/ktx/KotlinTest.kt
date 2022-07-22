@@ -10,9 +10,9 @@ internal class KotlinTest {
     @Test
     fun buildTest() {
         val cache = createCache<String, Int> {
-            maxSize = 69L
+            maxSize = 69
             expiryType = ExpiryType.POST_ACCESS
-            expiryTime = Duration.ofMillis(420L)
+            expiryTime = Duration.ofMillis(420)
             removalListener { key, value, cause ->
                 if (cause.isEviction) {
                     println("evicted: $key:$value")
