@@ -1,30 +1,19 @@
 plugins {
-    id("signing")
-    id("maven-publish")
-    id("io.github.gradlebom.generator-plugin") version "1.0.0.Final"
+    `java-platform`
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "maven"
-            url = uri(project.mavenRepositoryUrl)
-            credentials {
-                username = project.mavenRepositoryUsername
-                password = project.mavenRepositoryPassword
-            }
-        }
+dependencies {
+    constraints {
+        api(project(":cache-api"))
+        api(project(":cache-core"))
+        api(project(":cache-kotlin"))
+        api(project(":cache-provider-androidx"))
+        api(project(":cache-provider-cache2k"))
+        api(project(":cache-provider-caffeine"))
+        api(project(":cache-provider-caffeine3"))
+        api(project(":cache-provider-ehcache"))
+        api(project(":cache-provider-expiringmap"))
+        api(project(":cache-provider-guava"))
+        api(project(":cache-provider-infinispan"))
     }
-
-    publications {
-        create<MavenPublication>("main") {
-            artifactId = "cache-bom"
-            pom.default()
-        }
-    }
-}
-
-signing {
-    useGpgCmd()
-    sign(publishing.publications["main"])
 }
