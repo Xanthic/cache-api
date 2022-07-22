@@ -63,6 +63,8 @@ Here, the default provider will be used as `CacheBuilder#provider(CacheProvider)
 
 Aside: the `removalListener` in the example above technically has no effect, but is included for illustration.
 
+Note: Kotlin users can enjoy an [even cleaner](kotlin/src/test/kotlin/io/github/xanthic/cache/ktx/KotlinTest.kt) syntax via the extensions module!
+
 ## WIP
 
 This API is still in alpha development stage. The current TODO list includes:

@@ -10,7 +10,6 @@ internal class KotlinTest {
     @Test
     fun buildTest() {
         val cache = createCache<String, Int> {
-            provider = null
             maxSize = 69L
             expiryType = ExpiryType.POST_ACCESS
             expiryTime = Duration.ofMillis(420L)
@@ -19,6 +18,7 @@ internal class KotlinTest {
                     println("evicted: $key:$value")
                 }
             }
+            executor = null // unnecessary, but demonstrates nullability
         }
 
         assertNotNull(cache)
