@@ -6,6 +6,7 @@ dependencies {
     constraints {
         api(project(":cache-api"))
         api(project(":cache-core"))
+        api(project(":cache-kotlin"))
         api(project(":cache-provider-androidx"))
         api(project(":cache-provider-cache2k"))
         api(project(":cache-provider-caffeine"))
