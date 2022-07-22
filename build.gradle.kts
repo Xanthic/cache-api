@@ -20,7 +20,9 @@ subprojects {
     apply(plugin = "signing")
     apply(plugin = "maven-publish")
 
-    if (project.name != "cache-bom") {
+    if (project.name == "cache-bom") {
+        apply(plugin = "java-platform")
+    } else {
         apply(plugin = "java-library")
         apply(plugin = "io.freefair.lombok")
 
@@ -81,8 +83,6 @@ subprojects {
                 useJUnitPlatform()
             }
         }
-    } else {
-        apply(plugin = "java-platform")
     }
 
     publishing {
