@@ -1,9 +1,9 @@
 // Plugins
 plugins {
+    `java-library`
     signing
     `maven-publish`
-    `java-library`
-    id("io.freefair.lombok") version "6.5.0.3"
+    id("io.freefair.lombok") version "6.5.0.3" apply false
 }
 
 allprojects {
@@ -16,14 +16,15 @@ allprojects {
     version = "1.0.0-SNAPSHOT"
 }
 
-subprojects.filter { it.name != "cache-bom" }.forEach { project ->
-    project.run {
-        apply(plugin = "signing")
-        apply(plugin = "maven-publish")
+subprojects {
+    apply(plugin = "signing")
+    apply(plugin = "maven-publish")
+
+    if (project.name != "cache-bom") {
         apply(plugin = "java-library")
         apply(plugin = "io.freefair.lombok")
 
-        lombok {
+        extensions.configure(io.freefair.gradle.plugins.lombok.LombokExtension::class.java) {
             version.set("1.18.24")
             disableConfig.set(true)
         }
@@ -47,31 +48,6 @@ subprojects.filter { it.name != "cache-bom" }.forEach { project ->
             // logging and tests
             api(group = "org.slf4j", name = "slf4j-api", version = "1.7.36")
             testImplementation(group = "org.slf4j", name = "slf4j-simple", version = "1.7.36")
-        }
-
-        publishing {
-            repositories {
-                maven {
-                    name = "maven"
-                    url = uri(project.mavenRepositoryUrl)
-                    credentials {
-                        username = project.mavenRepositoryUsername
-                        password = project.mavenRepositoryPassword
-                    }
-                }
-            }
-
-            publications {
-                create<MavenPublication>("main") {
-                    from(components["java"])
-                    pom.default()
-                }
-            }
-        }
-
-        signing {
-            useGpgCmd()
-            sign(publishing.publications["main"])
         }
 
         tasks {
@@ -105,5 +81,38 @@ subprojects.filter { it.name != "cache-bom" }.forEach { project ->
                 useJUnitPlatform()
             }
         }
+    } else {
+        apply(plugin = "java-platform")
+    }
+
+    publishing {
+        repositories {
+            maven {
+                name = "maven"
+                url = uri(project.mavenRepositoryUrl)
+                credentials {
+                    username = project.mavenRepositoryUsername
+                    password = project.mavenRepositoryPassword
+                }
+            }
+        }
+
+        publishing {
+            publications {
+                create<MavenPublication>("main") {
+                    if (project.name == "cache-bom") {
+                        from(components["javaPlatform"])
+                    } else {
+                        from(components["java"])
+                    }
+                    pom.default()
+                }
+            }
+        }
+    }
+
+    signing {
+        useGpgCmd()
+        sign(publishing.publications["main"])
     }
 }
