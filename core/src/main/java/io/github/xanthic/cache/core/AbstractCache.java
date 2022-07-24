@@ -18,6 +18,8 @@ import java.util.function.Function;
  * Subclasses ought to employ the same degree of locking for correctness.
  * <p>
  * Avoid this abstraction if the backing cache provider already provides an implementation for these methods.
+ * <p>
+ * Does not support null values.
  *
  * @param <K> The type of keys that form the cache
  * @param <V> The type of values contained in the cache
@@ -69,6 +71,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
 	@Override
 	public boolean replace(K key, V oldValue, V newValue) {
+		if (oldValue == null) return false;
 		synchronized (getLock()) {
 			if (Objects.equals(oldValue, this.get(key))) {
 				this.put(key, newValue);
