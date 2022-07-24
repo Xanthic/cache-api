@@ -3,6 +3,9 @@ package io.github.xanthic.cache.provider.ehcache;
 import io.github.xanthic.cache.core.AbstractCache;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -52,6 +55,12 @@ class EhcacheDelegate<K, V> extends AbstractCache<K, V> {
 		return (V) cache.putIfAbsent(key, value);
 	}
 
+	@Override
+	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
+		cache.putAll(map);
+	}
+
+	@NotNull
 	@Override
 	protected Object getLock() {
 		return this.cache;

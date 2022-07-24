@@ -6,6 +6,7 @@ import lombok.Value;
 import org.cache2k.Cache;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.function.Function;
 
 @Value
@@ -42,4 +43,10 @@ class Cache2kDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
 	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
 		return cache.computeIfAbsent(key, computeFunc);
 	}
+
+	@Override
+	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
+		cache.putAll(map);
+	}
+
 }
