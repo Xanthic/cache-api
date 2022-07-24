@@ -3,6 +3,7 @@ package io.github.xanthic.cache.core;
 import io.github.xanthic.cache.api.Cache;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -54,6 +55,27 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 			this.put(key, merged);
 			return merged;
 		}
+	}
+
+	@Override
+	public boolean replace(K key, V value) {
+		synchronized (getLock()) {
+			V old = this.get(key);
+			if (old == null) return false;
+			put(key, value);
+			return true;
+		}
+	}
+
+	@Override
+	public boolean replace(K key, V oldValue, V newValue) {
+		synchronized (getLock()) {
+			if (Objects.equals(oldValue, this.get(key))) {
+				this.put(key, newValue);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@NotNull

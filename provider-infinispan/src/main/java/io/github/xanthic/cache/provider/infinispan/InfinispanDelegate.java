@@ -53,6 +53,16 @@ class InfinispanDelegate<K, V> implements Cache<K, V> {
 	}
 
 	@Override
+	public boolean replace(K key, V value) {
+		return cache.replace(key, value) != null;
+	}
+
+	@Override
+	public boolean replace(K key, V oldValue, V newValue) {
+		return cache.replace(key, oldValue, newValue);
+	}
+
+	@Override
 	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
 		cache.putAll(map);
 	}

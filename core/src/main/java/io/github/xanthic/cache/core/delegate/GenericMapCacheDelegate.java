@@ -63,6 +63,16 @@ public class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
 	}
 
 	@Override
+	public boolean replace(K key, V value) {
+		return map.replace(key, value) != null;
+	}
+
+	@Override
+	public boolean replace(K key, V oldValue, V newValue) {
+		return map.replace(key, oldValue, newValue);
+	}
+
+	@Override
 	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
 		this.map.putAll(map);
 	}

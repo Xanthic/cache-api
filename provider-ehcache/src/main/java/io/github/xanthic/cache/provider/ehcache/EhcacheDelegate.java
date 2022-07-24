@@ -60,6 +60,16 @@ class EhcacheDelegate<K, V> extends AbstractCache<K, V> {
 		cache.putAll(map);
 	}
 
+	@Override
+	public boolean replace(K key, V value) {
+		return cache.replace(key, value) != null;
+	}
+
+	@Override
+	public boolean replace(K key, V oldValue, V newValue) {
+		return cache.replace(key, oldValue, newValue);
+	}
+
 	@NotNull
 	@Override
 	protected Object getLock() {
