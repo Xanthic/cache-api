@@ -14,6 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,7 +30,7 @@ public abstract class ProviderTestBase {
 	protected final CacheProvider provider;
 
 	@Test
-	@DisplayName("Tests cache get, put, putIfAbsent, and clear")
+	@DisplayName("Tests cache get, put, putIfAbsent, clear, and putAll")
 	public void putGetClearTest() {
 		// Build cache
 		Cache<String, Integer> cache = build(null);
@@ -44,6 +46,16 @@ public abstract class ProviderTestBase {
 		// Test clear
 		cache.clear();
 		Assertions.assertNull(cache.get("4/20"));
+
+		// Test putAll
+		Map<String, Integer> m = new HashMap<>();
+		for (int i = 0; i < 4; i++) {
+			m.put(String.valueOf(i), i);
+		}
+		cache.putAll(m);
+		for (int i = 0; i < 4; i++) {
+			Assertions.assertEquals(i, m.get(String.valueOf(i)));
+		}
 	}
 
 	@Test
