@@ -43,6 +43,11 @@ class InfinispanDelegate<K, V> implements Cache<K, V> {
 	}
 
 	@Override
+	public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+		return cache.computeIfPresent(key, computeFunc);
+	}
+
+	@Override
 	public V putIfAbsent(K key, V value) {
 		return cache.putIfAbsent(key, value);
 	}

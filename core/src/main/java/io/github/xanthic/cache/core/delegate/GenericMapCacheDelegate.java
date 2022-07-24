@@ -38,6 +38,11 @@ public class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
 	}
 
 	@Override
+	public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+		return map.computeIfPresent(key, computeFunc);
+	}
+
+	@Override
 	public V remove(K key) {
 		return map.remove(key);
 	}

@@ -35,6 +35,23 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 	}
 
 	@Override
+	public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+		synchronized (getLock()) {
+			V oldValue = this.get(key);
+			if (oldValue != null) {
+				V newValue = computeFunc.apply(key, oldValue);
+				if (newValue != null) {
+					this.put(key, newValue);
+					return newValue;
+				} else {
+					this.remove(key);
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public V putIfAbsent(K key, V value) {
 		synchronized (getLock()) {
 			V old = this.get(key);

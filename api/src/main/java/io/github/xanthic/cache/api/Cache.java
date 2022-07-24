@@ -79,6 +79,18 @@ public interface Cache<K, V> {
 	V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc);
 
 	/**
+	 * Computes a new value for a specific key, if a mapping already existed.
+	 * <p>
+	 * If the compute function yields null, the mapping should be removed.
+	 *
+	 * @param key         the key whose mapping should be updated
+	 * @param computeFunc the function to compute the new value for an already existing mapping
+	 * @return the new value associated with the key, or null if none
+	 * @throws NullPointerException if the specified key is null and this cache does not support null keys, or the compute function is null
+	 */
+	V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> computeFunc);
+
+	/**
 	 * Creates a mapping from the specified key to the specified value,
 	 * if no mapping for the key already existed.
 	 *
