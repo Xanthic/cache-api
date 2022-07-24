@@ -61,4 +61,9 @@ public class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
 	public V merge(K key, V value, @NotNull BiFunction<V, V, V> mergeFunc) {
 		return map.merge(key, value, mergeFunc);
 	}
+
+	@Override
+	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
+		this.map.putAll(map);
+	}
 }

@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.function.Function;
 
 @Value
@@ -39,5 +40,10 @@ class GuavaDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
 	public long size() {
 		cache.cleanUp();
 		return cache.size();
+	}
+
+	@Override
+	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
+		cache.putAll(map);
 	}
 }

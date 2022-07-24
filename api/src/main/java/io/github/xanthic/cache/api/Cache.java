@@ -3,6 +3,7 @@ package io.github.xanthic.cache.api;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -99,5 +100,16 @@ public interface Cache<K, V> {
 	 * @throws NullPointerException if the specified key is null and this cache does not support null keys or the value or mergeFunc is null
 	 */
 	V merge(K key, V value, @NotNull BiFunction<V, V, V> mergeFunc);
+
+	/**
+	 * Copies all of the mappings from the specified map to this cache.
+	 *
+	 * @param map the map whose entries should be added to this cache
+	 * @throws NullPointerException if the specified map is null, or if this cache does not permit null keys or values, and the specified map contains null keys or values
+	 * @implNote There is no behavior guarantee when there are concurrent updates to the map
+	 */
+	default void putAll(@NotNull Map<? extends K, ? extends V> map) {
+		map.forEach(this::put);
+	}
 
 }

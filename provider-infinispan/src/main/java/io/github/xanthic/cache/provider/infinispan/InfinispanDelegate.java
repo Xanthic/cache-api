@@ -4,6 +4,7 @@ import io.github.xanthic.cache.api.Cache;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -49,5 +50,10 @@ class InfinispanDelegate<K, V> implements Cache<K, V> {
 	@Override
 	public V merge(K key, V value, @NotNull BiFunction<V, V, V> mergeFunc) {
 		return cache.merge(key, value, mergeFunc);
+	}
+
+	@Override
+	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
+		cache.putAll(map);
 	}
 }
