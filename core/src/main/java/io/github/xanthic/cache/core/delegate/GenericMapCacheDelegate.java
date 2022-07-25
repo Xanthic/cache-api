@@ -5,6 +5,7 @@ import io.github.xanthic.cache.api.CacheProvider;
 import io.github.xanthic.cache.api.ICacheSpec;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -32,9 +33,20 @@ public class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
 		return map.put(key, value);
 	}
 
+	@Nullable
+	@Override
+	public V compute(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+		return map.compute(key, computeFunc);
+	}
+
 	@Override
 	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
 		return map.computeIfAbsent(key, computeFunc);
+	}
+
+	@Override
+	public V computeIfPresent(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+		return map.computeIfPresent(key, computeFunc);
 	}
 
 	@Override

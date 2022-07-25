@@ -68,6 +68,18 @@ public interface Cache<K, V> {
 	long size();
 
 	/**
+	 * Computes what value should be associated with the specified key, or null if the mapping should be removed.
+	 *
+	 * @param key         the key with which the specified value is to be associated
+	 * @param computeFunc the function to compute a value
+	 * @return the new value associated with the specified key, or null if none
+	 * @throws NullPointerException if the specified key is null and this cache does not support null keys, or the compute function is null
+	 * @implNote atomicity is dependent on provider characteristics
+	 */
+	@Nullable
+	V compute(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc);
+
+	/**
 	 * Obtains the value currently associated with the specified key,
 	 * or atomically stores the computed value if no prior mapping existed.
 	 *
@@ -77,6 +89,19 @@ public interface Cache<K, V> {
 	 * @throws NullPointerException if the specified key is null and this cache does not permit null keys, or the compute function is null
 	 */
 	V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc);
+
+	/**
+	 * Computes a new value for a specific key, if a mapping already existed.
+	 * <p>
+	 * If the compute function yields null, the mapping should be removed.
+	 *
+	 * @param key         the key whose mapping should be updated
+	 * @param computeFunc the function to compute the new value for an already existing mapping
+	 * @return the new value associated with the key, or null if none
+	 * @throws NullPointerException if the specified key is null and this cache does not support null keys, or the compute function is null
+	 */
+	@Nullable
+	V computeIfPresent(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc);
 
 	/**
 	 * Creates a mapping from the specified key to the specified value,

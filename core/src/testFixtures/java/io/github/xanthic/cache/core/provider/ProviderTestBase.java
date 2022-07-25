@@ -59,7 +59,7 @@ public abstract class ProviderTestBase {
 	}
 
 	@Test
-	@DisplayName("Tests cache computeIfAbsent, merge, and remove")
+	@DisplayName("Tests cache compute, computeIfAbsent, computeIfPresent, merge, and remove")
 	public void computeMergeRemoveTest() {
 		// Build cache
 		Cache<String, Integer> cache = build(null);
@@ -71,9 +71,30 @@ public abstract class ProviderTestBase {
 		// Test merge
 		Assertions.assertEquals(420 + 69, cache.merge("4/20", 69, Integer::sum));
 
+		// Test computeIfPresent
+		Assertions.assertNull(cache.computeIfPresent("", (k, v) -> 0));
+		Assertions.assertNull(cache.put("", 0));
+		Assertions.assertNull(cache.computeIfPresent("", (k, v) -> null));
+		Assertions.assertNull(cache.get(""));
+
+		Assertions.assertEquals(420 + 69 + 1, cache.computeIfPresent("4/20", (k, v) -> v + 1));
+
 		// Test remove
-		Assertions.assertEquals(420 + 69, cache.remove("4/20"));
+		Assertions.assertEquals(420 + 70, cache.remove("4/20"));
 		Assertions.assertNull(cache.get("4/20"));
+
+		// Test compute
+		Assertions.assertNull(cache.compute("a", (k, v) -> null));
+		Assertions.assertNull(cache.get("a"));
+
+		Assertions.assertEquals(9, cache.compute("a", (k, v) -> 9));
+		Assertions.assertEquals(9, cache.get("a"));
+
+		Assertions.assertEquals(10, cache.compute("a", (k, v) -> v + 1));
+		Assertions.assertEquals(10, cache.get("a"));
+
+		Assertions.assertNull(cache.compute("a", (k, v) -> null));
+		Assertions.assertNull(cache.get("a"));
 	}
 
 	@Test
