@@ -1,5 +1,6 @@
 package io.github.xanthic.cache.provider.caffeine;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import io.github.xanthic.cache.core.delegate.GenericMapCacheDelegate;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -11,9 +12,9 @@ import java.util.function.Function;
 @Value
 @EqualsAndHashCode(callSuper = false)
 class CaffeineDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
-	com.github.benmanes.caffeine.cache.Cache<K, V> cache;
+	Cache<K, V> cache;
 
-	public CaffeineDelegate(com.github.benmanes.caffeine.cache.Cache<K, V> cache) {
+	public CaffeineDelegate(Cache<K, V> cache) {
 		super(cache.asMap());
 		this.cache = cache;
 	}
