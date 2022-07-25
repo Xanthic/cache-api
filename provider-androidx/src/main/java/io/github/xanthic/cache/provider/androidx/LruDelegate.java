@@ -16,13 +16,12 @@ class LruDelegate<K, V> extends AbstractCache<K, V> {
 
 	@Override
 	public V get(K key) {
-		// note: underlying reads are synchronized on same object
+		// note: underlying operations are synchronized on same object
 		return cache.get(key);
 	}
 
 	@Override
 	public V put(K key, V value) {
-		// note: underlying writes are synchronized on same object
 		return cache.put(key, value);
 	}
 
