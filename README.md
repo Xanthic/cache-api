@@ -1,5 +1,10 @@
 <img src=".github/logo.png?raw=true" alt="Xanthic logo" width="500" />
 
+[![Code Quality](https://www.codefactor.io/repository/github/xanthic/cache-api/badge)](https://www.codefactor.io/repository/github/xanthic/cache-api)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Xanthic_cache-api&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Xanthic_cache-api)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Xanthic_cache-api&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Xanthic_cache-api)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Xanthic_cache-api&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Xanthic_cache-api)
+
 # Cache API
 
 This library provides a simplified interface for interacting with in-memory cache implementations on the JVM.
