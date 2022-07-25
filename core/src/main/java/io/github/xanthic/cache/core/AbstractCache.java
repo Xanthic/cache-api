@@ -2,6 +2,7 @@ package io.github.xanthic.cache.core;
 
 import io.github.xanthic.cache.api.Cache;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -34,8 +35,24 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 		}
 	}
 
+	@Nullable
 	@Override
-	public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+	public V compute(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+		synchronized (getLock()) {
+			V oldValue = this.get(key);
+			V newValue = computeFunc.apply(key, oldValue);
+			if (newValue != null) {
+				this.put(key, newValue);
+				return newValue;
+			} else if (oldValue != null) {
+				this.remove(key);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public V computeIfPresent(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
 		synchronized (getLock()) {
 			V oldValue = this.get(key);
 			if (oldValue != null) {

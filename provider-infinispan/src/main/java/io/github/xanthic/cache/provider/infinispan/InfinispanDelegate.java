@@ -3,6 +3,7 @@ package io.github.xanthic.cache.provider.infinispan;
 import io.github.xanthic.cache.api.Cache;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -37,13 +38,19 @@ class InfinispanDelegate<K, V> implements Cache<K, V> {
 		return cache.size();
 	}
 
+	@Nullable
+	@Override
+	public V compute(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+		return cache.compute(key, computeFunc);
+	}
+
 	@Override
 	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
 		return cache.computeIfAbsent(key, computeFunc);
 	}
 
 	@Override
-	public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+	public V computeIfPresent(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
 		return cache.computeIfPresent(key, computeFunc);
 	}
 
