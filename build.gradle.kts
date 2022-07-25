@@ -4,6 +4,7 @@ plugins {
     signing
     `maven-publish`
     id("io.freefair.lombok") version "6.5.0.3" apply false
+    jacoco
 }
 
 allprojects {
@@ -25,10 +26,15 @@ subprojects {
     } else {
         apply(plugin = "java-library")
         apply(plugin = "io.freefair.lombok")
+        apply(plugin = "jacoco")
 
         extensions.configure(io.freefair.gradle.plugins.lombok.LombokExtension::class.java) {
             version.set("1.18.24")
             disableConfig.set(true)
+        }
+
+        extensions.configure(JacocoPluginExtension::class.java) {
+            toolVersion = "0.8.8"
         }
 
         java {
@@ -81,6 +87,12 @@ subprojects {
             // testing
             test {
                 useJUnitPlatform()
+                finalizedBy(jacocoTestReport)
+            }
+
+            jacocoTestReport {
+                dependsOn(test)
+                reports.xml.required.set(true)
             }
         }
     }
