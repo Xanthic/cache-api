@@ -115,10 +115,8 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 		final AtomicReference<Future<?>> futRef = new AtomicReference<>();
 		final Future<?> future = exec.schedule(() -> {
 			synchronized (getLock()) {
-				if (!Thread.interrupted()) {
-					if (value == cache.get(key))
-						cache.remove(key);
-				}
+				if (!Thread.interrupted() && value == cache.get(key))
+					cache.remove(key);
 			}
 			tracker.remove(entry, futRef.get());
 			futRef.lazySet(null);
