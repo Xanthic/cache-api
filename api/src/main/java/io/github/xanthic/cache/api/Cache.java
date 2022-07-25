@@ -102,6 +102,27 @@ public interface Cache<K, V> {
 	V merge(K key, V value, @NotNull BiFunction<V, V, V> mergeFunc);
 
 	/**
+	 * Replaces the entry for the specified key only if it is currently mapped to some value.
+	 *
+	 * @param key   the key whose mapped value should be updated
+	 * @param value the value to be associated with the specified key
+	 * @return whether a replacement occurred (a prior mapping must have existed to return true)
+	 * @throws NullPointerException if the specified key or value is null, and this cache does not permit null keys or values
+	 */
+	boolean replace(K key, V value);
+
+	/**
+	 * Replaces the value for the specified key only if it is currently mapped to the specified old value.
+	 *
+	 * @param key      the key whose mapped value should be updated
+	 * @param oldValue the value expected to be already associated with the specified key
+	 * @param newValue the value to be newly associated with the specified key
+	 * @return whether a replacement occurred
+	 * @throws NullPointerException if a specified key or newValue is null, and this cache does not permit null keys or values
+	 */
+	boolean replace(K key, V oldValue, V newValue);
+
+	/**
 	 * Copies all of the mappings from the specified map to this cache.
 	 *
 	 * @param map the map whose entries should be added to this cache

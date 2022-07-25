@@ -77,6 +77,37 @@ public abstract class ProviderTestBase {
 	}
 
 	@Test
+	@DisplayName("Tests cache replace entry")
+	public void replaceTest() {
+		// Build cache
+		Cache<String, Integer> cache = build(null);
+
+		// Ensure no replacements occur when cache is empty
+		Assertions.assertFalse(cache.replace("123", 456));
+		Assertions.assertFalse(cache.replace("123", 456, 789));
+		Assertions.assertNull(cache.get("123"));
+
+		// Populate cache
+		for (int i = 0; i < 4; i++) {
+			cache.put(String.valueOf(i), i);
+		}
+
+		// Test replace
+		Assertions.assertTrue(cache.replace("1", -1));
+		Assertions.assertEquals(-1, cache.get("1"));
+
+		Assertions.assertTrue(cache.replace("2", 2, -2));
+		Assertions.assertEquals(-2, cache.get("2"));
+
+		Assertions.assertFalse(cache.replace("3", 2, -3));
+		Assertions.assertFalse(cache.replace("3", -2, -3));
+		Assertions.assertEquals(3, cache.get("3"));
+
+		Assertions.assertFalse(cache.replace("9", -9));
+		Assertions.assertNull(cache.get("9"));
+	}
+
+	@Test
 	@DisplayName("Test that cache size constraint is respected")
 	public void sizeEvictionTest() {
 		// Build cache

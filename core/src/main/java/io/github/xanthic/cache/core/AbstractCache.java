@@ -3,6 +3,7 @@ package io.github.xanthic.cache.core;
 import io.github.xanthic.cache.api.Cache;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -17,6 +18,8 @@ import java.util.function.Function;
  * Subclasses ought to employ the same degree of locking for correctness.
  * <p>
  * Avoid this abstraction if the backing cache provider already provides an implementation for these methods.
+ * <p>
+ * Does not support null values.
  *
  * @param <K> The type of keys that form the cache
  * @param <V> The type of values contained in the cache
@@ -54,6 +57,28 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 			this.put(key, merged);
 			return merged;
 		}
+	}
+
+	@Override
+	public boolean replace(K key, V value) {
+		synchronized (getLock()) {
+			V old = this.get(key);
+			if (old == null) return false;
+			put(key, value);
+			return true;
+		}
+	}
+
+	@Override
+	public boolean replace(K key, V oldValue, V newValue) {
+		if (oldValue == null) return false;
+		synchronized (getLock()) {
+			if (Objects.equals(oldValue, this.get(key))) {
+				this.put(key, newValue);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@NotNull
