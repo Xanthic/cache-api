@@ -16,6 +16,7 @@ class LruDelegate<K, V> extends AbstractCache<K, V> {
 
 	@Override
 	public V get(K key) {
+		// note: underlying operations are synchronized on same object
 		return cache.get(key);
 	}
 
