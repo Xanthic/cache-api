@@ -24,33 +24,33 @@ public class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
 	private final Map<K, V> map;
 
 	@Override
-	public V get(K key) {
+	public V get(@NotNull K key) {
 		return map.get(key);
 	}
 
 	@Override
-	public V put(K key, V value) {
+	public V put(@NotNull K key, @NotNull V value) {
 		return map.put(key, value);
 	}
 
 	@Nullable
 	@Override
-	public V compute(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+	public V compute(@NotNull K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
 		return map.compute(key, computeFunc);
 	}
 
 	@Override
-	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
+	public V computeIfAbsent(@NotNull K key, @NotNull Function<K, V> computeFunc) {
 		return map.computeIfAbsent(key, computeFunc);
 	}
 
 	@Override
-	public V computeIfPresent(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+	public V computeIfPresent(@NotNull K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
 		return map.computeIfPresent(key, computeFunc);
 	}
 
 	@Override
-	public V remove(K key) {
+	public V remove(@NotNull K key) {
 		return map.remove(key);
 	}
 
@@ -65,22 +65,22 @@ public class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public V putIfAbsent(K key, V value) {
+	public V putIfAbsent(@NotNull K key, @NotNull V value) {
 		return map.putIfAbsent(key, value);
 	}
 
 	@Override
-	public V merge(K key, V value, @NotNull BiFunction<V, V, V> mergeFunc) {
+	public V merge(@NotNull K key, @NotNull V value, @NotNull BiFunction<V, V, V> mergeFunc) {
 		return map.merge(key, value, mergeFunc);
 	}
 
 	@Override
-	public boolean replace(K key, V value) {
+	public boolean replace(@NotNull K key, @NotNull V value) {
 		return map.replace(key, value) != null;
 	}
 
 	@Override
-	public boolean replace(K key, V oldValue, V newValue) {
+	public boolean replace(@NotNull K key, @NotNull V oldValue, @NotNull V newValue) {
 		return map.replace(key, oldValue, newValue);
 	}
 

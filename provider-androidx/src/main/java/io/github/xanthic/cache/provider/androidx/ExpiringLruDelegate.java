@@ -60,7 +60,7 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 	};
 
 	@Override
-	public V get(K key) {
+	public V get(@NotNull K key) {
 		synchronized (getLock()) {
 			V v = cache.get(key);
 			if (type == ExpiryType.POST_ACCESS) start(key, v);
@@ -69,7 +69,7 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 	}
 
 	@Override
-	public V put(K key, V value) {
+	public V put(@NotNull K key, @NotNull V value) {
 		synchronized (getLock()) {
 			V prev = cache.put(key, value);
 			start(key, value);
@@ -80,7 +80,7 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 	}
 
 	@Override
-	public V remove(K key) {
+	public V remove(@NotNull K key) {
 		synchronized (getLock()) {
 			cancelIfRunning(key, cache.get(key)); // mapping is being removed already
 			return cache.remove(key);

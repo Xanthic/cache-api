@@ -13,7 +13,7 @@ import java.util.function.Function;
  * This interface can be thought as a superset of {@link java.util.Map};
  * less functionality is required here to achieve greater compatibility.
  * <p>
- * There cannot be duplicate keys and null values are not necessarily supported.
+ * There cannot be duplicate keys, and null keys or values are not permitted.
  * <p>
  * Instances should be thread-safe, but no guarantee is made whether
  * this is achieved through fine-grained locking or blunt synchronization.
@@ -30,10 +30,10 @@ public interface Cache<K, V> {
 	 *
 	 * @param key the key whose mapped value should be queried
 	 * @return the value associated with the key in the cache, or null if no such mapping was found
-	 * @throws NullPointerException if the specified key is null and this implementation does not permit null keys
+	 * @throws NullPointerException if the specified key is null
 	 */
 	@Nullable
-	V get(K key);
+	V get(@NotNull K key);
 
 	/**
 	 * Associates the specified key with the specified value,
@@ -42,20 +42,20 @@ public interface Cache<K, V> {
 	 * @param key   the key whose mapping should be created or updated
 	 * @param value the value to be associated with the specified key
 	 * @return the previous value associated with the key, or null if no prior mapping existed
-	 * @throws NullPointerException if the specified key or value is null and this cache does not permit null keys or values
+	 * @throws NullPointerException if the specified key or value is null
 	 */
 	@Nullable
-	V put(K key, V value);
+	V put(@NotNull K key, @NotNull V value);
 
 	/**
 	 * Deletes any mapping that may exist for the specified key.
 	 *
 	 * @param key the key whose mapping should be deleted
 	 * @return the value in the removed mapping, or null if no mapping existed
-	 * @throws NullPointerException if the specified key is null and this cache does not permit null keys
+	 * @throws NullPointerException if the specified key is null
 	 */
 	@Nullable
-	V remove(K key);
+	V remove(@NotNull K key);
 
 	/**
 	 * Removes all entries from the cache.
@@ -73,11 +73,11 @@ public interface Cache<K, V> {
 	 * @param key         the key with which the specified value is to be associated
 	 * @param computeFunc the function to compute a value
 	 * @return the new value associated with the specified key, or null if none
-	 * @throws NullPointerException if the specified key is null and this cache does not support null keys, or the compute function is null
+	 * @throws NullPointerException if the specified key is null or the compute function is null
 	 * @implNote atomicity is dependent on provider characteristics
 	 */
 	@Nullable
-	V compute(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc);
+	V compute(@NotNull K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc);
 
 	/**
 	 * Obtains the value currently associated with the specified key,
@@ -86,9 +86,9 @@ public interface Cache<K, V> {
 	 * @param key         the key whose mapping should be created or returned
 	 * @param computeFunc the value supplier for a given key, if no mapping already existed
 	 * @return the current (existing or computed) value associated with the key
-	 * @throws NullPointerException if the specified key is null and this cache does not permit null keys, or the compute function is null
+	 * @throws NullPointerException if the specified key is null or the compute function is null
 	 */
-	V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc);
+	V computeIfAbsent(@NotNull K key, @NotNull Function<K, V> computeFunc);
 
 	/**
 	 * Computes a new value for a specific key, if a mapping already existed.
@@ -98,10 +98,10 @@ public interface Cache<K, V> {
 	 * @param key         the key whose mapping should be updated
 	 * @param computeFunc the function to compute the new value for an already existing mapping
 	 * @return the new value associated with the key, or null if none
-	 * @throws NullPointerException if the specified key is null and this cache does not support null keys, or the compute function is null
+	 * @throws NullPointerException if the specified key is null or the compute function is null
 	 */
 	@Nullable
-	V computeIfPresent(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc);
+	V computeIfPresent(@NotNull K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc);
 
 	/**
 	 * Creates a mapping from the specified key to the specified value,
@@ -110,10 +110,10 @@ public interface Cache<K, V> {
 	 * @param key   the key whose mapping should be created or returned
 	 * @param value the value that should be associated with the key if no prior mapping exists
 	 * @return the previous value associated with the key, or null if no mapping already existed
-	 * @throws NullPointerException if the specified key or value is null and this cache does not permit null keys or values
+	 * @throws NullPointerException if the specified key or value is null
 	 */
 	@Nullable
-	V putIfAbsent(K key, V value);
+	V putIfAbsent(@NotNull K key, @NotNull V value);
 
 	/**
 	 * Associates the key with the specified value (or the result of the atomic merge function if a mapping already existed).
@@ -122,9 +122,9 @@ public interface Cache<K, V> {
 	 * @param value     the value to be associated with the key or merged with the existing mapped value
 	 * @param mergeFunc the function that takes the existing value and the new value to compute a merged value
 	 * @return the latest value associated with the specified key
-	 * @throws NullPointerException if the specified key is null and this cache does not support null keys or the value or mergeFunc is null
+	 * @throws NullPointerException if the specified key or the value or mergeFunc is null
 	 */
-	V merge(K key, V value, @NotNull BiFunction<V, V, V> mergeFunc);
+	V merge(@NotNull K key, @NotNull V value, @NotNull BiFunction<V, V, V> mergeFunc);
 
 	/**
 	 * Replaces the entry for the specified key only if it is currently mapped to some value.
@@ -132,9 +132,9 @@ public interface Cache<K, V> {
 	 * @param key   the key whose mapped value should be updated
 	 * @param value the value to be associated with the specified key
 	 * @return whether a replacement occurred (a prior mapping must have existed to return true)
-	 * @throws NullPointerException if the specified key or value is null, and this cache does not permit null keys or values
+	 * @throws NullPointerException if the specified key or value is null
 	 */
-	boolean replace(K key, V value);
+	boolean replace(@NotNull K key, @NotNull V value);
 
 	/**
 	 * Replaces the value for the specified key only if it is currently mapped to the specified old value.
@@ -143,15 +143,15 @@ public interface Cache<K, V> {
 	 * @param oldValue the value expected to be already associated with the specified key
 	 * @param newValue the value to be newly associated with the specified key
 	 * @return whether a replacement occurred
-	 * @throws NullPointerException if a specified key or newValue is null, and this cache does not permit null keys or values
+	 * @throws NullPointerException if a specified key or newValue is null
 	 */
-	boolean replace(K key, V oldValue, V newValue);
+	boolean replace(@NotNull K key, @NotNull V oldValue, @NotNull V newValue);
 
 	/**
 	 * Copies all of the mappings from the specified map to this cache.
 	 *
 	 * @param map the map whose entries should be added to this cache
-	 * @throws NullPointerException if the specified map is null, or if this cache does not permit null keys or values, and the specified map contains null keys or values
+	 * @throws NullPointerException if the map is null, or the specified map contains null keys or values
 	 * @implNote There is no behavior guarantee when there are concurrent updates to the map
 	 */
 	default void putAll(@NotNull Map<? extends K, ? extends V> map) {

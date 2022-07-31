@@ -20,17 +20,17 @@ class Cache2kDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
 	}
 
 	@Override
-	public V get(K key) {
+	public V get(@NotNull K key) {
 		return cache.get(key);
 	}
 
 	@Override
-	public V put(K key, V value) {
+	public V put(@NotNull K key, @NotNull V value) {
 		return cache.peekAndPut(key, value);
 	}
 
 	@Override
-	public V remove(K key) {
+	public V remove(@NotNull K key) {
 		return cache.peekAndRemove(key);
 	}
 
@@ -40,17 +40,17 @@ class Cache2kDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
 	}
 
 	@Override
-	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
+	public V computeIfAbsent(@NotNull K key, @NotNull Function<K, V> computeFunc) {
 		return cache.computeIfAbsent(key, computeFunc);
 	}
 
 	@Override
-	public boolean replace(K key, V value) {
+	public boolean replace(@NotNull K key, @NotNull V value) {
 		return cache.replace(key, value);
 	}
 
 	@Override
-	public boolean replace(K key, V oldValue, V newValue) {
+	public boolean replace(@NotNull K key, @NotNull V oldValue, @NotNull V newValue) {
 		return cache.replaceIfEquals(key, oldValue, newValue);
 	}
 

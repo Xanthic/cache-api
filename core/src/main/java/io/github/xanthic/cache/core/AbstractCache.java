@@ -28,7 +28,7 @@ import java.util.function.Function;
 public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
 	@Override
-	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
+	public V computeIfAbsent(@NotNull K key, @NotNull Function<K, V> computeFunc) {
 		synchronized (getLock()) {
 			V old = this.get(key);
 			if (old != null) return old;
@@ -40,7 +40,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
 	@Nullable
 	@Override
-	public V compute(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+	public V compute(@NotNull K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
 		synchronized (getLock()) {
 			V oldValue = this.get(key);
 			V newValue = computeFunc.apply(key, oldValue);
@@ -55,7 +55,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public V computeIfPresent(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+	public V computeIfPresent(@NotNull K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
 		synchronized (getLock()) {
 			V oldValue = this.get(key);
 			if (oldValue != null) {
@@ -72,7 +72,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public V putIfAbsent(K key, V value) {
+	public V putIfAbsent(@NotNull K key, @NotNull V value) {
 		synchronized (getLock()) {
 			V old = this.get(key);
 			if (old == null) {
@@ -83,7 +83,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public V merge(K key, V value, @NotNull BiFunction<V, V, V> mergeFunc) {
+	public V merge(@NotNull K key, @NotNull V value, @NotNull BiFunction<V, V, V> mergeFunc) {
 		synchronized (getLock()) {
 			V old = putIfAbsent(key, value);
 			if (old == null) return value;
@@ -94,7 +94,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public boolean replace(K key, V value) {
+	public boolean replace(@NotNull K key, @NotNull V value) {
 		synchronized (getLock()) {
 			V old = this.get(key);
 			if (old == null) return false;
@@ -104,7 +104,8 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public boolean replace(K key, V oldValue, V newValue) {
+	public boolean replace(@NotNull K key, @NotNull V oldValue, @NotNull V newValue) {
+		// noinspection ConstantConditions
 		if (oldValue == null) return false;
 		synchronized (getLock()) {
 			if (Objects.equals(oldValue, this.get(key))) {

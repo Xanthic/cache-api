@@ -72,14 +72,16 @@ public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 	 * @return CacheApiSpec
 	 * @throws NoDefaultCacheImplementationException if a provider is not specified and no default provider has been set
 	 * @throws MisconfiguredCacheException           if the cache settings are invalid (e.g., negative max size or expiry time)
+	 * @implNote During the building stage, the provider may not be initialized to a non-null value.
 	 */
 	@NotNull
 	public static <K, V> CacheApiSpec<K, V> process(@NotNull Consumer<CacheApiSpec<K, V>> spec) {
 		CacheApiSpec<K, V> data = new CacheApiSpec<>();
 		spec.accept(data);
 
-		// set / init default cache provider if nothing is set
+		// noinspection ConstantConditions
 		if (data.provider() == null) {
+			// set / init default cache provider if nothing is set
 			data.provider(CacheApiSettings.getInstance().getDefaultCacheProvider());
 			log.debug("No cache provider explicitly specified; cache defaults to {}!", data.provider.getClass().getCanonicalName());
 		}
