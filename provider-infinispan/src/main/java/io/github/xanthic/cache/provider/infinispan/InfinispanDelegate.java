@@ -14,17 +14,17 @@ class InfinispanDelegate<K, V> implements Cache<K, V> {
 	org.infinispan.Cache<K, V> cache;
 
 	@Override
-	public V get(K key) {
+	public V get(@NotNull K key) {
 		return cache.get(key);
 	}
 
 	@Override
-	public V put(K key, V value) {
+	public V put(@NotNull K key, @NotNull V value) {
 		return cache.put(key, value);
 	}
 
 	@Override
-	public V remove(K key) {
+	public V remove(@NotNull K key) {
 		return cache.remove(key);
 	}
 
@@ -40,37 +40,37 @@ class InfinispanDelegate<K, V> implements Cache<K, V> {
 
 	@Nullable
 	@Override
-	public V compute(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+	public V compute(@NotNull K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
 		return cache.compute(key, computeFunc);
 	}
 
 	@Override
-	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
+	public V computeIfAbsent(@NotNull K key, @NotNull Function<K, V> computeFunc) {
 		return cache.computeIfAbsent(key, computeFunc);
 	}
 
 	@Override
-	public V computeIfPresent(K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+	public V computeIfPresent(@NotNull K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
 		return cache.computeIfPresent(key, computeFunc);
 	}
 
 	@Override
-	public V putIfAbsent(K key, V value) {
+	public V putIfAbsent(@NotNull K key, @NotNull V value) {
 		return cache.putIfAbsent(key, value);
 	}
 
 	@Override
-	public V merge(K key, V value, @NotNull BiFunction<V, V, V> mergeFunc) {
+	public V merge(@NotNull K key, @NotNull V value, @NotNull BiFunction<V, V, V> mergeFunc) {
 		return cache.merge(key, value, mergeFunc);
 	}
 
 	@Override
-	public boolean replace(K key, V value) {
+	public boolean replace(@NotNull K key, @NotNull V value) {
 		return cache.replace(key, value) != null;
 	}
 
 	@Override
-	public boolean replace(K key, V oldValue, V newValue) {
+	public boolean replace(@NotNull K key, @NotNull V oldValue, @NotNull V newValue) {
 		return cache.replace(key, oldValue, newValue);
 	}
 
