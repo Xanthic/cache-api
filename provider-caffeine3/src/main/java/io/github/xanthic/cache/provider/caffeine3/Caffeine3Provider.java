@@ -30,7 +30,7 @@ public final class Caffeine3Provider extends AbstractCacheProvider {
 				builder.expireAfterAccess(time);
 		});
 
-		return new CaffeineDelegate<>(builder.build());
+		return new Caffeine3Delegate<>(builder.build());
 	}
 
 	@SuppressWarnings("DuplicatedCode")

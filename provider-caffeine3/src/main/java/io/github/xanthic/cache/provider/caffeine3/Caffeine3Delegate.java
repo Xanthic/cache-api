@@ -11,10 +11,10 @@ import java.util.function.Function;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
-class CaffeineDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
+class Caffeine3Delegate<K, V> extends GenericMapCacheDelegate<K, V> {
 	Cache<K, V> cache;
 
-	public CaffeineDelegate(com.github.benmanes.caffeine.cache.Cache<K, V> cache) {
+	public Caffeine3Delegate(com.github.benmanes.caffeine.cache.Cache<K, V> cache) {
 		super(cache.asMap());
 		this.cache = cache;
 	}
