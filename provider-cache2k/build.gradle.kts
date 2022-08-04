@@ -5,3 +5,10 @@ dependencies {
 
     testImplementation(testFixtures(project(":cache-core")))
 }
+
+publishing.publications.withType<MavenPublication> {
+    pom {
+        name.set("Xanthic - Cache2k Provider Module")
+        description.set("Xanthic Provider dependency for Cache2k")
+    }
+}

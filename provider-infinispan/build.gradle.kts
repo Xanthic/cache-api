@@ -6,3 +6,10 @@ dependencies {
 
     testImplementation(testFixtures(project(":cache-core")))
 }
+
+publishing.publications.withType<MavenPublication> {
+    pom {
+        name.set("Xanthic - Infinispan Provider Module")
+        description.set("Xanthic Provider dependency for Infinispan")
+    }
+}

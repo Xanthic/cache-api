@@ -9,3 +9,10 @@ dependencies {
     testFixturesRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testFixturesImplementation("org.awaitility:awaitility:4.2.0")
 }
+
+publishing.publications.withType<MavenPublication> {
+    pom {
+        name.set("Xanthic - Core Module")
+        description.set("Xanthic Cache Core dependency")
+    }
+}

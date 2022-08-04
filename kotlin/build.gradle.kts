@@ -16,3 +16,10 @@ dependencies {
 tasks.javadocJar {
     from(tasks.dokkaJavadoc)
 }
+
+publishing.publications.withType<MavenPublication> {
+    pom {
+        name.set("Xanthic - KTX Module")
+        description.set("Xanthic Kotlin Extensions dependency")
+    }
+}
