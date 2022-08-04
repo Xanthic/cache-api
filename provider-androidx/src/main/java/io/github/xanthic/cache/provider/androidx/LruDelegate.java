@@ -15,18 +15,18 @@ class LruDelegate<K, V> extends AbstractCache<K, V> {
 	LruCache<K, V> cache;
 
 	@Override
-	public V get(K key) {
+	public V get(@NotNull K key) {
 		// note: underlying operations are synchronized on same object
 		return cache.get(key);
 	}
 
 	@Override
-	public V put(K key, V value) {
+	public V put(@NotNull K key, @NotNull V value) {
 		return cache.put(key, value);
 	}
 
 	@Override
-	public V remove(K key) {
+	public V remove(@NotNull K key) {
 		return cache.remove(key);
 	}
 

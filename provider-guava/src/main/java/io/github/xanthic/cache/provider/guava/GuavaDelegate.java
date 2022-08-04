@@ -21,13 +21,13 @@ class GuavaDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
 	}
 
 	@Override
-	public V get(K key) {
+	public V get(@NotNull K key) {
 		return cache.getIfPresent(key);
 	}
 
 	@Override
 	@SneakyThrows
-	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
+	public V computeIfAbsent(@NotNull K key, @NotNull Function<K, V> computeFunc) {
 		return cache.get(key, () -> computeFunc.apply(key));
 	}
 

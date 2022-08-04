@@ -14,12 +14,12 @@ class EhcacheDelegate<K, V> extends AbstractCache<K, V> {
 	org.ehcache.Cache<Object, Object> cache;
 
 	@Override
-	public V get(K key) {
+	public V get(@NotNull K key) {
 		return (V) cache.get(key);
 	}
 
 	@Override
-	public V put(K key, V value) {
+	public V put(@NotNull K key, @NotNull V value) {
 		synchronized (getLock()) {
 			V old = this.get(key);
 			cache.put(key, value);
@@ -28,7 +28,7 @@ class EhcacheDelegate<K, V> extends AbstractCache<K, V> {
 	}
 
 	@Override
-	public V remove(K key) {
+	public V remove(@NotNull K key) {
 		synchronized (getLock()) {
 			V old = this.get(key);
 			cache.remove(key);
@@ -51,7 +51,7 @@ class EhcacheDelegate<K, V> extends AbstractCache<K, V> {
 	}
 
 	@Override
-	public V putIfAbsent(K key, V value) {
+	public V putIfAbsent(@NotNull K key, @NotNull V value) {
 		return (V) cache.putIfAbsent(key, value);
 	}
 
@@ -61,12 +61,12 @@ class EhcacheDelegate<K, V> extends AbstractCache<K, V> {
 	}
 
 	@Override
-	public boolean replace(K key, V value) {
+	public boolean replace(@NotNull K key, @NotNull V value) {
 		return cache.replace(key, value) != null;
 	}
 
 	@Override
-	public boolean replace(K key, V oldValue, V newValue) {
+	public boolean replace(@NotNull K key, @NotNull V oldValue, @NotNull V newValue) {
 		return cache.replace(key, oldValue, newValue);
 	}
 

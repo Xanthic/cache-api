@@ -34,6 +34,6 @@ public final class ExpiringMapProvider extends AbstractCacheProvider {
 				builder.expirationPolicy(ExpirationPolicy.ACCESSED);
 		});
 
-		return new GenericMapCacheDelegate<>(builder.build());
+		return new ExpiringMapDelegate<>(builder.build());
 	}
 }

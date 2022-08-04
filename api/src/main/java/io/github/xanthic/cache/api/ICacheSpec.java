@@ -1,6 +1,7 @@
 package io.github.xanthic.cache.api;
 
 import io.github.xanthic.cache.api.domain.ExpiryType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
@@ -21,7 +22,7 @@ public interface ICacheSpec<K, V> {
 	 *
 	 * @return the specific provider that should be used to fulfill the desired cache specification
 	 */
-	@Nullable
+	@NotNull
 	CacheProvider provider();
 
 	/**

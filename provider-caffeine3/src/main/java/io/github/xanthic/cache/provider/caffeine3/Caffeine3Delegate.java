@@ -11,21 +11,21 @@ import java.util.function.Function;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
-class CaffeineDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
+class Caffeine3Delegate<K, V> extends GenericMapCacheDelegate<K, V> {
 	Cache<K, V> cache;
 
-	public CaffeineDelegate(com.github.benmanes.caffeine.cache.Cache<K, V> cache) {
+	public Caffeine3Delegate(com.github.benmanes.caffeine.cache.Cache<K, V> cache) {
 		super(cache.asMap());
 		this.cache = cache;
 	}
 
 	@Override
-	public V get(K key) {
+	public V get(@NotNull K key) {
 		return cache.getIfPresent(key);
 	}
 
 	@Override
-	public V computeIfAbsent(K key, @NotNull Function<K, V> computeFunc) {
+	public V computeIfAbsent(@NotNull K key, @NotNull Function<K, V> computeFunc) {
 		return cache.get(key, computeFunc);
 	}
 
