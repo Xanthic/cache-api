@@ -22,5 +22,6 @@ publishing.publications.withType<MavenPublication> {
     pom {
         name.set("Xanthic - BOM Platform")
         description.set("Xanthic Build of Materials dependency constraints")
+        packaging = "pom"
     }
 }
