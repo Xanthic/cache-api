@@ -1,5 +1,9 @@
 <img src=".github/logo.png?raw=true" alt="Xanthic logo" width="500" />
 
+[![Latest](https://img.shields.io/github/release/Xanthic/cache-api/all.svg?style=flate&label=latest)](https://search.maven.org/search?q=g:io.github.xanthic.cache)
+[![Build](https://github.com/Xanthic/cache-api/actions/workflows/gradle.yml/badge.svg)](https://github.com/Xanthic/cache-api/actions/workflows/gradle.yml)
+[![Javadoc](https://javadoc.io/badge2/io.github.xanthic.cache/cache-api/javadoc.svg)](https://javadoc.io/doc/io.github.xanthic.cache)
+
 [![Code Quality](https://www.codefactor.io/repository/github/xanthic/cache-api/badge)](https://www.codefactor.io/repository/github/xanthic/cache-api)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Xanthic_cache-api&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Xanthic_cache-api)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Xanthic_cache-api&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Xanthic_cache-api)
@@ -29,20 +33,74 @@ example), so it is safer to code against this API for long-term flexibility*
 
 The following backing cache implementations have bindings already provided by this library:
 
-* [Caffeine](https://github.com/ben-manes/caffeine/wiki) via `CaffeineProvider` or `Caffeine3Provider`
-* [Guava](https://github.com/google/guava/wiki/CachesExplained) via `GuavaProvider`
-* [Cache2k](https://cache2k.org) via `Cache2kProvider`
-* [AndroidX](https://developer.android.com/reference/androidx/collection/LruCache) via `AndroidLruProvider`
-* [ExpiringMap](https://github.com/jhalterman/expiringmap#expiringmap) via `ExpiringMapProvider`
-* [Ehcache v3 (heap)](https://www.ehcache.org/documentation/3.0/index.html) via `EhcacheProvider`
-* [Infinispan (heap)](https://infinispan.org/documentation/) via `InfinispanProvider`
+| Backend | Provider | Artifact |
+| :-----: | :------: | :------: |
+| [Caffeine](https://github.com/ben-manes/caffeine/wiki) | `CaffeineProvider` | `cache-provider-caffeine` |
+| [Caffeine3](https://github.com/ben-manes/caffeine/wiki) | `Caffeine3Provider` | `cache-provider-caffeine3` |
+| [Guava](https://github.com/google/guava/wiki/CachesExplained) | `GuavaProvider` | `cache-provider-guava` |
+| [Cache2k](https://cache2k.org) | `Cache2kProvider` | `cache-provider-cache2k` |
+| [AndroidX](https://developer.android.com/reference/androidx/collection/LruCache) | `AndroidLruProvider` | `cache-provider-androidx` |
+| [ExpiringMap](https://github.com/jhalterman/expiringmap#expiringmap) | `ExpiringMapProvider` | `cache-provider-expiringmap` |
+| [Ehcache v3 (heap)](https://www.ehcache.org/documentation/3.0/index.html) | `EhcacheProvider` | `cache-provider-ehcache` |
+| [Infinispan (heap)](https://infinispan.org/documentation/) | `InfinispanProvider` | `cache-provider-infinispan` |
 
 Don't see your preferred implementation listed above?
 Fear not, it is not difficult to create your own binding, and we'd be happy to accept it in a PR!
 
+## Installation
+
+We publish to [Maven Central](https://search.maven.org/search?q=g:io.github.xanthic.cache) and provide a convenient BOM (Build of Materials) to keep dependency versions in sync from the api to the provider.
+
+Library developers only need to depend on the `cache-core` artifact, allowing application developers to specify which [provider](#supported-implementations) to use at runtime.
+
+### Gradle (Kotlin)
+
+```kotlin
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api(platform("io.github.xanthic.cache:cache-bom:0.1.0")) // Specify the latest version here
+    api(group = "io.github.xanthic.cache", name = "cache-core") // For library devs
+    implementation(group = "io.github.xanthic.cache", name = "cache-provider-caffeine") // For application devs; can select any provider
+}
+```
+
+### Maven
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>io.github.xanthic.cache</groupId>
+            <artifactId>cache-bom</artifactId>
+            <!-- Specify the latest version here -->
+            <version>0.1.0</version>
+            <scope>import</scope>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+<dependencies>
+    <!-- For library devs -->
+    <dependency>
+      <groupId>io.github.xanthic.cache</groupId>
+      <artifactId>cache-core</artifactId>
+    </dependency>
+    
+    <!-- For application devs (can select any provider) -->
+    <dependency>
+      <groupId>io.github.xanthic.cache</groupId>
+      <artifactId>cache-provider-caffeine</artifactId>
+    </dependency>
+</dependencies>
+```
+
 ## Example Usage
 
-Users should include at least one provider module in the runtime class-path.
+Users should include at least one [provider](#supported-implementations) module in the runtime class-path.
 Further, they can (optionally) do (but replace `CaffeineProvider` with the desired provider):
 
 ```java
@@ -53,14 +111,14 @@ Define a generic cache:
 
 ```java
 Cache<String, Integer> cache = CacheApi.create(spec -> {
-	spec.maxSize(2048L); // setting a size constraint is highly recommended
-	spec.expiryTime(Duration.ofMinutes(5L));
-	spec.expiryType(ExpiryType.POST_ACCESS);
-	spec.removalListener((key, value, cause) -> {
-		if (cause.isEviction()) {
-			// do something
-		}
-	});
+    spec.maxSize(2048L); // setting a size constraint is highly recommended
+    spec.expiryTime(Duration.ofMinutes(5L));
+    spec.expiryType(ExpiryType.POST_ACCESS);
+    spec.removalListener((key, value, cause) -> {
+        if (cause.isEviction()) {
+            // do something
+        }
+    });
 });
 ```
 
@@ -68,17 +126,7 @@ Here, the default provider will be used as `CacheBuilder#provider(CacheProvider)
 
 Aside: the `removalListener` in the example above technically has no effect, but is included for illustration.
 
-Note: Kotlin users can enjoy an [even cleaner](kotlin/src/test/kotlin/io/github/xanthic/cache/ktx/KotlinTest.kt) syntax via the extensions module!
-
-## WIP
-
-This API is still in alpha development stage. The current TODO list includes:
-
-- [x] Add Javadocs
-- [x] Incorporate logging (via SLF4J)
-- [x] Create test suite (via JUnit)
-- [ ] Consider if any more bindings should be added for initial release
-- [ ] Eventually: Publish to Maven
+Note: Kotlin users can enjoy an [even cleaner](kotlin/src/test/kotlin/io/github/xanthic/cache/ktx/KotlinTest.kt) syntax via the [extensions module](https://search.maven.org/search?q=g:io.github.xanthic.cache%20a:cache-kotlin)!
 
 ## FAQ
 
