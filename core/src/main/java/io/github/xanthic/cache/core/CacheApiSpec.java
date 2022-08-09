@@ -32,6 +32,7 @@ import java.util.function.Consumer;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 
+	@NotNull
 	private CacheProvider provider;
 
 	private Long maxSize;

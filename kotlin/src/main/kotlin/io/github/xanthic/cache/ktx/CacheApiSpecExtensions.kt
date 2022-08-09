@@ -21,7 +21,7 @@ fun <K, V> processSpec(init: CacheApiSpec<K, V>.() -> Unit): CacheApiSpec<K, V> 
 /**
  * @see io.github.xanthic.cache.api.ICacheSpec.provider
  */
-var <K, V> CacheApiSpec<K, V>.provider: CacheProvider?
+var <K, V> CacheApiSpec<K, V>.provider: CacheProvider
     get() = this.provider()
     set(value) {
         this.provider(value)
