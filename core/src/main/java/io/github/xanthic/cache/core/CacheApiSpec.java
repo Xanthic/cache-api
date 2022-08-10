@@ -57,7 +57,8 @@ public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 	 * @throws MisconfiguredCacheException if the cache settings are invalid (e.g., negative max size or expiry time)
 	 */
 	public void validate() {
-		Objects.requireNonNull(provider, "provider may not be null!");
+		if (provider == null)
+			throw new MisconfiguredCacheException("provider must not be null! You have not set a provider and no default cache provider was found - see https://xanthic.github.io/provider/ for instructions on how to add cache providers to your project.");
 
 		if (maxSize != null && maxSize < 0)
 			throw new MisconfiguredCacheException("maxSize may not be negative!");
