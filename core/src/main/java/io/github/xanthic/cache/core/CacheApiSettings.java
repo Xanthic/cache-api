@@ -128,6 +128,8 @@ public final class CacheApiSettings {
 				Class<? extends CacheProvider> clazz = Class.forName(providerClass).asSubclass(CacheProvider.class);
 				cacheApiSettings.registerCacheProvider(clazz, null); // lazy, init if needed
 				registered.incrementAndGet();
+			} catch (ClassNotFoundException cx) {
+				log.trace("Xanthic: Could not find optional cache provider " + providerClass);
 			} catch (Exception e) {
 				log.trace("Xanthic: Could not find optional cache provider " + providerClass, e);
 			}

@@ -44,6 +44,12 @@ public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 
 	private ScheduledExecutorService executor;
 
+	@NotNull
+	public CacheProvider provider() {
+		// noinspection ConstantConditions
+		return provider != null ? provider : CacheApiSettings.getInstance().getDefaultCacheProvider();
+	}
+
 	/**
 	 * Ensures the configured specification is valid.
 	 *
@@ -51,7 +57,8 @@ public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 	 * @throws MisconfiguredCacheException if the cache settings are invalid (e.g., negative max size or expiry time)
 	 */
 	public void validate() {
-		Objects.requireNonNull(provider, "provider may not be null!");
+		if (provider == null)
+			throw new MisconfiguredCacheException("provider must not be null! You have not set a provider and no default cache provider was found - see https://xanthic.github.io/provider/ for instructions on how to add cache providers to your project.");
 
 		if (maxSize != null && maxSize < 0)
 			throw new MisconfiguredCacheException("maxSize may not be negative!");
@@ -80,7 +87,7 @@ public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 		spec.accept(data);
 
 		// noinspection ConstantConditions
-		if (data.provider() == null) {
+		if (data.provider == null) {
 			// set / init default cache provider if nothing is set
 			data.provider(CacheApiSettings.getInstance().getDefaultCacheProvider());
 			log.debug("No cache provider explicitly specified; cache defaults to {}!", data.provider.getClass().getCanonicalName());
