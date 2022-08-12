@@ -2,6 +2,7 @@
 
 [![Latest](https://img.shields.io/github/release/Xanthic/cache-api/all.svg?style=flate&label=latest)](https://search.maven.org/search?q=g:io.github.xanthic.cache)
 [![Build](https://github.com/Xanthic/cache-api/actions/workflows/gradle.yml/badge.svg)](https://github.com/Xanthic/cache-api/actions/workflows/gradle.yml)
+[![Documentation](https://img.shields.io/badge/documentation-grey.svg?style=flat)](https://Xanthic.github.io/)
 [![Javadoc](https://javadoc.io/badge2/io.github.xanthic.cache/cache-api/javadoc.svg)](https://javadoc.io/doc/io.github.xanthic.cache)
 
 [![Code Quality](https://www.codefactor.io/repository/github/xanthic/cache-api/badge)](https://www.codefactor.io/repository/github/xanthic/cache-api)
@@ -61,7 +62,7 @@ repositories {
 }
 
 dependencies {
-    api(platform("io.github.xanthic.cache:cache-bom:0.1.0")) // Specify the latest version here
+    api(platform("io.github.xanthic.cache:cache-bom:0.1.1")) // Specify the latest version here
     api(group = "io.github.xanthic.cache", name = "cache-core") // For library devs
     implementation(group = "io.github.xanthic.cache", name = "cache-provider-caffeine") // For application devs; can select any provider
 }
@@ -76,7 +77,7 @@ dependencies {
             <groupId>io.github.xanthic.cache</groupId>
             <artifactId>cache-bom</artifactId>
             <!-- Specify the latest version here -->
-            <version>0.1.0</version>
+            <version>0.1.1</version>
             <scope>import</scope>
             <type>pom</type>
         </dependency>
