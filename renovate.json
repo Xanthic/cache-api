@@ -29,6 +29,11 @@
         {
             "matchPackagePrefixes": ["org.infinispan"],
             "allowedVersions": "/Final$/"
+        },
+        {
+            "matchPackageNames": ["com.github.ben-manes.caffeine:caffeine"],
+            "matchPaths": ["provider-caffeine/build.gradle.kts"],
+            "allowedVersions": "< 3.0.0"
         }
     ]
 }
