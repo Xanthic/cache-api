@@ -14,15 +14,26 @@
     "assignees": [],
     "branchPrefix": "chore/dependencies/",
     "digest": {
-      "enabled": false
+        "enabled": false
     },
     "labels": [
-      "dependencies"
+        "dependencies"
     ],
     "rebaseWhen": "behind-base-branch",
     "reviewers": ["iProdigy", "PhilippHeuer"],
     "vulnerabilityAlerts": {
-      "assignees": ["iProdigy", "PhilippHeuer"],
-      "labels": ["dependencies", "security"]
-    }
+        "assignees": ["iProdigy", "PhilippHeuer"],
+        "labels": ["dependencies", "security"]
+    },
+    "packageRules": [
+        {
+            "matchPackagePrefixes": ["org.infinispan"],
+            "allowedVersions": "/Final$/"
+        },
+        {
+            "matchPackageNames": ["com.github.ben-manes.caffeine:caffeine"],
+            "matchPaths": ["provider-caffeine/build.gradle.kts"],
+            "allowedVersions": "< 3.0.0"
+        }
+    ]
 }
