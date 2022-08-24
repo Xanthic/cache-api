@@ -10,6 +10,6 @@ dependencies {
 publishing.publications.withType<MavenPublication> {
     pom {
         name.set("Xanthic - Spring Cache Bridge")
-        description.set("Xanthic Spring")
+        description.set("Xanthic Cache Spring Bridge")
     }
 }
