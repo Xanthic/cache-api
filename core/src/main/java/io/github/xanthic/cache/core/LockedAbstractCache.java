@@ -12,6 +12,22 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * Safely implements {@link Cache} methods using {@link ReadWriteLock}.
+ * <p>
+ * This abstraction allows for underlying cache providers to implement
+ * the {@link Cache} interface in a thread-safe manner, even if the
+ * underlying cache does not already implement the more "exotic"
+ * write methods required by the {@link Cache} contract.
+ * <p>
+ * As this abstraction has a performance hit, it should be avoided if the
+ * backing cache provider already provides an implementation for these methods.
+ * <p>
+ * Does not support null values.
+ *
+ * @param <K> The type of keys that form the cache
+ * @param <V> The type of values contained in the cache
+ */
 public abstract class LockedAbstractCache<K, V> implements Cache<K, V> {
 
 	protected final ReadWriteLock lock = new ReentrantReadWriteLock();
