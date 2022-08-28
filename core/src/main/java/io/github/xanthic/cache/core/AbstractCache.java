@@ -16,7 +16,7 @@ import java.util.function.Function;
  *     <li>{@link Cache#merge(Object, Object, BiFunction)}</li>
  * </ul>
  * <p>
- * Subclasses ought to employ the same degree of locking for correctness.
+ * Subclasses ought to synchronize on {@link #getLock()} for correctness.
  * <p>
  * Avoid this abstraction if the backing cache provider already provides an implementation for these methods.
  * <p>

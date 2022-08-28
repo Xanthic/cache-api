@@ -1,6 +1,6 @@
 package io.github.xanthic.cache.provider.ehcache;
 
-import io.github.xanthic.cache.core.AbstractCache;
+import io.github.xanthic.cache.core.LockedAbstractCache;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
@@ -10,39 +10,31 @@ import java.util.Map;
 @Value
 @EqualsAndHashCode(callSuper = false)
 @SuppressWarnings("unchecked")
-class EhcacheDelegate<K, V> extends AbstractCache<K, V> {
+public class EhcacheDelegate<K, V> extends LockedAbstractCache<K, V> {
 	org.ehcache.Cache<Object, Object> cache;
 
 	@Override
-	public V get(@NotNull K key) {
+	protected V getUnlocked(@NotNull K key) {
 		return (V) cache.get(key);
 	}
 
 	@Override
-	public V put(@NotNull K key, @NotNull V value) {
-		synchronized (getLock()) {
-			V old = this.get(key);
-			cache.put(key, value);
-			return old;
-		}
+	protected void putUnlocked(@NotNull K key, @NotNull V value) {
+		cache.put(key, value);
 	}
 
 	@Override
-	public V remove(@NotNull K key) {
-		synchronized (getLock()) {
-			V old = this.get(key);
-			cache.remove(key);
-			return old;
-		}
+	protected void removeUnlocked(@NotNull K key) {
+		cache.remove(key);
 	}
 
 	@Override
-	public void clear() {
+	protected void clearUnlocked() {
 		cache.clear();
 	}
 
 	@Override
-	public long size() {
+	protected long sizeUnlocked() {
 		long n = 0;
 		for (org.ehcache.Cache.Entry<Object, Object> ignored : cache) {
 			n++;
@@ -52,27 +44,24 @@ class EhcacheDelegate<K, V> extends AbstractCache<K, V> {
 
 	@Override
 	public V putIfAbsent(@NotNull K key, @NotNull V value) {
-		return (V) cache.putIfAbsent(key, value);
+		return read(() -> (V) cache.putIfAbsent(key, value));
 	}
 
 	@Override
 	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
-		cache.putAll(map);
+		read(() -> {
+			cache.putAll(map);
+			return Void.TYPE;
+		});
 	}
 
 	@Override
 	public boolean replace(@NotNull K key, @NotNull V value) {
-		return cache.replace(key, value) != null;
+		return read(() -> cache.replace(key, value) != null);
 	}
 
 	@Override
 	public boolean replace(@NotNull K key, @NotNull V oldValue, @NotNull V newValue) {
-		return cache.replace(key, oldValue, newValue);
-	}
-
-	@NotNull
-	@Override
-	protected Object getLock() {
-		return this.cache;
+		return read(() -> cache.replace(key, oldValue, newValue));
 	}
 }
