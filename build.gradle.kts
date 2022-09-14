@@ -54,7 +54,7 @@ subprojects {
             testRuntimeOnly(group = "org.junit.jupiter", name = "junit-jupiter-engine")
 
             // logging and tests
-            api(group = "org.slf4j", name = "slf4j-api", version = "2.0.0")
+            api(group = "org.slf4j", name = "slf4j-api", version = "2.0.1")
             testImplementation(group = "org.slf4j", name = "slf4j-simple", version = "2.0.0")
         }
 
