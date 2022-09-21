@@ -5,8 +5,8 @@ plugins {
 dependencies {
     api(project(":cache-api"))
 
-    testFixturesImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
-    testFixturesRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.1")
+    testFixturesImplementation("org.junit.jupiter:junit-jupiter")
+    testFixturesRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testFixturesImplementation("org.awaitility:awaitility:4.2.0")
 }
 
