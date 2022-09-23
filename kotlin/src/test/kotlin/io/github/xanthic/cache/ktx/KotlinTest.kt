@@ -3,7 +3,9 @@ package io.github.xanthic.cache.ktx
 import io.github.xanthic.cache.api.domain.ExpiryType
 import java.time.Duration
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 internal class KotlinTest {
 
@@ -22,6 +24,16 @@ internal class KotlinTest {
         }
 
         assertNotNull(cache)
+
+        cache["420"] = 420
+        assertEquals(420, cache["420"])
+
+        cache -= "420"
+        assertTrue("420" !in cache)
+
+        cache += mapOf("1" to 1, "2" to 2)
+        assertTrue("1" in cache)
+        assertTrue("2" in cache)
     }
 
 }
