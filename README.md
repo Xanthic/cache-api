@@ -62,7 +62,7 @@ repositories {
 }
 
 dependencies {
-    api(platform("io.github.xanthic.cache:cache-bom:0.1.1")) // Specify the latest version here
+    api(platform("io.github.xanthic.cache:cache-bom:0.1.2")) // Specify the latest version here
     api(group = "io.github.xanthic.cache", name = "cache-core") // For library devs
     implementation(group = "io.github.xanthic.cache", name = "cache-provider-caffeine") // For application devs; can select any provider
 }
@@ -77,7 +77,7 @@ dependencies {
             <groupId>io.github.xanthic.cache</groupId>
             <artifactId>cache-bom</artifactId>
             <!-- Specify the latest version here -->
-            <version>0.1.1</version>
+            <version>0.1.2</version>
             <scope>import</scope>
             <type>pom</type>
         </dependency>
