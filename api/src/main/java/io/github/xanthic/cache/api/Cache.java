@@ -148,6 +148,22 @@ public interface Cache<K, V> {
 	boolean replace(@NotNull K key, @NotNull V oldValue, @NotNull V newValue);
 
 	/**
+	 * Obtains the value associated with the specified key, or the passed default value if no mapping existed.
+	 * <p>
+	 * Note: Unlike {@link #computeIfAbsent(Object, Function)}, this method does <i>not</i> write the default value to the cache.
+	 *
+	 * @param key          the key whose mapped value should be queried
+	 * @param defaultValue the default value to return if no mapping exists for the specified key
+	 * @return the value mapped to the specified key, if present; otherwise, the specified default value
+	 * @throws NullPointerException if the specified key is null
+	 */
+	@NotNull
+	default V getOrDefault(@NotNull K key, @NotNull V defaultValue) {
+		V value = get(key);
+		return value != null ? value : defaultValue;
+	}
+
+	/**
 	 * Copies all of the mappings from the specified map to this cache.
 	 *
 	 * @param map the map whose entries should be added to this cache
