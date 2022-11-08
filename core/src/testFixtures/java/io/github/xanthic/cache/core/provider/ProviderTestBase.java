@@ -30,7 +30,7 @@ public abstract class ProviderTestBase {
 	protected final CacheProvider provider;
 
 	@Test
-	@DisplayName("Tests cache get, put, putIfAbsent, clear, and putAll")
+	@DisplayName("Tests cache get, getOrDefault, put, putIfAbsent, clear, and putAll")
 	public void putGetClearTest() {
 		// Build cache
 		Cache<String, Integer> cache = build(null);
@@ -39,7 +39,14 @@ public abstract class ProviderTestBase {
 		Assertions.assertNull(cache.put("4/20", 420));
 		Assertions.assertEquals(420, cache.get("4/20"));
 
+		// Test getOrDefault
+		Assertions.assertEquals(420, cache.getOrDefault("4/20", 1312));
+		Assertions.assertEquals(314, cache.getOrDefault("pi", 314));
+		Assertions.assertNull(cache.get("pi"));
+
 		// Test putIfAbsent
+		Assertions.assertNull(cache.putIfAbsent("oink", 1312));
+		Assertions.assertEquals(1312, cache.get("oink"));
 		Assertions.assertEquals(420, cache.putIfAbsent("4/20", 69));
 		Assertions.assertEquals(420, cache.get("4/20"));
 
