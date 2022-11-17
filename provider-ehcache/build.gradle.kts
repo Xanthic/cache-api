@@ -1,7 +1,7 @@
 dependencies {
     api(project(":cache-core"))
 
-    implementation("org.ehcache:ehcache:3.10.5")
+    implementation("org.ehcache:ehcache:3.10.6")
 
     testImplementation(testFixtures(project(":cache-core")))
 }
