@@ -49,7 +49,7 @@ subprojects {
             compileOnly("org.jetbrains:annotations:23.1.0")
 
             // tests
-            testImplementation(platform("org.junit:junit-bom:5.9.1"))
+            testImplementation(platform("org.junit:junit-bom:5.9.2"))
             testImplementation(group = "org.junit.jupiter", name = "junit-jupiter")
             testRuntimeOnly(group = "org.junit.jupiter", name = "junit-jupiter-engine")
 
