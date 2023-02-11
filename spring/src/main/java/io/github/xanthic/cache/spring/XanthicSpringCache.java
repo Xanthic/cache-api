@@ -1,10 +1,11 @@
-package io.github.xanthic.cache.bridge.spring;
+package io.github.xanthic.cache.spring;
 
 import io.github.xanthic.cache.api.Cache;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.support.AbstractValueAdaptingCache;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class XanthicSpringCache extends AbstractValueAdaptingCache {
 	private final String name;
@@ -28,12 +29,18 @@ public class XanthicSpringCache extends AbstractValueAdaptingCache {
 
 	@Override
 	public <T> T get(@NotNull Object key, @NotNull Callable<T> valueLoader) {
-		return null;
+		return (T) cache.computeIfAbsent(key, k -> {
+			try {
+				return valueLoader.call();
+			} catch (Exception e) {
+				throw new ValueRetrievalException(key, valueLoader, e);
+			}
+		});
 	}
 
 	@Override
 	public void put(@NotNull Object key, Object value) {
-		cache.put(key, value);
+		cache.put(key, toStoreValue(value));
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package io.github.xanthic.cache.bridge.spring;
+package io.github.xanthic.cache.spring;
 
 import io.github.xanthic.cache.core.CacheApi;
 import io.github.xanthic.cache.core.CacheApiSpec;
@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 
 /**
  * CacheManager implementation that lazily builds XanthicCache instances for each getCache(java.lang.String) request.
- * Also supports a 'static' mode where the set of cache names is pre-defined through setCacheNames(java.util.Collection<java.lang.String>), with no dynamic creation of further cache regions at runtime.
+ * Also supports a 'static' mode where the set of cache names is pre-defined through cacheNames in the constructor, with no dynamic creation of further cache regions at runtime.
  * The configuration of the underlying cache can be fine-tuned through the CacheApiSpec, passed into this CacheManager in the constructor.
  */
 public class XanthicSpringCacheManager implements CacheManager {
@@ -26,7 +26,7 @@ public class XanthicSpringCacheManager implements CacheManager {
 	@Getter
 	private final Set<String> customCacheNames = new HashSet<>();
 	private final Consumer<CacheApiSpec<Object, Object>> spec;
-	private boolean dynamic = true;
+	private final boolean dynamic;
 
 	/**
 	 * XanthicSpringCacheManager will manage all xanthic cache instances for spring.
@@ -35,6 +35,26 @@ public class XanthicSpringCacheManager implements CacheManager {
 	 */
 	public XanthicSpringCacheManager(Consumer<CacheApiSpec<Object, Object>> spec) {
 		this.spec = spec;
+		this.dynamic = true;
+	}
+
+	/**
+	 * XanthicSpringCacheManager will manage all xanthic cache instances for spring.
+	 *
+	 * @param spec the default CacheApiSpec used to create a new cache instances
+	 * @param cacheNames If not null, the number of caches and their names will be fixed, with no creation of further cache keys at runtime.
+	 */
+	public XanthicSpringCacheManager(Consumer<CacheApiSpec<Object, Object>> spec, @Nullable Collection<String> cacheNames) {
+		this.spec = spec;
+
+		if (cacheNames != null) {
+			this.dynamic = false;
+			for (String name : cacheNames) {
+				this.cacheMap.put(name, createCache(name, this.spec));
+			}
+		} else {
+			this.dynamic = true;
+		}
 	}
 
 	@Override
@@ -49,29 +69,14 @@ public class XanthicSpringCacheManager implements CacheManager {
 	}
 
 	/**
-	 * Specify the set of cache names for this CacheManager's 'static' mode.
-	 *
-	 * <p>The number of caches and their names will be fixed after a call to this method, with no creation of further cache regions at runtime.</p>
-	 * <p>Calling this with a {@code null} collection argument resets the mode to 'dynamic', allowing for further creation of caches again.</p>
-	 */
-	public void setCacheNames(@Nullable Collection<String> cacheNames) {
-		if (cacheNames != null) {
-			for (String name : cacheNames) {
-				this.cacheMap.put(name, createCache(name, this.spec));
-			}
-			this.dynamic = false;
-		} else {
-			this.dynamic = true;
-		}
-	}
-
-	/**
 	 * Register a custom xanthic cache by customizing the CacheApiSpec.
 	 *
 	 * @param name the name of the cache
 	 * @param spec configuration for the specified cache
 	 */
 	public void registerCache(String name, Consumer<CacheApiSpec<Object, Object>> spec) {
+		if (!this.dynamic) throw new IllegalStateException("CacheManager has a fixed set of cache keys and does not allow creation of new caches.");
+
 		this.cacheMap.put(name, createCache(name, spec));
 		this.customCacheNames.add(name);
 	}

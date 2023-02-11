@@ -1,6 +1,6 @@
-package io.github.xanthic.cache.bridge.spring;
+package io.github.xanthic.cache.spring;
 
-import io.github.xanthic.cache.bridge.spring.config.CacheConfiguration;
+import io.github.xanthic.cache.spring.config.CacheConfiguration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ public class SpringCacheTest {
 	@Test
 	@DisplayName("Tests cache get, put, putIfAbsent, clear")
 	public void putGetClearTest() {
-		Cache cache = cacheManager.getCache("dev");
+		Cache cache = Objects.requireNonNull(cacheManager.getCache("dev"));
 
 		// cache should be listed in cacheManager
 		Assertions.assertTrue(cacheManager.getCacheNames().contains("dev"));
@@ -55,6 +55,23 @@ public class SpringCacheTest {
 		// cache available
 		Cache cache = cacheManager.getCache("my-custom-cache");
 		Assertions.assertNotNull(cache, "my-custom-cache should not be null");
+	}
+
+	@Test
+	@DisplayName("Tests the eviction of entries based on max size")
+	public void evictionTest() {
+		XanthicSpringCacheManager xanthicSpringCacheManager = (XanthicSpringCacheManager) cacheManager;
+		xanthicSpringCacheManager.registerCache("small-cache", spec -> {
+			spec.maxSize(2L);
+		});
+
+		Cache cache = Objects.requireNonNull(cacheManager.getCache("small-cache"));
+		cache.put("first", 1);
+		cache.put("second", 2);
+		cache.put("third", 3);
+		Assertions.assertEquals(2, Objects.requireNonNull(cache.get("second")).get());
+		Assertions.assertEquals(3, Objects.requireNonNull(cache.get("third")).get());
+		Assertions.assertNull(cache.get("first"));
 	}
 
 }
