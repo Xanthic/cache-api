@@ -27,15 +27,27 @@ public class XanthicSpringCache extends AbstractValueAdaptingCache {
 		return cache;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T get(@NotNull Object key, @NotNull Callable<T> valueLoader) {
-		return (T) cache.computeIfAbsent(key, k -> {
-			try {
-				return valueLoader.call();
-			} catch (Exception e) {
-				throw new ValueRetrievalException(key, valueLoader, e);
-			}
-		});
+		return (T) cache.computeIfAbsent(key, k -> getSynchronized(key, valueLoader));
+	}
+
+	@SuppressWarnings("unchecked")
+	private synchronized <T> T getSynchronized(Object key, Callable<T> valueLoader) {
+		ValueWrapper result = get(key);
+
+		if (result != null) {
+			return (T) result.get();
+		}
+
+		T value;
+		try {
+			value = valueLoader.call();
+		} catch (Exception e) {
+			throw new ValueRetrievalException(key, valueLoader, e);
+		}
+		return value;
 	}
 
 	@Override

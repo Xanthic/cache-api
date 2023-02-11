@@ -12,6 +12,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { CacheConfiguration.class })
@@ -72,6 +77,61 @@ public class SpringCacheTest {
 		Assertions.assertEquals(2, Objects.requireNonNull(cache.get("second")).get());
 		Assertions.assertEquals(3, Objects.requireNonNull(cache.get("third")).get());
 		Assertions.assertNull(cache.get("first"));
+	}
+
+	@Test
+	@DisplayName("Tests the eviction of entries based on max size")
+	public void valueLoaderTest() {
+		XanthicSpringCacheManager xanthicSpringCacheManager = (XanthicSpringCacheManager) cacheManager;
+		xanthicSpringCacheManager.registerCache("value-cache", spec -> {
+			spec.maxSize(100L);
+		});
+		Cache cache = Objects.requireNonNull(cacheManager.getCache("value-cache"));
+
+		AtomicInteger callCounter = new AtomicInteger(0);
+		Callable<String> valueLoader = () -> {
+			callCounter.incrementAndGet();
+			return "value-loaded";
+		};
+
+		String value = cache.get("key", valueLoader);
+		Assertions.assertEquals("value-loaded", value);
+		Assertions.assertEquals(1, callCounter.get(), "Value loader should only be called once");
+
+		// Check that the valueLoader is not called again
+		value = cache.get("key", valueLoader);
+		Assertions.assertEquals("value-loaded", value);
+		Assertions.assertEquals(1, callCounter.get(), "Value loader should still be called only once");
+	}
+
+	@Test
+	@DisplayName("Tests the eviction of entries based on max size")
+	public void valueLoaderConcurrentTest() throws InterruptedException {
+		XanthicSpringCacheManager xanthicSpringCacheManager = (XanthicSpringCacheManager) cacheManager;
+		xanthicSpringCacheManager.registerCache("value-cache", spec -> {
+			spec.maxSize(100L);
+		});
+		Cache cache = Objects.requireNonNull(cacheManager.getCache("value-cache"));
+
+		AtomicInteger callCounter = new AtomicInteger(0);
+		Callable<String> valueLoader = () -> {
+			callCounter.incrementAndGet();
+			return "value-loaded";
+		};
+
+		int numThreads = 10;
+		ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+		for (int i = 0; i < numThreads; i++) {
+			executorService.submit(() -> {
+				String value = cache.get("key", valueLoader);
+				Assertions.assertEquals("value-loaded", value);
+			});
+		}
+		executorService.awaitTermination(5, TimeUnit.SECONDS);
+
+		String value = cache.get("key", valueLoader);
+		Assertions.assertEquals("value-loaded", value);
+		Assertions.assertEquals(1, callCounter.get(), "Value loader should only be called once");
 	}
 
 }
