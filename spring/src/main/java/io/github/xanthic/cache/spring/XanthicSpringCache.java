@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.support.AbstractValueAdaptingCache;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class XanthicSpringCache extends AbstractValueAdaptingCache {
 	private final String name;

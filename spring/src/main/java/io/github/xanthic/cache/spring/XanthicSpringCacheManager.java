@@ -9,10 +9,9 @@ import org.springframework.cache.CacheManager;
 import org.springframework.lang.Nullable;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
@@ -22,9 +21,9 @@ import java.util.function.Consumer;
  */
 public class XanthicSpringCacheManager implements CacheManager {
 
-	private final Map<String, Cache> cacheMap = new HashMap<>();
+	private final Map<String, Cache> cacheMap = new ConcurrentHashMap<>();
 	@Getter
-	private final Set<String> customCacheNames = new HashSet<>();
+	private final Set<String> customCacheNames = ConcurrentHashMap.newKeySet();
 	private final Consumer<CacheApiSpec<Object, Object>> spec;
 	private final boolean dynamic;
 
