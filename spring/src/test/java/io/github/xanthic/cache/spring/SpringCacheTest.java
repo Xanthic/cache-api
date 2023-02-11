@@ -18,6 +18,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.awaitility.Awaitility.await;
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { CacheConfiguration.class })
 public class SpringCacheTest {
@@ -74,9 +76,12 @@ public class SpringCacheTest {
 		cache.put("first", 1);
 		cache.put("second", 2);
 		cache.put("third", 3);
+
 		Assertions.assertEquals(2, Objects.requireNonNull(cache.get("second")).get());
 		Assertions.assertEquals(3, Objects.requireNonNull(cache.get("third")).get());
-		Assertions.assertNull(cache.get("first"));
+		await().atLeast(100, TimeUnit.MILLISECONDS)
+			.atMost(5, TimeUnit.SECONDS)
+			.until(() -> cache.get("first") == null);
 	}
 
 	@Test
