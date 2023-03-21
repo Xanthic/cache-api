@@ -40,7 +40,7 @@ public class XanthicSpringCacheManager implements CacheManager {
 	/**
 	 * XanthicSpringCacheManager will manage all xanthic cache instances for spring.
 	 *
-	 * @param spec the default CacheApiSpec used to create a new cache instances
+	 * @param spec       the default CacheApiSpec used to create a new cache instances
 	 * @param cacheNames If not null, the number of caches and their names will be fixed, with no creation of further cache keys at runtime.
 	 */
 	public XanthicSpringCacheManager(Consumer<CacheApiSpec<Object, Object>> spec, @Nullable Collection<String> cacheNames) {
@@ -59,7 +59,12 @@ public class XanthicSpringCacheManager implements CacheManager {
 	@Override
 	@Nullable
 	public Cache getCache(@NotNull String name) {
-		return this.cacheMap.computeIfAbsent(name, cacheName -> this.dynamic ? createCache(cacheName, this.spec) : null);
+		// Optimistic lock-free lookup to avoid contention: https://github.com/spring-projects/spring-framework/issues/30066
+		Cache optimistic = cacheMap.get(name);
+		if (optimistic != null || !dynamic)
+			return optimistic;
+
+		return this.cacheMap.computeIfAbsent(name, cacheName -> createCache(cacheName, this.spec));
 	}
 
 	@Override
