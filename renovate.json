@@ -27,6 +27,10 @@
     },
     "packageRules": [
         {
+            "matchPackagePatterns": ["*"],
+            "semanticCommitType": "chore"
+        },
+        {
             "matchPackagePrefixes": ["org.infinispan"],
             "allowedVersions": "/Final$/"
         },
