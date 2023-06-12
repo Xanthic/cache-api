@@ -14,6 +14,7 @@ include(
     ":provider-expiringmap",
     ":provider-guava",
     ":provider-infinispan",
+    ":provider-infinispan14",
 )
 
 project(":bom").name = "cache-bom"
@@ -29,3 +30,4 @@ project(":provider-ehcache").name = "cache-provider-ehcache"
 project(":provider-expiringmap").name = "cache-provider-expiringmap"
 project(":provider-guava").name = "cache-provider-guava"
 project(":provider-infinispan").name = "cache-provider-infinispan"
+project(":provider-infinispan14").name = "cache-provider-infinispan14"
