@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Implements size and time-based expiry.
  */
-public final class Infinispan14Provider extends AbstractCacheProvider {
+public final class InfinispanJava11Provider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
 		GlobalConfigurationBuilder global = GlobalConfigurationBuilder.defaultClusteredBuilder();
@@ -38,13 +38,13 @@ public final class Infinispan14Provider extends AbstractCacheProvider {
 
 		if (spec.removalListener() != null) {
 			cache.addFilteredListener(
-				new Infinispan14Listener<>(spec.removalListener()),
-				(key, oldValue, oldMeta, newValue, newMeta, eventType) -> eventType != null && Infinispan14Listener.EVENTS.contains(eventType.getType()),
+				new InfinispanListener<>(spec.removalListener()),
+				(key, oldValue, oldMeta, newValue, newMeta, eventType) -> eventType != null && InfinispanListener.EVENTS.contains(eventType.getType()),
 				null,
-				Infinispan14Listener.ANNOTATIONS
+				InfinispanListener.ANNOTATIONS
 			);
 		}
 
-		return new Infinispan14Delegate<>(cache);
+		return new InfinispanDelegate<>(cache);
 	}
 }

@@ -24,7 +24,7 @@ import java.util.Set;
 
 @Value
 @Listener
-class Infinispan14Listener<K, V> {
+class InfinispanListener<K, V> {
 	static final Set<Event.Type> EVENTS;
 	static final Set<Class<? extends Annotation>> ANNOTATIONS;
 

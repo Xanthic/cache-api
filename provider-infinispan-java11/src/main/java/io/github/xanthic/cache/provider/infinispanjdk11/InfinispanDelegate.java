@@ -10,7 +10,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @Value
-class Infinispan14Delegate<K, V> implements Cache<K, V> {
+class InfinispanDelegate<K, V> implements Cache<K, V> {
 	org.infinispan.Cache<K, V> cache;
 
 	@Override
