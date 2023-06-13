@@ -44,7 +44,7 @@ The following backing cache implementations have bindings already provided by th
 | [ExpiringMap](https://github.com/jhalterman/expiringmap#expiringmap) | `ExpiringMapProvider` | `cache-provider-expiringmap` |
 | [Ehcache v3 (heap)](https://www.ehcache.org/documentation/3.0/index.html) | `EhcacheProvider` | `cache-provider-ehcache` |
 | [Infinispan (heap)](https://infinispan.org/documentation/) | `InfinispanProvider` | `cache-provider-infinispan` |
-| [Infinispan v14 (heap)](https://infinispan.org/documentation/) | `Infinispan14Provider` | `cache-provider-infinispan14` |
+| [Infinispan v14 (heap)](https://infinispan.org/documentation/) | `InfinispanProvider` | `cache-provider-infinispan-java11` |
 
 Don't see your preferred implementation listed above?
 Fear not, it is not difficult to create your own binding, and we'd be happy to accept it in a PR!
