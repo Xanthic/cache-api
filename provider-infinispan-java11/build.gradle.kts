@@ -16,7 +16,7 @@ java {
 
 publishing.publications.withType<MavenPublication> {
     pom {
-        name.set("Xanthic - Infinispan v14 Provider Module")
-        description.set("Xanthic Provider dependency for Infinispan v14")
+        name.set("Xanthic - Infinispan Provider Module for JDK 11")
+        description.set("Xanthic Provider dependency for Infinispan on JDK 11+")
     }
 }
