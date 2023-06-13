@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Implements size and time-based expiry.
  */
-public final class InfinispanJava11Provider extends AbstractCacheProvider {
+public final class InfinispanProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
 		GlobalConfigurationBuilder global = GlobalConfigurationBuilder.defaultClusteredBuilder();
