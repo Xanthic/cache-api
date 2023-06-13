@@ -1,4 +1,4 @@
-package io.github.xanthic.cache.provider.infinispan;
+package io.github.xanthic.cache.provider.infinispanjdk11;
 
 import io.github.xanthic.cache.api.RemovalListener;
 import io.github.xanthic.cache.api.domain.RemovalCause;
