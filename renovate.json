@@ -35,6 +35,11 @@
             "allowedVersions": "/Final$/"
         },
         {
+            "matchPackageNames": ["org.infinispan:infinispan-bom"],
+            "matchPaths": ["provider-infinispan/build.gradle.kts"],
+            "allowedVersions": "/^13\\./"
+        },
+        {
             "matchPackageNames": ["com.github.ben-manes.caffeine:caffeine"],
             "matchPaths": ["provider-caffeine/build.gradle.kts"],
             "allowedVersions": "< 3.0.0"
