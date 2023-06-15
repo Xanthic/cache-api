@@ -43,6 +43,16 @@
             "matchPackageNames": ["com.github.ben-manes.caffeine:caffeine"],
             "matchPaths": ["provider-caffeine/build.gradle.kts"],
             "allowedVersions": "< 3.0.0"
+        },
+        {
+            "matchPackageNames": ["org.springframework.boot:spring-boot-starter-test"],
+            "matchPaths": ["spring/build.gradle.kts"],
+            "allowedVersions": "< 3.0.0"
+        },
+        {
+            "matchPackageNames": ["org.springframework:spring-context"],
+            "matchPaths": ["spring/build.gradle.kts"],
+            "allowedVersions": "< 6.0.0"
         }
     ]
 }
