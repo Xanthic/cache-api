@@ -55,7 +55,7 @@ subprojects {
 
             // logging and tests
             api(group = "org.slf4j", name = "slf4j-api", version = "2.0.9")
-            testImplementation(group = "org.slf4j", name = "slf4j-simple", version = "2.0.7")
+            testImplementation(group = "org.slf4j", name = "slf4j-simple", version = "2.0.9")
         }
 
         tasks {
