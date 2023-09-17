@@ -187,6 +187,7 @@ public interface Cache<K, V> {
 	 * @implNote This can be an inefficient operation that ought to be avoided;
 	 * perhaps your data can be modeled differently to avoid this operation.
 	 * @throws NullPointerException if the specified action is null
+	 * @throws UnsupportedOperationException if the underlying cache provider does not support iteration over entries
 	 */
 	@ApiStatus.Experimental
 	default void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
