@@ -19,6 +19,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 
 @Value
 @Getter(AccessLevel.PRIVATE)
@@ -99,6 +100,11 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 	@Override
 	public long size() {
 		return cache.size();
+	}
+
+	@Override
+	public void forEach(@NotNull BiConsumer<K, V> action) {
+		cache.snapshot().forEach(action);
 	}
 
 	@NotNull
