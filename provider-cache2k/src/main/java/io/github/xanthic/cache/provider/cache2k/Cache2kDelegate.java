@@ -61,7 +61,7 @@ class Cache2kDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
 	}
 
 	@Override
-	public void forEach(@NotNull BiConsumer<K, V> action) {
+	public void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
 		cache.entries().forEach(e -> action.accept(e.getKey(), e.getValue()));
 	}
 }

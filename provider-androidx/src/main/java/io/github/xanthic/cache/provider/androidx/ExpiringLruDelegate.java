@@ -103,7 +103,7 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 	}
 
 	@Override
-	public void forEach(@NotNull BiConsumer<K, V> action) {
+	public void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
 		cache.snapshot().forEach(action);
 	}
 

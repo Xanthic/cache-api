@@ -189,7 +189,7 @@ public interface Cache<K, V> {
 	 * @throws NullPointerException if the specified action is null
 	 */
 	@ApiStatus.Experimental
-	default void forEach(@NotNull BiConsumer<@NotNull K, @NotNull V> action) {
+	default void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
 		throw new UnsupportedOperationException();
 	}
 

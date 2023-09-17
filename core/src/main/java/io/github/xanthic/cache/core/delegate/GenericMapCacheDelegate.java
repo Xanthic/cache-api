@@ -91,7 +91,7 @@ public class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
 	}
 
 	@Override
-	public void forEach(@NotNull BiConsumer<K, V> action) {
+	public void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
 		this.map.forEach(action);
 	}
 }
