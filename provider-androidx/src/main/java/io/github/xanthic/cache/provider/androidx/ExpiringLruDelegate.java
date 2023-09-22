@@ -104,7 +104,14 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 
 	@Override
 	public void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
-		cache.snapshot().forEach(action);
+		if (type == ExpiryType.POST_ACCESS) {
+			synchronized (getLock()) {
+				BiConsumer<K, V> markAccessed = this::start;
+				cache.snapshot().forEach(markAccessed.andThen(action));
+			}
+		} else {
+			cache.snapshot().forEach(action);
+		}
 	}
 
 	@NotNull
