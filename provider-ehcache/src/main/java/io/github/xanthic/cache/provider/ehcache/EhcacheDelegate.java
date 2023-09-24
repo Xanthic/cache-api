@@ -6,6 +6,7 @@ import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -63,5 +64,15 @@ public class EhcacheDelegate<K, V> extends LockedAbstractCache<K, V> {
 	@Override
 	public boolean replace(@NotNull K key, @NotNull V oldValue, @NotNull V newValue) {
 		return read(() -> cache.replace(key, oldValue, newValue));
+	}
+
+	@Override
+	public void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
+		// We can't guarantee that users won't attempt to mutate the cache from within the action
+		// So, we incur a performance penalty to acquire a write (rather than read) lock in order to avoid deadlocking
+		write(() -> {
+			cache.forEach(e -> action.accept((K) e.getKey(), (V) e.getValue()));
+			return Void.TYPE;
+		});
 	}
 }

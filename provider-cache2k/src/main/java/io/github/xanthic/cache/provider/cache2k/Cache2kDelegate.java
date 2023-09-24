@@ -7,6 +7,7 @@ import org.cache2k.Cache;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @Value
@@ -59,4 +60,8 @@ class Cache2kDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
 		cache.putAll(map);
 	}
 
+	@Override
+	public void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
+		cache.entries().forEach(e -> action.accept(e.getKey(), e.getValue()));
+	}
 }

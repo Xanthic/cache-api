@@ -136,6 +136,30 @@ public abstract class ProviderTestBase {
 	}
 
 	@Test
+	@DisplayName("Tests cache forEach")
+	public void iterateTest() {
+		// Build cache
+		Cache<String, Integer> cache = build(null);
+
+		// Add entries
+		for (int i = 0; i < 3; i++) {
+			cache.put(String.valueOf(i), i);
+		}
+
+		// Save output of forEach
+		Map<String, Integer> observed = new HashMap<>();
+		cache.forEach(observed::put);
+
+		// Test that observed contents match expected
+		Map<String, Integer> expected = new HashMap<>();
+		expected.put("0", 0);
+		expected.put("1", 1);
+		expected.put("2", 2);
+
+		Assertions.assertEquals(expected, observed);
+	}
+
+	@Test
 	@DisplayName("Test that caches with zero maximum size remain empty")
 	public void zeroMaxSizeTest() {
 		Cache<String, Integer> cache = build(spec -> spec.maxSize(0L));

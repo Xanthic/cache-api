@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.BiConsumer;
+
 @Value
 @Getter(AccessLevel.PRIVATE)
 @EqualsAndHashCode(callSuper = false)
@@ -38,6 +40,11 @@ class LruDelegate<K, V> extends AbstractCache<K, V> {
 	@Override
 	public long size() {
 		return cache.size();
+	}
+
+	@Override
+	public void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
+		cache.snapshot().forEach(action);
 	}
 
 	@NotNull

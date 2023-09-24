@@ -1,9 +1,11 @@
 package io.github.xanthic.cache.api;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -172,6 +174,24 @@ public interface Cache<K, V> {
 	 */
 	default void putAll(@NotNull Map<? extends K, ? extends V> map) {
 		map.forEach(this::put);
+	}
+
+	/**
+	 * Performs the specified action upon all entries within the cache.
+	 *
+	 * @param action the action to perform upon each entry
+	 * @apiNote While this method is technically optional, all of the canonical
+	 * implementations provided by Xanthic support this operation.
+	 * @implSpec The iteration order of entries is not consistent (across cache different implementations),
+	 * and should not be relied upon. Iteration may terminate early if the action yields an exception.
+	 * @implNote This can be an inefficient operation that ought to be avoided;
+	 * perhaps your data can be modeled differently to avoid this operation.
+	 * @throws NullPointerException if the specified action is null
+	 * @throws UnsupportedOperationException if the underlying cache provider does not support iteration over entries
+	 */
+	@ApiStatus.Experimental
+	default void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
+		throw new UnsupportedOperationException();
 	}
 
 }

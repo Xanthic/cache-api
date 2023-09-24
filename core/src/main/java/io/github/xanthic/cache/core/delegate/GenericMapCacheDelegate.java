@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -87,5 +88,10 @@ public class GenericMapCacheDelegate<K, V> implements Cache<K, V> {
 	@Override
 	public void putAll(@NotNull Map<? extends K, ? extends V> map) {
 		this.map.putAll(map);
+	}
+
+	@Override
+	public void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
+		this.map.forEach(action);
 	}
 }
