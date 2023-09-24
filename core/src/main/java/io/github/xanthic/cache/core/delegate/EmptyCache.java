@@ -51,12 +51,12 @@ public final class EmptyCache<K, V> implements Cache<K, V> {
 
 	@Override
 	public @Nullable V compute(@NotNull K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
-		return null;
+		return computeFunc.apply(key, null);
 	}
 
 	@Override
 	public V computeIfAbsent(@NotNull K key, @NotNull Function<K, V> computeFunc) {
-		return null;
+		return computeFunc.apply(key);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public final class EmptyCache<K, V> implements Cache<K, V> {
 
 	@Override
 	public V merge(@NotNull K key, @NotNull V value, @NotNull BiFunction<V, V, V> mergeFunc) {
-		return null;
+		return value;
 	}
 
 	@Override
