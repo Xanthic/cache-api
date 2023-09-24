@@ -4,7 +4,9 @@ import io.github.xanthic.cache.api.Cache;
 import io.github.xanthic.cache.api.ICacheSpec;
 import io.github.xanthic.cache.api.exception.MisconfiguredCacheException;
 import io.github.xanthic.cache.api.exception.NoDefaultCacheImplementationException;
+import io.github.xanthic.cache.core.delegate.EmptyCache;
 
+import java.time.Duration;
 import java.util.function.Consumer;
 
 /**
@@ -32,7 +34,14 @@ public final class CacheApi {
 	 */
 	public static <K, V> Cache<K, V> create(Consumer<CacheApiSpec<K, V>> spec) {
 		CacheApiSpec<K, V> finalSpec = CacheApiSpec.process(spec);
+		if (isPermanentlyEmpty(finalSpec)) return EmptyCache.get();
 		return finalSpec.provider().build(finalSpec);
+	}
+
+	private static boolean isPermanentlyEmpty(ICacheSpec<?, ?> spec) {
+		Long maxSize = spec.maxSize();
+		Duration expiryTime = spec.expiryTime();
+		return (maxSize != null && maxSize == 0) || (expiryTime != null && expiryTime.isZero());
 	}
 
 }
