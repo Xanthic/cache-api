@@ -160,6 +160,24 @@ public abstract class ProviderTestBase {
 	}
 
 	@Test
+	@DisplayName("Test that caches with zero maximum size remain empty")
+	public void zeroMaxSizeTest() {
+		Cache<String, Integer> cache = build(spec -> spec.maxSize(0L));
+		cache.put("1", 1);
+		Assertions.assertNull(cache.get("1"));
+		Assertions.assertEquals(0, cache.size());
+	}
+
+	@Test
+	@DisplayName("Test that caches with zero time-to-live for entries remain empty")
+	public void zeroExpiryTimeTest() {
+		Cache<String, Integer> cache = build(spec -> spec.expiryTime(Duration.ZERO));
+		cache.put("1", 1);
+		Assertions.assertNull(cache.get("1"));
+		Assertions.assertEquals(0, cache.size());
+	}
+
+	@Test
 	@DisplayName("Test that cache size constraint is respected")
 	public void sizeEvictionTest() {
 		// Build cache
