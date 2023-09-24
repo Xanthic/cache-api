@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -94,4 +95,8 @@ public final class EmptyCache<K, V> implements Cache<K, V> {
 		// no-op
 	}
 
+	@Override
+	public void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
+		// no-op
+	}
 }
