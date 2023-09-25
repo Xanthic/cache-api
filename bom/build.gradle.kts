@@ -6,9 +6,7 @@ val projectModules = rootProject.subprojects.filter { it.name != "cache-bom" }.m
 
 dependencies {
     constraints {
-        projectModules.forEach { module ->
-            add("api", module)
-        }
+        projectModules.forEach(::api)
     }
 }
 
