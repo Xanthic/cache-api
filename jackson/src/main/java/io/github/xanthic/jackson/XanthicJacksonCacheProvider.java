@@ -14,6 +14,13 @@ import io.github.xanthic.jackson.util.SerializableConsumer;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
+/**
+ * Implementation of Jackson's {@link CacheProvider} that yields Xanthic {@link io.github.xanthic.cache.api.Cache} instances,
+ * which are backed by any cache implementation of your choosing.
+ * <p>
+ * Example usage:
+ * {@code ObjectMapper mapper = JsonMapper.builder().cacheProvider(new XanthicJacksonCacheProvider()).build(); }
+ */
 @Value
 @RequiredArgsConstructor
 public class XanthicJacksonCacheProvider implements CacheProvider {

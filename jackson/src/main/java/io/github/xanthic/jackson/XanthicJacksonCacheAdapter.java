@@ -11,6 +11,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/**
+ * Wraps a Xanthic {@link Cache} for use as a Jackson {@link LookupCache}.
+ * <p>
+ * Most users should utilize {@link XanthicJacksonCacheProvider} rather than directly interact with this class.
+ *
+ * @param <K> The type of keys that form the cache
+ * @param <V> The type of values contained in the cache
+ */
 @Value
 @RequiredArgsConstructor
 public class XanthicJacksonCacheAdapter<K, V> implements LookupCache<K, V> {
