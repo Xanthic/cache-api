@@ -29,7 +29,7 @@ subprojects {
         apply(plugin = "jacoco")
 
         extensions.configure(io.freefair.gradle.plugins.lombok.LombokExtension::class.java) {
-            version.set("1.18.28")
+            version.set("1.18.30")
             disableConfig.set(true)
         }
 
