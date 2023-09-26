@@ -14,7 +14,7 @@ allprojects {
     }
 
     group = "io.github.xanthic.cache"
-    version = "0.3.0"
+    version = "0.4.0"
 }
 
 subprojects {
