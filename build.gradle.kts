@@ -14,7 +14,7 @@ allprojects {
     }
 
     group = "io.github.xanthic.cache"
-    version = "0.3.0"
+    version = "0.4.0"
 }
 
 subprojects {
@@ -29,7 +29,7 @@ subprojects {
         apply(plugin = "jacoco")
 
         extensions.configure(io.freefair.gradle.plugins.lombok.LombokExtension::class.java) {
-            version.set("1.18.28")
+            version.set("1.18.30")
             disableConfig.set(true)
         }
 
