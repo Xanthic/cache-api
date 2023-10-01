@@ -6,8 +6,8 @@ import io.github.xanthic.cache.api.domain.ExpiryType;
 import io.github.xanthic.cache.core.AbstractCacheProvider;
 import org.infinispan.commons.api.CacheContainerAdmin;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
-import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
+import org.infinispan.manager.EmbeddedCacheManager;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -18,12 +18,12 @@ import java.util.concurrent.TimeUnit;
  * Implements size and time-based expiry.
  */
 public final class InfinispanProvider extends AbstractCacheProvider {
+	private static final EmbeddedCacheManager MANAGER = new DefaultCacheManager();
+
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
-		GlobalConfigurationBuilder global = GlobalConfigurationBuilder.defaultClusteredBuilder();
-		DefaultCacheManager manager = new DefaultCacheManager(global.build());
-
 		ConfigurationBuilder builder = new ConfigurationBuilder();
+		builder.clustering().simpleCache(true);
 		if (spec.maxSize() != null) builder.memory().maxCount(spec.maxSize());
 		handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
 			if (type == ExpiryType.POST_WRITE)
@@ -32,9 +32,9 @@ public final class InfinispanProvider extends AbstractCacheProvider {
 				builder.expiration().maxIdle(time.toNanos(), TimeUnit.NANOSECONDS);
 		});
 
-		org.infinispan.Cache<K, V> cache = manager.administration()
+		org.infinispan.Cache<K, V> cache = MANAGER.administration()
 			.withFlags(CacheContainerAdmin.AdminFlag.VOLATILE)
-			.getOrCreateCache(UUID.randomUUID().toString(), builder.build());
+			.createCache(UUID.randomUUID().toString(), builder.build());
 
 		if (spec.removalListener() != null) {
 			cache.addFilteredListener(
