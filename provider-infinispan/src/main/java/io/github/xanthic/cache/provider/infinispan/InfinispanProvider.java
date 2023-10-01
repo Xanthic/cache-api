@@ -23,7 +23,7 @@ public final class InfinispanProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
 		ConfigurationBuilder builder = new ConfigurationBuilder();
-		builder.clustering().simpleCache(true);
+		builder.simpleCache(true);
 		if (spec.maxSize() != null) builder.memory().maxCount(spec.maxSize());
 		handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
 			if (type == ExpiryType.POST_WRITE)
