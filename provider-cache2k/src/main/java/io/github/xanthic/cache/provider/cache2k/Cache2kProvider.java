@@ -32,7 +32,9 @@ public final class Cache2kProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
 		//noinspection unchecked
-		Cache2kBuilder<K, V> builder = (Cache2kBuilder<K, V>) Cache2kBuilder.forUnknownTypes();
+		Cache2kBuilder<K, V> builder = (Cache2kBuilder<K, V>) Cache2kBuilder.forUnknownTypes()
+			.disableStatistics(true); // avoid performance penalty since we don't offer an interface for these statistics
+
 		if (spec.maxSize() != null) builder.entryCapacity(spec.maxSize());
 
 		ScheduledExecutorService exec = populateExecutor(builder, spec.executor());
@@ -45,17 +47,21 @@ public final class Cache2kProvider extends AbstractCacheProvider {
 			}
 		});
 
-		handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
-			if (type == ExpiryType.POST_WRITE) {
-				builder.expireAfterWrite(time);
-			} else {
-				long t = time.toNanos();
-				builder.idleScanTime(t / 3 * 2 + (t % 3 == 0 ? 0 : 1), TimeUnit.NANOSECONDS); // https://github.com/cache2k/cache2k/issues/39
-			}
+		if (spec.expiryTime() == null) {
+			builder.eternal(true);
+		} else {
+			handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
+				if (type == ExpiryType.POST_WRITE) {
+					builder.expireAfterWrite(time);
+				} else {
+					long t = time.toNanos();
+					builder.idleScanTime(t / 3 * 2 + (t % 3 == 0 ? 0 : 1), TimeUnit.NANOSECONDS); // https://github.com/cache2k/cache2k/issues/39
+				}
 
-			if (exec != null)
-				builder.sharpExpiry(true);
-		});
+				if (exec != null)
+					builder.sharpExpiry(true);
+			});
+		}
 
 		return new Cache2kDelegate<>(builder.build());
 	}
