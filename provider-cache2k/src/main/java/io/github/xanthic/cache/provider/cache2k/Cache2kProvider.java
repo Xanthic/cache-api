@@ -33,7 +33,8 @@ public final class Cache2kProvider extends AbstractCacheProvider {
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
 		//noinspection unchecked
 		Cache2kBuilder<K, V> builder = (Cache2kBuilder<K, V>) Cache2kBuilder.forUnknownTypes()
-			.disableStatistics(true); // avoid performance penalty since we don't offer an interface for these statistics
+			.disableStatistics(true) // avoid performance penalty since we don't offer an interface for these statistics
+			.boostConcurrency(Boolean.TRUE.equals(spec.highContention())); // utilize more memory to optimize for many threads performing mutations
 
 		if (spec.maxSize() != null) {
 			builder.entryCapacity(spec.maxSize());
