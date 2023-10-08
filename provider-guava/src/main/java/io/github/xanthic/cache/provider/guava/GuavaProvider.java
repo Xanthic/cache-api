@@ -22,6 +22,10 @@ public final class GuavaProvider extends AbstractCacheProvider {
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
 		CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder();
 		if (spec.maxSize() != null) builder.maximumSize(spec.maxSize());
+		if (Boolean.TRUE.equals(spec.highContention())) {
+			// https://github.com/google/guava/issues/2063
+			builder.concurrencyLevel(Runtime.getRuntime().availableProcessors() * 2);
+		}
 		if (spec.removalListener() != null) {
 			//noinspection ConstantConditions
 			builder = builder.removalListener(e -> {
