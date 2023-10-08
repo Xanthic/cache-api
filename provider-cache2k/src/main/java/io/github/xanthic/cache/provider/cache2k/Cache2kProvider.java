@@ -35,7 +35,13 @@ public final class Cache2kProvider extends AbstractCacheProvider {
 		Cache2kBuilder<K, V> builder = (Cache2kBuilder<K, V>) Cache2kBuilder.forUnknownTypes()
 			.disableStatistics(true); // avoid performance penalty since we don't offer an interface for these statistics
 
-		if (spec.maxSize() != null) builder.entryCapacity(spec.maxSize());
+		if (spec.maxSize() != null) {
+			builder.entryCapacity(spec.maxSize());
+		} else {
+			// We must specify MAX_VALUE to create an unbounded cache to comply with the Xanthic maxSize spec
+			// since Cache2k, by default, imposes a capacity bound of 1802 (Cache2kConfig#DEFAULT_ENTRY_CAPACITY)
+			builder.entryCapacity(Long.MAX_VALUE);
+		}
 
 		ScheduledExecutorService exec = populateExecutor(builder, spec.executor());
 
