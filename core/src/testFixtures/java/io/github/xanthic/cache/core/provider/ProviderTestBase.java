@@ -188,7 +188,7 @@ public abstract class ProviderTestBase {
 			cache.put(String.valueOf(i), i);
 
 			// Hint to LRU/LFU impls like ehcache that 0 should be selected for eviction
-			for (int j = 0; j < i; j++) {
+			for (int j = 1; j < i; j++) {
 				cache.get(String.valueOf(i));
 			}
 		}
@@ -346,6 +346,17 @@ public abstract class ProviderTestBase {
 	@DisplayName("Tests whether the provider has been set as the default")
 	public void registeredAsDefaultTest() {
 		Assertions.assertEquals(provider.getClass(), CacheApiSettings.getInstance().getDefaultCacheProvider().getClass());
+	}
+
+	@Test
+	@DisplayName("Test whether cache can be built with contention flag and custom executor")
+	public void buildTest() {
+		Assertions.assertNotNull(
+			build(spec -> spec.highContention(true))
+		);
+		Assertions.assertNotNull(
+			build(spec -> spec.highContention(true).executor(Executors.newSingleThreadScheduledExecutor()))
+		);
 	}
 
 	protected <K, V> Cache<K, V> build(Consumer<CacheApiSpec<K, V>> additionalSpec) {
