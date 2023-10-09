@@ -78,4 +78,19 @@ public interface ICacheSpec<K, V> {
 	@Nullable
 	ScheduledExecutorService executor();
 
+	/**
+	 * The forecasted contention of the cache.
+	 * <p>
+	 * If the cache will be mutated by many threads concurrently,
+	 * this flag can be enabled to hint to certain providers to
+	 * perform certain internal optimizations to boost performance,
+	 * which could come at the cost of increased memory usage.
+	 *
+	 * @return whether providers should optimize for high contention
+	 */
+	@Nullable
+	default Boolean highContention() {
+		return null; // avoids breaking change
+	}
+
 }

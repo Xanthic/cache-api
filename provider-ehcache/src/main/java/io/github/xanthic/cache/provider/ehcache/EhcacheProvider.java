@@ -11,8 +11,9 @@ import org.ehcache.config.builders.CacheEventListenerConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
-import org.ehcache.config.units.MemoryUnit;
+import org.ehcache.core.spi.time.TickingTimeSource;
 import org.ehcache.event.EventType;
+import org.ehcache.impl.internal.TimeSourceConfiguration;
 
 import java.time.Duration;
 import java.util.UUID;
@@ -29,11 +30,20 @@ public final class EhcacheProvider extends AbstractCacheProvider {
 
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
-		CacheManager manager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
+		CacheManagerBuilder<CacheManager> managerBuilder = CacheManagerBuilder.newCacheManagerBuilder();
+		if (Boolean.TRUE.equals(spec.highContention()) && spec.expiryTime() != null) {
+			// https://www.ehcache.org/documentation/3.10/performance.html#time-source
+			managerBuilder = managerBuilder.using(
+				new TimeSourceConfiguration(new TickingTimeSource(1L, 1000L))
+			);
+		}
+		CacheManager manager = managerBuilder.build(true);
 
 		//noinspection unchecked
 		final CacheConfigurationBuilder<Object, Object>[] builder = new CacheConfigurationBuilder[] {
-			CacheConfigurationBuilder.newCacheConfigurationBuilder(Object.class, Object.class, poolBuilder(spec.maxSize()))
+			CacheConfigurationBuilder.newCacheConfigurationBuilder(Object.class, Object.class,
+				ResourcePoolsBuilder.heap(spec.maxSize() != null ? spec.maxSize() : Long.MAX_VALUE)
+			)
 		};
 
 		handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
@@ -69,12 +79,6 @@ public final class EhcacheProvider extends AbstractCacheProvider {
 		}
 
 		return delegate;
-	}
-
-	private static ResourcePoolsBuilder poolBuilder(Long maxSize) {
-		if (maxSize == null)
-			return ResourcePoolsBuilder.newResourcePoolsBuilder().heap(Runtime.getRuntime().maxMemory() / 2, MemoryUnit.B);
-		return ResourcePoolsBuilder.heap(maxSize);
 	}
 
 	private static RemovalCause getCause(EventType type) {
