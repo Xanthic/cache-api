@@ -352,7 +352,7 @@ public abstract class ProviderTestBase {
 	@DisplayName("Test whether cache can be built with contention flag and custom executor")
 	public void buildTest() {
 		Assertions.assertNotNull(
-			build(spec -> spec.highContention(true))
+			build(spec -> spec.highContention(true).maxSize(null))
 		);
 		Assertions.assertNotNull(
 			build(spec -> spec.highContention(true).executor(Executors.newSingleThreadScheduledExecutor()))

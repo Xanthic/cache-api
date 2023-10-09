@@ -11,7 +11,6 @@ import org.ehcache.config.builders.CacheEventListenerConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
-import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.core.spi.time.TickingTimeSource;
 import org.ehcache.event.EventType;
 import org.ehcache.impl.internal.TimeSourceConfiguration;
@@ -42,7 +41,9 @@ public final class EhcacheProvider extends AbstractCacheProvider {
 
 		//noinspection unchecked
 		final CacheConfigurationBuilder<Object, Object>[] builder = new CacheConfigurationBuilder[] {
-			CacheConfigurationBuilder.newCacheConfigurationBuilder(Object.class, Object.class, poolBuilder(spec.maxSize()))
+			CacheConfigurationBuilder.newCacheConfigurationBuilder(Object.class, Object.class,
+				ResourcePoolsBuilder.heap(spec.maxSize() != null ? spec.maxSize() : Long.MAX_VALUE)
+			)
 		};
 
 		handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
@@ -78,12 +79,6 @@ public final class EhcacheProvider extends AbstractCacheProvider {
 		}
 
 		return delegate;
-	}
-
-	private static ResourcePoolsBuilder poolBuilder(Long maxSize) {
-		if (maxSize == null)
-			return ResourcePoolsBuilder.newResourcePoolsBuilder().heap(Runtime.getRuntime().maxMemory() / 2, MemoryUnit.B);
-		return ResourcePoolsBuilder.heap(maxSize);
 	}
 
 	private static RemovalCause getCause(EventType type) {
