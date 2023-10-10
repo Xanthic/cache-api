@@ -60,7 +60,6 @@ public class EhcacheDelegate<K, V> implements Cache<K, V> {
 
 	@Override
 	public long size() {
-		// TODO: use statistics
 		LongAdder l = new LongAdder();
 		cache.forEach(e -> l.increment());
 		return l.sum();
