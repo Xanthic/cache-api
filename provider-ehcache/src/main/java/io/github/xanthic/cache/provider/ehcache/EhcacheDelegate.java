@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -60,9 +59,11 @@ public class EhcacheDelegate<K, V> implements Cache<K, V> {
 
 	@Override
 	public long size() {
-		LongAdder l = new LongAdder();
-		cache.forEach(e -> l.increment());
-		return l.sum();
+		long n = 0;
+		for (org.ehcache.Cache.Entry<Object, Object> ignored : cache) {
+			n++;
+		}
+		return n;
 	}
 
 	@Override
