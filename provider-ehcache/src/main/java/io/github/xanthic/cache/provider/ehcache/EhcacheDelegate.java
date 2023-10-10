@@ -24,16 +24,19 @@ public class EhcacheDelegate<K, V> implements Cache<K, V> {
 
 	@Override
 	public @Nullable V put(@NotNull K key, @NotNull V value) {
+		Object prev = cache.get(key);
 		while (true) {
-			Object prev = cache.get(key);
 			if (prev == null) {
-				if (cache.putIfAbsent(key, value) == null) {
+				Object latest = cache.putIfAbsent(key, value);
+				if (latest == null) {
 					return null;
 				}
+				prev = latest;
 			} else {
 				if (cache.replace(key, prev, value)) {
 					return (V) prev;
 				}
+				prev = cache.get(key);
 			}
 		}
 	}
@@ -68,8 +71,8 @@ public class EhcacheDelegate<K, V> implements Cache<K, V> {
 
 	@Override
 	public @Nullable V compute(@NotNull K key, @NotNull BiFunction<? super K, ? super V, ? extends V> computeFunc) {
+		Object old = cache.get(key);
 		while (true) {
-			Object old = cache.get(key);
 			V computed = computeFunc.apply(key, (V) old);
 			if (computed == null) {
 				if (old == null || cache.remove(key, old)) {
@@ -77,8 +80,12 @@ public class EhcacheDelegate<K, V> implements Cache<K, V> {
 				}
 			} else {
 				if (old == null) {
-					if (cache.putIfAbsent(key, computed) == null) {
+					Object latest = cache.putIfAbsent(key, computed);
+					if (latest == null) {
 						return computed;
+					} else {
+						old = latest;
+						continue;
 					}
 				} else {
 					if (cache.replace(key, old, computed)) {
@@ -86,6 +93,7 @@ public class EhcacheDelegate<K, V> implements Cache<K, V> {
 					}
 				}
 			}
+			old = cache.get(key);
 		}
 	}
 
