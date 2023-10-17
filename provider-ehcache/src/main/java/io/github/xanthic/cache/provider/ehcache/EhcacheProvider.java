@@ -13,6 +13,7 @@ import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.core.spi.time.TickingTimeSource;
 import org.ehcache.event.EventType;
+import org.ehcache.expiry.ExpiryPolicy;
 import org.ehcache.impl.internal.TimeSourceConfiguration;
 
 import java.time.Duration;
@@ -46,12 +47,16 @@ public final class EhcacheProvider extends AbstractCacheProvider {
 			)
 		};
 
-		handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
-			if (type == ExpiryType.POST_WRITE)
-				builder[0] = builder[0].withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(time));
-			else
-				builder[0] = builder[0].withExpiry(ExpiryPolicyBuilder.timeToIdleExpiration(time));
-		});
+		if (spec.expiryTime() == null) {
+			builder[0].withExpiry(ExpiryPolicy.NO_EXPIRY);
+		} else {
+			handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
+				if (type == ExpiryType.POST_WRITE)
+					builder[0] = builder[0].withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(time));
+				else
+					builder[0] = builder[0].withExpiry(ExpiryPolicyBuilder.timeToIdleExpiration(time));
+			});
+		}
 
 		if (spec.removalListener() != null) {
 			builder[0] = builder[0].withService(
