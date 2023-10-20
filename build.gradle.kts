@@ -84,6 +84,12 @@ subprojects {
                 }
             }
 
+            // reproducible builds
+            withType<AbstractArchiveTask>().configureEach {
+                isPreserveFileTimestamps = false
+                isReproducibleFileOrder = true
+            }
+
             // testing
             test {
                 useJUnitPlatform()
