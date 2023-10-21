@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.cfg.CacheProvider;
 import com.fasterxml.jackson.databind.ser.SerializerCache;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.databind.util.LookupCache;
 import com.fasterxml.jackson.databind.util.TypeKey;
 import io.github.xanthic.cache.core.CacheApiSpec;
