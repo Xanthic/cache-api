@@ -32,8 +32,17 @@ public final class Cache2kProvider extends AbstractCacheProvider {
 	@Override
 	public <K, V> Cache<K, V> build(ICacheSpec<K, V> spec) {
 		//noinspection unchecked
-		Cache2kBuilder<K, V> builder = (Cache2kBuilder<K, V>) Cache2kBuilder.forUnknownTypes();
-		if (spec.maxSize() != null) builder.entryCapacity(spec.maxSize());
+		Cache2kBuilder<K, V> builder = (Cache2kBuilder<K, V>) Cache2kBuilder.forUnknownTypes()
+			.disableStatistics(true) // avoid performance penalty since we don't offer an interface for these statistics
+			.boostConcurrency(Boolean.TRUE.equals(spec.highContention())); // utilize more memory to optimize for many threads performing mutations
+
+		if (spec.maxSize() != null) {
+			builder.entryCapacity(spec.maxSize());
+		} else {
+			// We must specify MAX_VALUE to create an unbounded cache to comply with the Xanthic maxSize spec
+			// since Cache2k, by default, imposes a capacity bound of 1802 (Cache2kConfig#DEFAULT_ENTRY_CAPACITY)
+			builder.entryCapacity(Long.MAX_VALUE);
+		}
 
 		ScheduledExecutorService exec = populateExecutor(builder, spec.executor());
 
@@ -45,17 +54,21 @@ public final class Cache2kProvider extends AbstractCacheProvider {
 			}
 		});
 
-		handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
-			if (type == ExpiryType.POST_WRITE) {
-				builder.expireAfterWrite(time);
-			} else {
-				long t = time.toNanos();
-				builder.idleScanTime(t / 3 * 2 + (t % 3 == 0 ? 0 : 1), TimeUnit.NANOSECONDS); // https://github.com/cache2k/cache2k/issues/39
-			}
+		if (spec.expiryTime() == null) {
+			builder.eternal(true);
+		} else {
+			handleExpiration(spec.expiryTime(), spec.expiryType(), (time, type) -> {
+				if (type == ExpiryType.POST_WRITE) {
+					builder.expireAfterWrite(time);
+				} else {
+					long t = time.toNanos();
+					builder.idleScanTime(t / 3 * 2 + (t % 3 == 0 ? 0 : 1), TimeUnit.NANOSECONDS); // https://github.com/cache2k/cache2k/issues/39
+				}
 
-			if (exec != null)
-				builder.sharpExpiry(true);
-		});
+				if (exec != null)
+					builder.sharpExpiry(true);
+			});
+		}
 
 		return new Cache2kDelegate<>(builder.build());
 	}

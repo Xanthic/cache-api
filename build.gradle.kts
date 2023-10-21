@@ -3,7 +3,7 @@ plugins {
     `java-library`
     signing
     `maven-publish`
-    id("io.freefair.lombok") version "8.3" apply false
+    id("io.freefair.lombok") version "8.4" apply false
     jacoco
 }
 
@@ -14,7 +14,7 @@ allprojects {
     }
 
     group = "io.github.xanthic.cache"
-    version = "0.4.0"
+    version = "0.4.2"
 }
 
 subprojects {
@@ -82,6 +82,12 @@ subprojects {
                         addBooleanOption("html5", true)
                     }
                 }
+            }
+
+            // reproducible builds
+            withType<AbstractArchiveTask>().configureEach {
+                isPreserveFileTimestamps = false
+                isReproducibleFileOrder = true
             }
 
             // testing

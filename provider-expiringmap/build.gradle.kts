@@ -1,7 +1,7 @@
 dependencies {
     api(project(":cache-core"))
 
-    implementation("net.jodah:expiringmap:0.5.10")
+    implementation("net.jodah:expiringmap:0.5.11")
 
     testImplementation(testFixtures(project(":cache-core")))
 }

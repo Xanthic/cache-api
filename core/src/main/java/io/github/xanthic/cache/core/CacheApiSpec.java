@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
-import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 
@@ -43,6 +42,8 @@ public final class CacheApiSpec<K, V> implements ICacheSpec<K, V> {
 	private RemovalListener<K, V> removalListener;
 
 	private ScheduledExecutorService executor;
+
+	private Boolean highContention;
 
 	@NotNull
 	public CacheProvider provider() {

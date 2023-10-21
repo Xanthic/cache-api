@@ -27,7 +27,9 @@ import java.util.function.Supplier;
  *
  * @param <K> The type of keys that form the cache
  * @param <V> The type of values contained in the cache
+ * @deprecated no longer used by Xanthic to implement any canonical cache provider
  */
+@Deprecated
 public abstract class LockedAbstractCache<K, V> implements Cache<K, V> {
 
 	protected final ReadWriteLock lock = new ReentrantReadWriteLock();
