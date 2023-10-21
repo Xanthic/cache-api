@@ -28,6 +28,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class XanthicJacksonCacheProviderTest {
 
 	@Test
+	void defaults() throws JsonProcessingException {
+		ObjectMapper mapper = JsonMapper.builder()
+			.cacheProvider(XanthicJacksonCacheProvider.defaults())
+			.build();
+		assertNotNull(mapper.readValue("{\"bar\":\"baz\"}", Foo.class));
+		assertNotNull(mapper.writeValueAsString(new Foo("baz")));
+		assertNotNull(mapper.getTypeFactory().constructParametricType(List.class, Integer.class));
+	}
+
+	@Test
 	void deserialize() throws JsonProcessingException {
 		TrackedCacheProvider provider = new TrackedCacheProvider(new CaffeineProvider());
 		ObjectMapper mapper = JsonMapper.builder()
