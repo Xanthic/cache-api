@@ -68,12 +68,12 @@ public class XanthicJacksonCacheAdapter<K, V> implements LookupCache<K, V> {
 		cache.clear();
 	}
 
-	// TODO: @Override
+	@Override
 	public void contents(BiConsumer<K, V> consumer) {
 		cache.forEach(consumer);
 	}
 
-	// TODO: @Override
+	@Override
 	public XanthicJacksonCacheAdapter<K, V> emptyCopy() {
 		return new XanthicJacksonCacheAdapter<>(spec);
 	}
