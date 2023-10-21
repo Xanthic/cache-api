@@ -5,6 +5,7 @@ dependencies {
             require("2.16.0-rc1") // imposes a lower bound on acceptable versions
         }
     }
+    testImplementation(project(":cache-provider-caffeine"))
 }
 
 publishing.publications.withType<MavenPublication> {
