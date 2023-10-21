@@ -21,12 +21,13 @@ import lombok.Value;
  * which are backed by any cache implementation of your choosing.
  * <p>
  * Example usage:
- * {@code ObjectMapper mapper = JsonMapper.builder().cacheProvider(new XanthicJacksonCacheProvider()).build(); }
+ * {@code ObjectMapper mapper = JsonMapper.builder().cacheProvider(XanthicJacksonCacheProvider.defaults()).build(); }
  */
 @Value
 @RequiredArgsConstructor
 public class XanthicJacksonCacheProvider implements CacheProvider {
 	private static final long serialVersionUID = 1L;
+	private static final XanthicJacksonCacheProvider DEFAULT_INSTANCE = new XanthicJacksonCacheProvider();
 
 	/**
 	 * Specification for the deserializer cache.
@@ -59,7 +60,7 @@ public class XanthicJacksonCacheProvider implements CacheProvider {
 	/**
 	 * Creates a Jackson {@link CacheProvider} backed by Xanthic, using Jackson's recommended default max cache sizes.
 	 */
-	public XanthicJacksonCacheProvider() {
+	private XanthicJacksonCacheProvider() {
 		this(DeserializerCache.DEFAULT_MAX_CACHE_SIZE, SerializerCache.DEFAULT_MAX_CACHE_SIZE, TypeFactory.DEFAULT_MAX_CACHE_SIZE);
 	}
 
@@ -76,5 +77,12 @@ public class XanthicJacksonCacheProvider implements CacheProvider {
 	@Override
 	public LookupCache<Object, JavaType> forTypeFactory() {
 		return new XanthicJacksonCacheAdapter<>(typeFactorySpec);
+	}
+
+	/**
+	 * @return a Jackson {@link CacheProvider} backed by Xanthic, using Jackson's recommended default max cache sizes.
+	 */
+	public static XanthicJacksonCacheProvider defaults() {
+		return DEFAULT_INSTANCE;
 	}
 }
