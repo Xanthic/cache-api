@@ -64,6 +64,24 @@ class XanthicJacksonCacheProviderTest {
 		assertTrue(provider.getConstructedCaches().stream().anyMatch(TrackedCache::hasInteraction));
 	}
 
+	@Test
+	void constructMultiple() throws JsonProcessingException {
+		TrackedCacheProvider provider = new TrackedCacheProvider(new CaffeineProvider());
+		assertEquals(0, provider.getConstructedCaches().size());
+
+		ObjectMapper m1 = JsonMapper.builder().cacheProvider(createCacheProvider(provider)).build();
+		m1.readValue("{\"bar\":\"baz\"}", Foo.class);
+		m1.writeValueAsString(new Foo("baz"));
+		m1.getTypeFactory().constructParametricType(List.class, Integer.class);
+		assertEquals(3, provider.getConstructedCaches().size());
+
+		ObjectMapper m2 = JsonMapper.builder().cacheProvider(createCacheProvider(provider)).build();
+		m2.readValue("{\"bar\":\"baz\"}", Foo.class);
+		m2.writeValueAsString(new Foo("baz"));
+		m2.getTypeFactory().constructParametricType(List.class, Integer.class);
+		assertEquals(6, provider.getConstructedCaches().size());
+	}
+
 	private static CacheProvider createCacheProvider(TrackedCacheProvider trackedProvider) {
 		return new XanthicJacksonCacheProvider(
 			spec -> spec.provider(trackedProvider).maxSize((long) DeserializerCache.DEFAULT_MAX_CACHE_SIZE),
