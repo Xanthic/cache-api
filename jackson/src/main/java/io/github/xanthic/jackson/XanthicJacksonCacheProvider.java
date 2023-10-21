@@ -58,8 +58,7 @@ public class XanthicJacksonCacheProvider implements CacheProvider {
 	 * Creates a Jackson {@link CacheProvider} backed by Xanthic, using Jackson's recommended default max cache sizes.
 	 */
 	public XanthicJacksonCacheProvider() {
-		// TODO: this(DeserializerCache.DEFAULT_MAX_CACHE_SIZE, SerializerCache.DEFAULT_MAX_CACHE_SIZE, TypeFactory.DEFAULT_MAX_CACHE_SIZE);
-		this(2000, SerializerCache.DEFAULT_MAX_CACHED, 200);
+		this(DeserializerCache.DEFAULT_MAX_CACHE_SIZE, SerializerCache.DEFAULT_MAX_CACHE_SIZE, TypeFactory.DEFAULT_MAX_CACHE_SIZE);
 	}
 
 	@Override
