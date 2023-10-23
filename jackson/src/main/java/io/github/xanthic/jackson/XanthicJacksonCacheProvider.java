@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.util.LookupCache;
 import com.fasterxml.jackson.databind.util.TypeKey;
 import io.github.xanthic.cache.core.CacheApiSpec;
 import io.github.xanthic.jackson.util.SerializableConsumer;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
@@ -24,6 +26,7 @@ import lombok.Value;
  * {@code ObjectMapper mapper = JsonMapper.builder().cacheProvider(XanthicJacksonCacheProvider.defaults()).build(); }
  */
 @Value
+@Getter(AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class XanthicJacksonCacheProvider implements CacheProvider {
 	private static final long serialVersionUID = 1L;
