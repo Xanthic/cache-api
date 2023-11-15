@@ -23,7 +23,7 @@ import lombok.Value;
  * which are backed by any cache implementation of your choosing.
  * <p>
  * Example usage:
- * {@code ObjectMapper mapper = JsonMapper.builder().cacheProvider(XanthicJacksonCacheProvider.defaults()).build(); }
+ * {@code ObjectMapper mapper = JsonMapper.builder().cacheProvider(XanthicJacksonCacheProvider.defaultInstance()).build(); }
  */
 @Value
 @Getter(AccessLevel.PRIVATE)
@@ -85,7 +85,7 @@ public class XanthicJacksonCacheProvider implements CacheProvider {
 	/**
 	 * @return a Jackson {@link CacheProvider} backed by Xanthic, using Jackson's recommended default max cache sizes.
 	 */
-	public static XanthicJacksonCacheProvider defaults() {
+	public static XanthicJacksonCacheProvider defaultInstance() {
 		return DEFAULT_INSTANCE;
 	}
 }

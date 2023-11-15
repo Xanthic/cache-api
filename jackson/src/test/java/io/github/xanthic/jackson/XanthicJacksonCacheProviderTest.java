@@ -28,7 +28,7 @@ class XanthicJacksonCacheProviderTest {
 	@Test
 	void defaults() throws JsonProcessingException {
 		ObjectMapper mapper = JsonMapper.builder()
-			.cacheProvider(XanthicJacksonCacheProvider.defaults())
+			.cacheProvider(XanthicJacksonCacheProvider.defaultInstance())
 			.build();
 		assertNotNull(mapper.readValue("{\"bar\":\"baz\"}", Foo.class));
 		assertNotNull(mapper.writeValueAsString(new Foo("baz")));
