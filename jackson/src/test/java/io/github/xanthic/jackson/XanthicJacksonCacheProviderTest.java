@@ -16,6 +16,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -90,6 +95,22 @@ class XanthicJacksonCacheProviderTest {
 		m2.getTypeFactory().constructParametricType(List.class, Integer.class);
 		assertEquals(6, provider.getConstructedCaches().size());
 		assertTrue(provider.getConstructedCaches().stream().allMatch(c -> c.size() > 0));
+	}
+
+	@Test
+	void serializable() throws IOException, ClassNotFoundException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+			oos.writeObject(XanthicJacksonCacheProvider.defaultInstance());
+		}
+
+		XanthicJacksonCacheProvider provider;
+		try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()))) {
+			provider = (XanthicJacksonCacheProvider) ois.readObject();
+		}
+
+		assertNotNull(provider);
+		assertNotNull(provider.forTypeFactory());
 	}
 
 	private static CacheProvider createCacheProvider(TrackedCacheProvider trackedProvider) {
