@@ -85,7 +85,7 @@ public class XanthicSpringCache extends AbstractValueAdaptingCache {
 	public CompletableFuture<?> retrieve(@NotNull Object key) {
 		Object value = lookup(key);
 		if (value == null) return null;
-		return CompletableFuture.completedFuture(fromStoreValue(value));
+		return CompletableFuture.completedFuture(toValueWrapper(value));
 	}
 
 	@NotNull
