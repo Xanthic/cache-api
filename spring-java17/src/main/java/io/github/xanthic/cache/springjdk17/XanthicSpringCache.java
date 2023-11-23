@@ -62,6 +62,11 @@ public class XanthicSpringCache extends AbstractValueAdaptingCache {
 	}
 
 	@Override
+	public boolean evictIfPresent(@NotNull Object key) {
+		return cache.remove(key) != null;
+	}
+
+	@Override
 	public void clear() {
 		cache.clear();
 	}
