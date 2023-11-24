@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.support.AbstractValueAdaptingCache;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class XanthicSpringCache extends AbstractValueAdaptingCache {
 	private final String name;
@@ -55,8 +57,18 @@ public class XanthicSpringCache extends AbstractValueAdaptingCache {
 	}
 
 	@Override
+	public ValueWrapper putIfAbsent(@NotNull Object key, Object value) {
+		return toValueWrapper(cache.putIfAbsent(key, toStoreValue(value)));
+	}
+
+	@Override
 	public void evict(@NotNull Object key) {
 		cache.remove(key);
+	}
+
+	@Override
+	public boolean evictIfPresent(@NotNull Object key) {
+		return cache.remove(key) != null;
 	}
 
 	@Override
@@ -68,6 +80,22 @@ public class XanthicSpringCache extends AbstractValueAdaptingCache {
 	protected Object lookup(@NotNull Object key) {
 		return cache.get(key);
 	}
+
+	@Override
+	public CompletableFuture<?> retrieve(@NotNull Object key) {
+		Object value = lookup(key);
+		if (value == null) return null;
+		return CompletableFuture.completedFuture(toValueWrapper(value));
+	}
+
+	@NotNull
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> CompletableFuture<T> retrieve(@NotNull Object key, @NotNull Supplier<CompletableFuture<T>> valueLoader) {
+		return CompletableFuture.supplyAsync(
+			() -> (T) fromStoreValue(
+				cache.computeIfAbsent(key, k -> toStoreValue(valueLoader.get().join()))
+			)
+		);
+	}
 }
-
-

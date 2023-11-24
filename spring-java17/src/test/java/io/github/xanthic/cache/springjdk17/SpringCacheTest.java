@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +29,7 @@ public class SpringCacheTest {
 	CacheManager cacheManager;
 
 	@Test
-	@DisplayName("Tests cache get, put, putIfAbsent, clear")
+	@DisplayName("Tests cache get, put, putIfAbsent, retrieve, clear")
 	public void putGetClearTest() {
 		Cache cache = Objects.requireNonNull(cacheManager.getCache("dev"));
 
@@ -42,6 +43,18 @@ public class SpringCacheTest {
 		// Test putIfAbsent
 		Assertions.assertEquals(420, Objects.requireNonNull(cache.putIfAbsent("4/20", 69)).get());
 		Assertions.assertEquals(420, Objects.requireNonNull(cache.get("4/20")).get());
+
+		// Test retrieve
+		Assertions.assertEquals(420, unwrapValue(Objects.requireNonNull(cache.retrieve("4/20")).join()));
+		CompletableFuture<?> missing = cache.retrieve("8/21");
+		Assertions.assertTrue(missing == null || missing.join() == null);
+		cache.put("5/11", null);
+		Object wrappedMissing = Objects.requireNonNull(cache.retrieve("5/11")).join();
+		Assertions.assertTrue(wrappedMissing instanceof Cache.ValueWrapper);
+		Assertions.assertNull(unwrapValue(wrappedMissing));
+		Assertions.assertNull(Objects.requireNonNull(cache.retrieve("5/11", () -> CompletableFuture.completedFuture(1605))).join());
+		Assertions.assertEquals(69, cache.retrieve("6/9", () -> CompletableFuture.supplyAsync(() -> 69)).join());
+		Assertions.assertEquals(69, cache.retrieve("6/9", () -> CompletableFuture.supplyAsync(() -> 70)).join());
 
 		// Test clear
 		cache.clear();
@@ -137,6 +150,10 @@ public class SpringCacheTest {
 		String value = cache.get("key", valueLoader);
 		Assertions.assertEquals("value-loaded", value);
 		Assertions.assertEquals(1, callCounter.get(), "Value loader should only be called once");
+	}
+
+	private static Object unwrapValue(Object value) {
+		return value instanceof Cache.ValueWrapper ? ((Cache.ValueWrapper) value).get() : value;
 	}
 
 }
