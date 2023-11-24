@@ -5,6 +5,7 @@ include(
     ":api",
     ":core",
     ":kotlin",
+    ":jackson",
     ":spring",
     ":spring-java17",
     ":provider-androidx",
@@ -22,6 +23,7 @@ project(":bom").name = "cache-bom"
 project(":api").name = "cache-api"
 project(":core").name = "cache-core"
 project(":kotlin").name = "cache-kotlin"
+project(":jackson").name = "cache-jackson"
 project(":spring").name = "cache-spring"
 project(":spring-java17").name = "cache-spring-java17"
 project(":provider-androidx").name = "cache-provider-androidx"
