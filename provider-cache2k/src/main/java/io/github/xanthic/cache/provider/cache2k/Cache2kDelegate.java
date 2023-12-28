@@ -41,6 +41,12 @@ class Cache2kDelegate<K, V> extends GenericMapCacheDelegate<K, V> {
 	}
 
 	@Override
+	public void close() {
+		super.close();
+		cache.close();
+	}
+
+	@Override
 	public V computeIfAbsent(@NotNull K key, @NotNull Function<K, V> computeFunc) {
 		return cache.computeIfAbsent(key, computeFunc);
 	}
