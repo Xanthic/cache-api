@@ -49,7 +49,7 @@ public class XanthicSpringCacheManager implements CacheManager {
 		if (cacheNames != null) {
 			this.dynamic = false;
 			for (String name : cacheNames) {
-				this.cacheMap.put(name, createCache(name, this.spec));
+				this.cacheMap.computeIfAbsent(name, s -> createCache(s, this.spec));
 			}
 		} else {
 			this.dynamic = true;
@@ -77,13 +77,17 @@ public class XanthicSpringCacheManager implements CacheManager {
 	 *
 	 * @param name the name of the cache
 	 * @param spec configuration for the specified cache
+	 * @throws IllegalStateException if the cache manager is not in dynamic mode or a cache with the same name was already registered
 	 */
 	public void registerCache(String name, Consumer<CacheApiSpec<Object, Object>> spec) {
 		if (!this.dynamic) throw new IllegalStateException("CacheManager has a fixed set of cache keys and does not allow creation of new caches.");
 
-		this.cacheMap.put(name, createCache(name, spec));
-		this.customCacheNames.add(name);
-	}
+        if (this.customCacheNames.add(name)) {
+			this.cacheMap.put(name, createCache(name, spec));
+		} else {
+            throw new IllegalStateException("CacheManager already has a cache registered with the name: " + name);
+        }
+    }
 
 	private Cache createCache(String name, Consumer<CacheApiSpec<Object, Object>> spec) {
 		return new XanthicSpringCache(name, CacheApi.create(spec));
