@@ -3,7 +3,7 @@ plugins {
     `java-library`
     signing
     `maven-publish`
-    id("io.freefair.lombok") version "8.4" apply false
+    id("io.freefair.lombok") version "8.6" apply false
     jacoco
 }
 
