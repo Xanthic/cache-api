@@ -139,6 +139,7 @@ public final class CacheApiSettings {
 		loadImpl.accept("io.github.xanthic.cache.provider.caffeine3.Caffeine3Provider");
 		loadImpl.accept("io.github.xanthic.cache.provider.caffeine.CaffeineProvider");
 		loadImpl.accept("io.github.xanthic.cache.provider.cache2k.Cache2kProvider");
+		loadImpl.accept("io.github.xanthic.cache.provider.infinispanjdk17.InfinispanProvider");
 		loadImpl.accept("io.github.xanthic.cache.provider.infinispanjdk11.InfinispanProvider");
 		loadImpl.accept("io.github.xanthic.cache.provider.infinispan.InfinispanProvider");
 		loadImpl.accept("io.github.xanthic.cache.provider.expiringmap.ExpiringMapProvider");
