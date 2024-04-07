@@ -34,17 +34,18 @@ example), so it is safer to code against this API for long-term flexibility*
 
 The following backing cache implementations have bindings already provided by this library:
 
-| Backend | Provider | Artifact |
-| :-----: | :------: | :------: |
-| [Caffeine](https://github.com/ben-manes/caffeine/wiki) | `CaffeineProvider` | `cache-provider-caffeine` |
-| [Caffeine3](https://github.com/ben-manes/caffeine/wiki) | `Caffeine3Provider` | `cache-provider-caffeine3` |
-| [Guava](https://github.com/google/guava/wiki/CachesExplained) | `GuavaProvider` | `cache-provider-guava` |
-| [Cache2k](https://cache2k.org) | `Cache2kProvider` | `cache-provider-cache2k` |
-| [AndroidX](https://developer.android.com/reference/androidx/collection/LruCache) | `AndroidLruProvider` | `cache-provider-androidx` |
-| [ExpiringMap](https://github.com/jhalterman/expiringmap#expiringmap) | `ExpiringMapProvider` | `cache-provider-expiringmap` |
-| [Ehcache v3 (heap)](https://www.ehcache.org/documentation/3.0/index.html) | `EhcacheProvider` | `cache-provider-ehcache` |
-| [Infinispan (heap)](https://infinispan.org/documentation/) | `InfinispanProvider` | `cache-provider-infinispan` |
-| [Infinispan v14 (heap)](https://infinispan.org/documentation/) | `InfinispanProvider` | `cache-provider-infinispan-java11` |
+|                                     Backend                                      |       Provider        |              Artifact              |
+|:--------------------------------------------------------------------------------:|:---------------------:|:----------------------------------:|
+|              [Caffeine](https://github.com/ben-manes/caffeine/wiki)              |  `CaffeineProvider`   |     `cache-provider-caffeine`      |
+|             [Caffeine3](https://github.com/ben-manes/caffeine/wiki)              |  `Caffeine3Provider`  |     `cache-provider-caffeine3`     |
+|          [Guava](https://github.com/google/guava/wiki/CachesExplained)           |    `GuavaProvider`    |       `cache-provider-guava`       |
+|                          [Cache2k](https://cache2k.org)                          |   `Cache2kProvider`   |      `cache-provider-cache2k`      |
+| [AndroidX](https://developer.android.com/reference/androidx/collection/LruCache) | `AndroidLruProvider`  |     `cache-provider-androidx`      |
+|       [ExpiringMap](https://github.com/jhalterman/expiringmap#expiringmap)       | `ExpiringMapProvider` |    `cache-provider-expiringmap`    |
+|    [Ehcache v3 (heap)](https://www.ehcache.org/documentation/3.0/index.html)     |   `EhcacheProvider`   |      `cache-provider-ehcache`      |
+|            [Infinispan (heap)](https://infinispan.org/documentation/)            | `InfinispanProvider`  |    `cache-provider-infinispan`     |
+|          [Infinispan v14 (heap)](https://infinispan.org/documentation/)          | `InfinispanProvider`  | `cache-provider-infinispan-java11` |
+|          [Infinispan v15 (heap)](https://infinispan.org/documentation/)          | `InfinispanProvider`  | `cache-provider-infinispan-java17` |
 
 Don't see your preferred implementation listed above?
 Fear not, it is not difficult to create your own binding, and we'd be happy to accept it in a PR!
