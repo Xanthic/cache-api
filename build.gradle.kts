@@ -131,6 +131,7 @@ subprojects {
     }
 
     signing {
+        isRequired = false // only sign when credentials are configured
         useGpgCmd()
         sign(publishing.publications["main"])
     }
