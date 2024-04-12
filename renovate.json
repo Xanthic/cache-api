@@ -40,6 +40,11 @@
             "allowedVersions": "/^13\\./"
         },
         {
+            "matchPackageNames": ["org.infinispan:infinispan-bom"],
+            "matchPaths": ["provider-infinispan-java11/build.gradle.kts"],
+            "allowedVersions": "/^14\\./"
+        },
+        {
             "matchPackageNames": ["com.github.ben-manes.caffeine:caffeine"],
             "matchPaths": ["provider-caffeine/build.gradle.kts"],
             "allowedVersions": "< 3.0.0"
