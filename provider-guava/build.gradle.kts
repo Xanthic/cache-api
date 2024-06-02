@@ -1,7 +1,7 @@
 dependencies {
     api(project(":cache-core"))
 
-    implementation("com.google.guava:guava:33.2.0-jre")
+    implementation("com.google.guava:guava:33.2.1-jre")
 
     testImplementation(testFixtures(project(":cache-core")))
 }
