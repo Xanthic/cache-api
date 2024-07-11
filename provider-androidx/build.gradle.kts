@@ -1,7 +1,7 @@
 dependencies {
     api(project(":cache-core"))
 
-    implementation("androidx.collection:collection:1.4.0")
+    implementation("androidx.collection:collection:1.4.1")
 
     testImplementation(testFixtures(project(":cache-core")))
 }
