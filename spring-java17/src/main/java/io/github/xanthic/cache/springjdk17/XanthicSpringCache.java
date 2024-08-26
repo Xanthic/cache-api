@@ -34,14 +34,7 @@ public class XanthicSpringCache extends AbstractValueAdaptingCache {
 		return (T) cache.computeIfAbsent(key, k -> getSynchronized(key, valueLoader));
 	}
 
-	@SuppressWarnings("unchecked")
 	private synchronized <T> T getSynchronized(Object key, Callable<T> valueLoader) {
-		ValueWrapper result = get(key);
-
-		if (result != null) {
-			return (T) result.get();
-		}
-
 		T value;
 		try {
 			value = valueLoader.call();
