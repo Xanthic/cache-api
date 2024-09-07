@@ -75,7 +75,14 @@ subprojects {
                     windowTitle = "${project.name} (v${project.version})"
                     encoding = "UTF-8"
                     overview = file("${rootDir}/buildSrc/overview-single.html").absolutePath
+                    locale = "en"
                     this as StandardJavadocDocletOptions
+                    // additional javadoc tags
+                    tags = listOf(
+                        "apiNote:a:API Note:",
+                        "implSpec:a:Implementation Requirements:",
+                        "implNote:a:Implementation Note:"
+                    )
                     // hide javadoc warnings (a lot from delombok)
                     addStringOption("Xdoclint:none", "-quiet")
                     if (JavaVersion.current().isJava9Compatible) {
