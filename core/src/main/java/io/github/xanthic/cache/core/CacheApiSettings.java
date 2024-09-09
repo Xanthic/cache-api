@@ -23,8 +23,6 @@ import java.util.function.Consumer;
  */
 @Slf4j
 public final class CacheApiSettings {
-	private static volatile CacheApiSettings INSTANCE;
-
 	private final Map<Class<? extends CacheProvider>, CacheProvider> providers = Collections.synchronizedMap(new IdentityHashMap<>(16));
 	private final AtomicReference<Class<? extends CacheProvider>> defaultCacheProvider = new AtomicReference<>();
 
@@ -38,7 +36,7 @@ public final class CacheApiSettings {
 	private volatile MisconfigurationPolicy defaultMisconfigurationPolicy = MisconfigurationPolicy.IGNORE;
 
 	private CacheApiSettings() {
-		// restrict instantiation
+		this.populateProviders();
 	}
 
 	/**
@@ -102,31 +100,14 @@ public final class CacheApiSettings {
 		}
 	}
 
-	/**
-	 * @return the cache api settings singleton
-	 */
-	@NotNull
-	public static CacheApiSettings getInstance() {
-		if (INSTANCE == null) {
-			synchronized (CacheApiSettings.class) {
-				if (INSTANCE == null) {
-					CacheApiSettings cacheApiSettings = new CacheApiSettings();
-					populateProviders(cacheApiSettings);
-					INSTANCE = cacheApiSettings;
-				}
-			}
-		}
-		return INSTANCE;
-	}
-
-	private static void populateProviders(CacheApiSettings cacheApiSettings) {
+	private void populateProviders() {
 		log.debug("Xanthic: Registering canonical cache providers from the classpath...");
 
 		AtomicInteger registered = new AtomicInteger();
 		Consumer<String> loadImpl = (providerClass) -> {
 			try {
 				Class<? extends CacheProvider> clazz = Class.forName(providerClass).asSubclass(CacheProvider.class);
-				cacheApiSettings.registerCacheProvider(clazz, null); // lazy, init if needed
+				registerCacheProvider(clazz, null); // lazy, init if needed
 				registered.incrementAndGet();
 			} catch (ClassNotFoundException cx) {
 				log.trace("Xanthic: Could not find optional cache provider " + providerClass);
@@ -147,5 +128,17 @@ public final class CacheApiSettings {
 		loadImpl.accept("io.github.xanthic.cache.provider.ehcache.EhcacheProvider");
 
 		log.debug("Xanthic: Loaded {} canonical cache provider(s) on settings construction!", registered.get());
+	}
+
+	/**
+	 * @return the cache api settings singleton
+	 */
+	@NotNull
+	public static CacheApiSettings getInstance() {
+		return SingletonHolder.INSTANCE;
+	}
+
+	private static class SingletonHolder {
+		private static final CacheApiSettings INSTANCE = new CacheApiSettings();
 	}
 }
