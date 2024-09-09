@@ -12,7 +12,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -23,10 +26,19 @@ public class CacheRegistrationTest {
 	@SneakyThrows
 	void beforeEachTest() {
 		// reset cache settings singleton
-		Field instanceField = CacheApiSettings.class.getDeclaredField("INSTANCE");
-		instanceField.setAccessible(true);
-		instanceField.set(null, null);
-		CacheApiSettings.getInstance();
+		CacheApiSettings instance = CacheApiSettings.getInstance();
+
+		Field providers = CacheApiSettings.class.getDeclaredField("providers");
+		providers.setAccessible(true);
+		((Map<?, ?>) providers.get(instance)).clear();
+
+		Field defaultProvider = CacheApiSettings.class.getDeclaredField("defaultCacheProvider");
+		defaultProvider.setAccessible(true);
+		((AtomicReference<?>) defaultProvider.get(instance)).set(null);
+
+		Method populate = CacheApiSettings.class.getDeclaredMethod("populateProviders");
+		populate.setAccessible(true);
+		populate.invoke(instance);
 	}
 
 	@Test
