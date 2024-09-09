@@ -1,7 +1,6 @@
-package io.github.xanthic.cache.core;
+package io.github.xanthic.cache.provider.androidx;
 
 import io.github.xanthic.cache.api.Cache;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,27 +8,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-/**
- * Provides a common implementation of:
- * <ul>
- *     <li>{@link Cache#computeIfAbsent(Object, Function)}</li>
- *     <li>{@link Cache#putIfAbsent(Object, Object)}</li>
- *     <li>{@link Cache#merge(Object, Object, BiFunction)}</li>
- * </ul>
- * <p>
- * Subclasses ought to synchronize on {@link #getLock()} for correctness.
- * <p>
- * Avoid this abstraction if the backing cache provider already provides an implementation for these methods.
- * <p>
- * Does not support null values.
- *
- * @param <K> The type of keys that form the cache
- * @param <V> The type of values contained in the cache
- * @deprecated no longer used by Xanthic; synchronization generally should be avoided
- */
-@Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "1.0.0")
-public abstract class AbstractCache<K, V> implements Cache<K, V> {
+abstract class AbstractCache<K, V> implements Cache<K, V> {
 
 	@Override
 	public V computeIfAbsent(@NotNull K key, @NotNull Function<K, V> computeFunc) {
