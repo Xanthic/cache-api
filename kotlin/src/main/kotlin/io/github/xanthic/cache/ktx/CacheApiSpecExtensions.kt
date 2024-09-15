@@ -71,3 +71,12 @@ var <K, V> CacheApiSpec<K, V>.executor: ScheduledExecutorService?
     set(value) {
         this.executor(value)
     }
+
+/**
+ * @see io.github.xanthic.cache.api.ICacheSpec.highContention
+ */
+var <K, V> CacheApiSpec<K, V>.highContention: Boolean?
+    get() = this.highContention()
+    set(value) {
+        this.highContention(value)
+    }
