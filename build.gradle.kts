@@ -139,7 +139,9 @@ subprojects {
 
     signing {
         isRequired = false // only sign when credentials are configured
-        useGpgCmd()
+        if (!project.hasProperty("gnupg.skip")) {
+            useGpgCmd()
+        }
         sign(publishing.publications["main"])
     }
 }

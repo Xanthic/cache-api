@@ -4,7 +4,6 @@ import androidx.collection.LruCache;
 import io.github.xanthic.cache.api.RemovalListener;
 import io.github.xanthic.cache.api.domain.ExpiryType;
 import io.github.xanthic.cache.api.domain.RemovalCause;
-import io.github.xanthic.cache.core.AbstractCache;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
