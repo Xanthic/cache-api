@@ -1,6 +1,7 @@
 package io.github.xanthic.cache.core;
 
 import io.github.xanthic.cache.api.Cache;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,6 +31,7 @@ import java.util.function.Supplier;
  * @deprecated no longer used by Xanthic to implement any canonical cache provider
  */
 @Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "1.0.0")
 public abstract class LockedAbstractCache<K, V> implements Cache<K, V> {
 
 	protected final ReadWriteLock lock = new ReentrantReadWriteLock();
