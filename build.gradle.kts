@@ -46,11 +46,11 @@ subprojects {
 
         dependencies {
             // annotations
-            compileOnly("org.jetbrains:annotations:24.1.0")
-            testCompileOnly("org.jetbrains:annotations:24.1.0")
+            compileOnly("org.jetbrains:annotations:25.0.0")
+            testCompileOnly("org.jetbrains:annotations:25.0.0")
 
             // tests
-            testImplementation(platform("org.junit:junit-bom:5.11.0"))
+            testImplementation(platform("org.junit:junit-bom:5.11.1"))
             testImplementation(group = "org.junit.jupiter", name = "junit-jupiter")
             testRuntimeOnly(group = "org.junit.jupiter", name = "junit-jupiter-engine")
 
