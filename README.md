@@ -9,6 +9,7 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Xanthic_cache-api&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Xanthic_cache-api)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Xanthic_cache-api&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Xanthic_cache-api)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Xanthic_cache-api&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Xanthic_cache-api)
+[![Reproducible Builds](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jvm-repo-rebuild/reproducible-central/master/content/io/github/xanthic/cache/cache-api/badge.json)](https://github.com/jvm-repo-rebuild/reproducible-central/blob/master/content/io/github/xanthic/cache/cache-api/README.md)
 
 # Cache API
 
