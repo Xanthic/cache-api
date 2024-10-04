@@ -50,7 +50,7 @@ subprojects {
             testCompileOnly("org.jetbrains:annotations:25.0.0")
 
             // tests
-            testImplementation(platform("org.junit:junit-bom:5.11.1"))
+            testImplementation(platform("org.junit:junit-bom:5.11.2"))
             testImplementation(group = "org.junit.jupiter", name = "junit-jupiter")
             testRuntimeOnly(group = "org.junit.jupiter", name = "junit-jupiter-engine")
 
