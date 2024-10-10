@@ -113,10 +113,10 @@ public class SpringCacheTest {
 	@DisplayName("Tests the eviction of entries based on max size")
 	public void valueLoaderConcurrentTest() throws InterruptedException {
 		XanthicSpringCacheManager xanthicSpringCacheManager = (XanthicSpringCacheManager) cacheManager;
-		xanthicSpringCacheManager.registerCache("value-cache", spec -> {
+		xanthicSpringCacheManager.registerCache("value-cache-concurrent", spec -> {
 			spec.maxSize(100L);
 		});
-		Cache cache = Objects.requireNonNull(cacheManager.getCache("value-cache"));
+		Cache cache = Objects.requireNonNull(cacheManager.getCache("value-cache-concurrent"));
 
 		AtomicInteger callCounter = new AtomicInteger(0);
 		Callable<String> valueLoader = () -> {
