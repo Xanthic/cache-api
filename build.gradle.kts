@@ -3,7 +3,7 @@ plugins {
     `java-library`
     signing
     `maven-publish`
-    id("io.freefair.lombok") version "8.10.2" apply false
+    id("io.freefair.lombok") version "8.11" apply false
     jacoco
 }
 
@@ -29,7 +29,7 @@ subprojects {
         apply(plugin = "jacoco")
 
         extensions.configure(io.freefair.gradle.plugins.lombok.LombokExtension::class.java) {
-            version.set("1.18.34")
+            version.set("1.18.36")
             disableConfig.set(true)
         }
 
