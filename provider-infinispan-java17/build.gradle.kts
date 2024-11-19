@@ -1,7 +1,7 @@
 dependencies {
     api(project(":cache-core"))
 
-    implementation(platform("org.infinispan:infinispan-bom:15.0.10.Final"))
+    implementation(platform("org.infinispan:infinispan-bom:15.0.11.Final"))
 
     compileOnly("org.infinispan:infinispan-component-annotations")
     implementation("org.infinispan:infinispan-core")
