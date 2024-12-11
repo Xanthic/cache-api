@@ -65,16 +65,21 @@ public class SpringCacheTest {
 	@DisplayName("Tests the registration and usage of a custom cache")
 	public void registerCustomCacheTest() {
 		XanthicSpringCacheManager xanthicSpringCacheManager = (XanthicSpringCacheManager) cacheManager;
-		xanthicSpringCacheManager.registerCache("my-custom-cache", spec -> {
+		String name = "my-custom-cache";
+		xanthicSpringCacheManager.registerCache(name, spec -> {
 			spec.maxSize(1L);
 		});
 
 		// registration check
-		Assertions.assertTrue(xanthicSpringCacheManager.getCustomCacheNames().contains("my-custom-cache"), "getCustomCacheNames should contain my-custom-cache");
+		Assertions.assertTrue(xanthicSpringCacheManager.getCustomCacheNames().contains(name), "getCustomCacheNames should contain " + name);
 
 		// cache available
-		Cache cache = cacheManager.getCache("my-custom-cache");
-		Assertions.assertNotNull(cache, "my-custom-cache should not be null");
+		Cache cache = cacheManager.getCache(name);
+		Assertions.assertNotNull(cache, name + " should not be null");
+
+		// remove cache
+		xanthicSpringCacheManager.removeCache(name);
+		Assertions.assertFalse(xanthicSpringCacheManager.getCustomCacheNames().contains(name), name + " should no longer be present");
 	}
 
 	@Test
