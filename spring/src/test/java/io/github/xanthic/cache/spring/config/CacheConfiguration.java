@@ -11,14 +11,9 @@ public class CacheConfiguration {
 
 	@Bean
 	public CacheManager cacheManager() {
-		XanthicSpringCacheManager cacheManager = new XanthicSpringCacheManager(spec -> {
+        return new XanthicSpringCacheManager(spec -> {
 			spec.expiryType(ExpiryType.POST_ACCESS);
 		});
-		cacheManager.registerCache("my-custom-cache", spec -> {
-			spec.maxSize(10L);
-		});
-
-		return cacheManager;
 	}
 
 }
