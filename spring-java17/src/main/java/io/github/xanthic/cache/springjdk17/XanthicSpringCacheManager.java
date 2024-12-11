@@ -85,6 +85,17 @@ public class XanthicSpringCacheManager implements CacheManager {
 		this.customCacheNames.add(name);
 	}
 
+	/**
+	 * Removes a named cache from this cache manager.
+	 *
+	 * @param name the name of the cache
+	 */
+	public void removeCache(String name) {
+		if (customCacheNames.remove(name)) {
+			cacheMap.remove(name);
+		}
+	}
+
 	private Cache createCache(String name, Consumer<CacheApiSpec<Object, Object>> spec) {
 		return new XanthicSpringCache(name, CacheApi.create(spec));
 	}
