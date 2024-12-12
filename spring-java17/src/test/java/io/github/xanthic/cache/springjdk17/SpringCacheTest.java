@@ -83,6 +83,23 @@ public class SpringCacheTest {
 	}
 
 	@Test
+	@DisplayName("Tests that dynamic caches can be removed from the manager")
+	public void removeDynamicTest() {
+		XanthicSpringCacheManager xanthicSpringCacheManager = (XanthicSpringCacheManager) cacheManager;
+
+		// create dynamic cache
+		String name = "my-dynamic-cache";
+		Cache cache = xanthicSpringCacheManager.getCache(name);
+		Assertions.assertNotNull(cache, name + " should not be null");
+		Assertions.assertTrue(cacheManager.getCacheNames().contains(name), name + " should be present in the manager");
+		Assertions.assertFalse(xanthicSpringCacheManager.getCustomCacheNames().contains(name), name + " should not be present as a custom cache");
+
+		// remove cache
+		xanthicSpringCacheManager.removeCache(name);
+		Assertions.assertFalse(cacheManager.getCacheNames().contains(name), name + " should no longer be present in the manager");
+	}
+
+	@Test
 	@DisplayName("Tests the eviction of entries based on max size")
 	public void evictionTest() {
 		XanthicSpringCacheManager xanthicSpringCacheManager = (XanthicSpringCacheManager) cacheManager;
