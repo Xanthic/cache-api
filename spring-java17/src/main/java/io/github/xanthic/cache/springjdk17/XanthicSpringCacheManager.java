@@ -58,6 +58,7 @@ public class XanthicSpringCacheManager implements CacheManager {
 	@Override
 	@Nullable
 	public Cache getCache(@NotNull String name) {
+		// Optimistic lock-free lookup to avoid contention: https://github.com/spring-projects/spring-framework/issues/30066
 		CacheWrapper optimistic = cacheMap.get(name);
 		if (optimistic != null)
 			return optimistic.cache();
