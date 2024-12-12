@@ -91,7 +91,7 @@ public class XanthicSpringCacheManager implements CacheManager {
 	 * @param name the name of the cache
 	 */
 	public void removeCache(String name) {
-		if (customCacheNames.remove(name)) {
+		if (customCacheNames.remove(name) | dynamic) {
 			cacheMap.remove(name);
 		}
 	}
