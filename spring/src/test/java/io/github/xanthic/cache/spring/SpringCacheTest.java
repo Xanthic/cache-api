@@ -50,6 +50,7 @@ public class SpringCacheTest {
 
 	@Test
 	@DisplayName("Tests the registration and usage of a custom cache")
+	@SuppressWarnings("deprecation")
 	public void registerCustomCacheTest() {
 		XanthicSpringCacheManager xanthicSpringCacheManager = (XanthicSpringCacheManager) cacheManager;
 		String name = "my-custom-cache";
@@ -71,6 +72,7 @@ public class SpringCacheTest {
 
 	@Test
 	@DisplayName("Tests that dynamic caches can be removed from the manager")
+	@SuppressWarnings("deprecation")
 	public void removeDynamicTest() {
 		XanthicSpringCacheManager xanthicSpringCacheManager = (XanthicSpringCacheManager) cacheManager;
 

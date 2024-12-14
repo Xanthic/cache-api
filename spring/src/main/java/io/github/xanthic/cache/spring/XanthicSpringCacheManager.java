@@ -3,6 +3,7 @@ package io.github.xanthic.cache.spring;
 import io.github.xanthic.cache.core.CacheApi;
 import io.github.xanthic.cache.core.CacheApiSpec;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.lang.Nullable;
@@ -74,6 +75,8 @@ public class XanthicSpringCacheManager implements CacheManager {
 	}
 
 	@NotNull
+	@Deprecated
+	@VisibleForTesting
 	public Set<String> getCustomCacheNames() {
 		// unfortunately O(n) so this manager can be lock-free, but this operation should be rare in practice
 		Set<String> names = new HashSet<>();
