@@ -106,6 +106,8 @@ public class XanthicSpringCacheManager implements CacheManager {
 	 * @param name the name of the cache
 	 */
 	public void removeCache(String name) {
+		if (!this.dynamic) throw new IllegalStateException("CacheManager has a fixed set of cache keys and does not allow removal of existing caches.");
+
 		this.cacheMap.remove(name);
 	}
 
