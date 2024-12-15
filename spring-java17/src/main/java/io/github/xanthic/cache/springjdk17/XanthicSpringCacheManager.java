@@ -2,13 +2,15 @@ package io.github.xanthic.cache.springjdk17;
 
 import io.github.xanthic.cache.core.CacheApi;
 import io.github.xanthic.cache.core.CacheApiSpec;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.lang.Nullable;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,9 +23,7 @@ import java.util.function.Consumer;
  */
 public class XanthicSpringCacheManager implements CacheManager {
 
-	private final Map<String, Cache> cacheMap = new ConcurrentHashMap<>();
-	@Getter
-	private final Set<String> customCacheNames = ConcurrentHashMap.newKeySet();
+	private final Map<String, CacheWrapper> cacheMap = new ConcurrentHashMap<>();
 	private final Consumer<CacheApiSpec<Object, Object>> spec;
 	private final boolean dynamic;
 
@@ -49,7 +49,7 @@ public class XanthicSpringCacheManager implements CacheManager {
 		if (cacheNames != null) {
 			this.dynamic = false;
 			for (String name : cacheNames) {
-				this.cacheMap.put(name, createCache(name, this.spec));
+				this.cacheMap.put(name, new CacheWrapper(createCache(name, this.spec)));
 			}
 		} else {
 			this.dynamic = true;
@@ -60,16 +60,32 @@ public class XanthicSpringCacheManager implements CacheManager {
 	@Nullable
 	public Cache getCache(@NotNull String name) {
 		// Optimistic lock-free lookup to avoid contention: https://github.com/spring-projects/spring-framework/issues/30066
-		Cache optimistic = cacheMap.get(name);
-		if (optimistic != null || !dynamic)
-			return optimistic;
+		CacheWrapper optimistic = cacheMap.get(name);
+		if (optimistic != null)
+			return optimistic.cache();
+		if (!dynamic)
+			return null;
 
-		return this.cacheMap.computeIfAbsent(name, cacheName -> createCache(cacheName, this.spec));
+		return this.cacheMap.computeIfAbsent(name, cacheName -> new CacheWrapper(createCache(cacheName, this.spec))).cache();
 	}
 
 	@Override
 	public @NotNull Collection<String> getCacheNames() {
-		return this.cacheMap.keySet();
+		return Collections.unmodifiableSet(cacheMap.keySet());
+	}
+
+	@NotNull
+	@Deprecated
+	@VisibleForTesting
+	public Set<String> getCustomCacheNames() {
+		// unfortunately O(n) so this manager can be lock-free, but this operation should be rare in practice
+		Set<String> names = new HashSet<>();
+		cacheMap.forEach((k, v) -> {
+			if (v.custom()) {
+				names.add(k);
+			}
+		});
+		return Collections.unmodifiableSet(names);
 	}
 
 	/**
@@ -81,8 +97,18 @@ public class XanthicSpringCacheManager implements CacheManager {
 	public void registerCache(String name, Consumer<CacheApiSpec<Object, Object>> spec) {
 		if (!this.dynamic) throw new IllegalStateException("CacheManager has a fixed set of cache keys and does not allow creation of new caches.");
 
-		this.cacheMap.put(name, createCache(name, spec));
-		this.customCacheNames.add(name);
+		this.cacheMap.put(name, new CacheWrapper(createCache(name, spec), true));
+	}
+
+	/**
+	 * Removes a named cache from this cache manager.
+	 *
+	 * @param name the name of the cache
+	 */
+	public void removeCache(String name) {
+		if (!this.dynamic) throw new IllegalStateException("CacheManager has a fixed set of cache keys and does not allow removal of existing caches.");
+
+		this.cacheMap.remove(name);
 	}
 
 	private Cache createCache(String name, Consumer<CacheApiSpec<Object, Object>> spec) {

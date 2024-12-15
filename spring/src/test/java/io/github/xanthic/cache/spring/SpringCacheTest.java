@@ -50,18 +50,42 @@ public class SpringCacheTest {
 
 	@Test
 	@DisplayName("Tests the registration and usage of a custom cache")
+	@SuppressWarnings("deprecation")
 	public void registerCustomCacheTest() {
 		XanthicSpringCacheManager xanthicSpringCacheManager = (XanthicSpringCacheManager) cacheManager;
-		xanthicSpringCacheManager.registerCache("my-custom-cache", spec -> {
+		String name = "my-custom-cache";
+		xanthicSpringCacheManager.registerCache(name, spec -> {
 			spec.maxSize(1L);
 		});
 
 		// registration check
-		Assertions.assertTrue(xanthicSpringCacheManager.getCustomCacheNames().contains("my-custom-cache"), "getCustomCacheNames should contain my-custom-cache");
+		Assertions.assertTrue(xanthicSpringCacheManager.getCustomCacheNames().contains(name), "getCustomCacheNames should contain " + name);
 
 		// cache available
-		Cache cache = cacheManager.getCache("my-custom-cache");
-		Assertions.assertNotNull(cache, "my-custom-cache should not be null");
+		Cache cache = cacheManager.getCache(name);
+		Assertions.assertNotNull(cache, name + " should not be null");
+
+		// remove cache
+		xanthicSpringCacheManager.removeCache(name);
+		Assertions.assertFalse(xanthicSpringCacheManager.getCustomCacheNames().contains(name), name + " should no longer be present");
+	}
+
+	@Test
+	@DisplayName("Tests that dynamic caches can be removed from the manager")
+	@SuppressWarnings("deprecation")
+	public void removeDynamicTest() {
+		XanthicSpringCacheManager xanthicSpringCacheManager = (XanthicSpringCacheManager) cacheManager;
+
+		// create dynamic cache
+		String name = "my-dynamic-cache";
+		Cache cache = xanthicSpringCacheManager.getCache(name);
+		Assertions.assertNotNull(cache, name + " should not be null");
+		Assertions.assertTrue(cacheManager.getCacheNames().contains(name), name + " should be present in the manager");
+		Assertions.assertFalse(xanthicSpringCacheManager.getCustomCacheNames().contains(name), name + " should not be present as a custom cache");
+
+		// remove cache
+		xanthicSpringCacheManager.removeCache(name);
+		Assertions.assertFalse(cacheManager.getCacheNames().contains(name), name + " should no longer be present in the manager");
 	}
 
 	@Test
