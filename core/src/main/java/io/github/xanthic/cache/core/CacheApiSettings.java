@@ -14,11 +14,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -107,13 +105,11 @@ public final class CacheApiSettings {
 		log.debug("Xanthic: Registering canonical cache providers from the classpath...");
 
 		ServiceLoader<AbstractCacheProvider> load = ServiceLoader.load(AbstractCacheProvider.class);
-		List<AbstractCacheProvider> sortedProviders = StreamSupport.stream(load.spliterator(), false)
+		StreamSupport.stream(load.spliterator(), false)
 			.sorted(Comparator.comparingInt(AbstractCacheProvider::getDiscoveryOrder))
-			.collect(Collectors.toList());
-		
-		sortedProviders.forEach(provider -> registerCacheProvider(provider.getClass(), provider));
+			.forEach(provider -> registerCacheProvider(provider.getClass(), provider));
 
-		log.debug("Xanthic: Loaded {} canonical cache provider(s) on settings construction!", sortedProviders.size());
+		log.debug("Xanthic: Loaded {} canonical cache provider(s) on settings construction!", providers.size());
 	}
 
 	/**
