@@ -47,4 +47,9 @@ public final class InfinispanProvider extends AbstractCacheProvider {
 
 		return new InfinispanDelegate<>(cache);
 	}
+
+	@Override
+	public int getDiscoveryOrder() {
+		return 7;
+	}
 }

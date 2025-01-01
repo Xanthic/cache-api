@@ -72,4 +72,9 @@ public final class GuavaProvider extends AbstractCacheProvider {
 				return RemovalCause.OTHER;
 		}
 	}
+
+	@Override
+	public int getDiscoveryOrder() {
+		return 9;
+	}
 }

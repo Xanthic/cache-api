@@ -101,4 +101,8 @@ public final class EhcacheProvider extends AbstractCacheProvider {
 		}
 	}
 
+	@Override
+	public int getDiscoveryOrder() {
+		return 10;
+	}
 }

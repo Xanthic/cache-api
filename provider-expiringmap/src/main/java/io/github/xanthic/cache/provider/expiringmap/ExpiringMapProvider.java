@@ -36,4 +36,9 @@ public final class ExpiringMapProvider extends AbstractCacheProvider {
 
 		return new ExpiringMapDelegate<>(builder.build());
 	}
+
+	@Override
+	public int getDiscoveryOrder() {
+		return 8;
+	}
 }
