@@ -4,6 +4,7 @@ import io.github.xanthic.cache.api.CacheProvider;
 import io.github.xanthic.cache.api.domain.ExpiryType;
 import io.github.xanthic.cache.api.domain.MisconfigurationPolicy;
 import io.github.xanthic.cache.api.exception.MisconfiguredCacheException;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.time.Duration;
 import java.util.function.BiConsumer;
@@ -34,5 +35,11 @@ public abstract class AbstractCacheProvider implements CacheProvider {
 	protected ExpiryType preferredType() {
 		return ExpiryType.POST_ACCESS; // LRU
 	}
+	
+	@ApiStatus.Internal
+	public int getDiscoveryOrder() {
+		return -1;
+	}
+	
 
 }

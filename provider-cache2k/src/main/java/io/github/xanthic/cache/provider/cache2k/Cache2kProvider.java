@@ -108,4 +108,8 @@ public final class Cache2kProvider extends AbstractCacheProvider {
 		);
 	}
 
+	@Override
+	public int getDiscoveryOrder() {
+		return 4;
+	}
 }

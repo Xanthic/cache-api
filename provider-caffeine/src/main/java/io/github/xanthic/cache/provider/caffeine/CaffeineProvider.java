@@ -51,4 +51,9 @@ public final class CaffeineProvider extends AbstractCacheProvider {
 				return RemovalCause.OTHER;
 		}
 	}
+
+	@Override
+	public int getDiscoveryOrder() {
+		return 3;
+	}
 }

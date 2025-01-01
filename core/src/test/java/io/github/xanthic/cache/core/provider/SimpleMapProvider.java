@@ -17,4 +17,8 @@ public final class SimpleMapProvider extends AbstractCacheProvider {
 		return new GenericMapCacheDelegate<>(new HashMap<>());
 	}
 
+	@Override
+	public int getDiscoveryOrder() {
+		return 10;
+	}
 }

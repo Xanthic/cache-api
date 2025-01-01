@@ -55,4 +55,8 @@ public final class AndroidLruProvider extends AbstractCacheProvider {
 		};
 	}
 
+	@Override
+	public int getDiscoveryOrder() {
+		return 1;
+	}
 }
