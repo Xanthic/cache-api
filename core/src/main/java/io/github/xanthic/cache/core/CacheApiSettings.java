@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -103,31 +104,10 @@ public final class CacheApiSettings {
 	private void populateProviders() {
 		log.debug("Xanthic: Registering canonical cache providers from the classpath...");
 
-		AtomicInteger registered = new AtomicInteger();
-		Consumer<String> loadImpl = (providerClass) -> {
-			try {
-				Class<? extends CacheProvider> clazz = Class.forName(providerClass).asSubclass(CacheProvider.class);
-				registerCacheProvider(clazz, null); // lazy, init if needed
-				registered.incrementAndGet();
-			} catch (ClassNotFoundException cx) {
-				log.trace("Xanthic: Could not find optional cache provider " + providerClass);
-			} catch (Exception e) {
-				log.trace("Xanthic: Could not find optional cache provider " + providerClass, e);
-			}
-		};
+		ServiceLoader<AbstractCacheProvider> load = ServiceLoader.load(AbstractCacheProvider.class);
+		load.forEach(provider -> registerCacheProvider(provider.getClass(), provider));
 
-		loadImpl.accept("io.github.xanthic.cache.provider.androidx.AndroidLruProvider");
-		loadImpl.accept("io.github.xanthic.cache.provider.caffeine3.Caffeine3Provider");
-		loadImpl.accept("io.github.xanthic.cache.provider.caffeine.CaffeineProvider");
-		loadImpl.accept("io.github.xanthic.cache.provider.cache2k.Cache2kProvider");
-		loadImpl.accept("io.github.xanthic.cache.provider.infinispanjdk17.InfinispanProvider");
-		loadImpl.accept("io.github.xanthic.cache.provider.infinispanjdk11.InfinispanProvider");
-		loadImpl.accept("io.github.xanthic.cache.provider.infinispan.InfinispanProvider");
-		loadImpl.accept("io.github.xanthic.cache.provider.expiringmap.ExpiringMapProvider");
-		loadImpl.accept("io.github.xanthic.cache.provider.guava.GuavaProvider");
-		loadImpl.accept("io.github.xanthic.cache.provider.ehcache.EhcacheProvider");
-
-		log.debug("Xanthic: Loaded {} canonical cache provider(s) on settings construction!", registered.get());
+		log.debug("Xanthic: Loaded {} canonical cache provider(s) on settings construction!", load.stream().count());
 	}
 
 	/**
