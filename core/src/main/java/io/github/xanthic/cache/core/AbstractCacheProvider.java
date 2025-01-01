@@ -38,8 +38,7 @@ public abstract class AbstractCacheProvider implements CacheProvider {
 	
 	@ApiStatus.Internal
 	public int getDiscoveryOrder() {
-		return -1;
+		return 1000;
 	}
-	
 
 }
