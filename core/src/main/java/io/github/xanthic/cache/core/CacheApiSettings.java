@@ -17,10 +17,9 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Holds a registry of default settings and cache providers.
@@ -108,8 +107,7 @@ public final class CacheApiSettings {
 		log.debug("Xanthic: Registering canonical cache providers from the classpath...");
 
 		ServiceLoader<AbstractCacheProvider> load = ServiceLoader.load(AbstractCacheProvider.class);
-		List<AbstractCacheProvider> sortedProviders = load.stream()
-			.map(ServiceLoader.Provider::get)
+		List<AbstractCacheProvider> sortedProviders = StreamSupport.stream(load.spliterator(), false)
 			.sorted(Comparator.comparingInt(AbstractCacheProvider::getDiscoveryOrder))
 			.collect(Collectors.toList());
 		
