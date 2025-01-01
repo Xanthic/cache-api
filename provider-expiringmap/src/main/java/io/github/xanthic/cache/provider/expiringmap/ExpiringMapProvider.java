@@ -39,6 +39,6 @@ public final class ExpiringMapProvider extends AbstractCacheProvider {
 
 	@Override
 	public int getDiscoveryOrder() {
-		return 9;
+		return 8;
 	}
 }

@@ -115,7 +115,7 @@ public final class CacheApiSettings {
 		
 		sortedProviders.forEach(provider -> registerCacheProvider(provider.getClass(), provider));
 
-		log.debug("Xanthic: Loaded {} canonical cache provider(s) on settings construction!", load.stream().count());
+		log.debug("Xanthic: Loaded {} canonical cache provider(s) on settings construction!", sortedProviders.size());
 	}
 
 	/**

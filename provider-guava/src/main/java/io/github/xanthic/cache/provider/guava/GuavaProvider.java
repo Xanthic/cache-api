@@ -75,6 +75,6 @@ public final class GuavaProvider extends AbstractCacheProvider {
 
 	@Override
 	public int getDiscoveryOrder() {
-		return 8;
+		return 9;
 	}
 }
