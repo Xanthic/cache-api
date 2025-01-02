@@ -11,13 +11,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.security.AccessControlException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.StreamSupport;
 
 /**
  * Holds a registry of default settings and cache providers.
@@ -104,10 +110,36 @@ public final class CacheApiSettings {
 	private void populateProviders() {
 		log.debug("Xanthic: Registering canonical cache providers from the classpath...");
 
-		ServiceLoader<AbstractCacheProvider> load = ServiceLoader.load(AbstractCacheProvider.class);
-		StreamSupport.stream(load.spliterator(), false)
-			.sorted(Comparator.comparingInt(AbstractCacheProvider::getDiscoveryOrder))
-			.forEach(provider -> registerCacheProvider(provider.getClass(), provider));
+		// prepare service loader
+		ServiceLoader<AbstractCacheProvider> loader;
+		try {
+			loader = getServiceLoader();
+		} catch (ServiceConfigurationError e) {
+			log.error("Failed to create CacheProvider service loader!", e);
+			return;
+		}
+
+		SortedSet<AbstractCacheProvider> loaded = new TreeSet<>(
+			Comparator.comparingInt(AbstractCacheProvider::getDiscoveryOrder)
+				.thenComparing(provider -> provider.getClass().getName())
+				.thenComparingInt(Object::hashCode)
+		);
+
+		// instantiate providers
+		Iterator<AbstractCacheProvider> it = loader.iterator();
+		while (it.hasNext()) {
+			AbstractCacheProvider provider;
+			try {
+				provider = it.next();
+			} catch (ServiceConfigurationError | AccessControlException e) {
+				log.error("Failed to instantiate cache provider via service loader!", e);
+				continue;
+			}
+			loaded.add(provider);
+		}
+
+		// register providers
+		loaded.forEach(provider -> registerCacheProvider(provider.getClass(), provider));
 
 		log.debug("Xanthic: Loaded {} canonical cache provider(s) on settings construction!", providers.size());
 	}
@@ -118,6 +150,18 @@ public final class CacheApiSettings {
 	@NotNull
 	public static CacheApiSettings getInstance() {
 		return SingletonHolder.INSTANCE;
+	}
+
+	private static ServiceLoader<AbstractCacheProvider> getServiceLoader() {
+		ClassLoader classLoader = CacheApiSettings.class.getClassLoader();
+
+		SecurityManager securityManager = System.getSecurityManager();
+		if (securityManager != null) {
+			PrivilegedAction<ServiceLoader<AbstractCacheProvider>> action = () -> ServiceLoader.load(AbstractCacheProvider.class, classLoader);
+			return AccessController.doPrivileged(action);
+		}
+
+		return ServiceLoader.load(AbstractCacheProvider.class, classLoader);
 	}
 
 	private static class SingletonHolder {
