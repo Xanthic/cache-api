@@ -17,6 +17,11 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
 }
 
+tasks.kotlinSourcesJar {
+    // Workaround for https://youtrack.jetbrains.com/issue/KT-54207/ in order to restore reproducibility
+    enabled = false
+}
+
 tasks.javadocJar {
     from(tasks.dokkaJavadoc)
 }
