@@ -46,8 +46,8 @@ subprojects {
 
         dependencies {
             // annotations
-            compileOnly("org.jetbrains:annotations:26.0.1")
-            testCompileOnly("org.jetbrains:annotations:26.0.1")
+            compileOnly("org.jetbrains:annotations:26.0.2")
+            testCompileOnly("org.jetbrains:annotations:26.0.2")
 
             // tests
             testImplementation(platform("org.junit:junit-bom:5.11.4"))
