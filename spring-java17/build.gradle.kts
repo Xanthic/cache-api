@@ -1,6 +1,6 @@
 dependencies {
     api(project(":cache-core"))
-    implementation("org.springframework:spring-context:6.2.4")
+    implementation("org.springframework:spring-context:6.2.5")
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.4.3")
     testImplementation("org.awaitility:awaitility:4.3.0")
     testImplementation(testFixtures(project(":cache-core")))
