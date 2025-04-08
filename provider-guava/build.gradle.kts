@@ -1,7 +1,7 @@
 dependencies {
     api(project(":cache-core"))
 
-    implementation("com.google.guava:guava:33.4.7-android")
+    implementation("com.google.guava:guava:33.4.7-jre")
 
     testImplementation(testFixtures(project(":cache-core")))
 }
