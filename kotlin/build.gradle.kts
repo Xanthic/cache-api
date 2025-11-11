@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     kotlin("jvm") version "2.2.21"
-    id("org.jetbrains.dokka") version "1.9.20"
+    id("org.jetbrains.dokka") version "2.1.0"
 }
 
 dependencies {
