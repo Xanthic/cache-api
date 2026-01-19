@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     kotlin("jvm") version "2.3.0"
-    id("org.jetbrains.dokka") version "1.9.20"
+    id("org.jetbrains.dokka") version "2.1.0"
 }
 
 dependencies {
@@ -28,7 +28,7 @@ tasks.kotlinSourcesJar {
 }
 
 tasks.javadocJar {
-    from(tasks.dokkaJavadoc)
+    from(tasks.dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
 }
 
 publishing.publications.withType<MavenPublication> {
