@@ -28,7 +28,7 @@ tasks.kotlinSourcesJar {
 }
 
 tasks.javadocJar {
-    from(tasks.dokkaJavadoc)
+    from(tasks.dokkaGeneratePublicationHtml.flatMap { it.outputDirectory })
 }
 
 publishing.publications.withType<MavenPublication> {
