@@ -11,6 +11,10 @@ dependencies {
     testFixturesImplementation("org.awaitility:awaitility:4.3.0")
 }
 
+tasks.compileTestFixturesJava {
+    options.release = 17 // jdk 17 is baseline for junit v6
+}
+
 publishing.publications.withType<MavenPublication> {
     pom {
         name.set("Xanthic - Core Module")

@@ -22,6 +22,12 @@ tasks.withType<KotlinJvmCompile>().configureEach {
     }
 }
 
+tasks.compileTestKotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17 // jdk 17 is baseline for junit v6
+    }
+}
+
 tasks.kotlinSourcesJar {
     // Workaround for https://youtrack.jetbrains.com/issue/KT-54207/ in order to restore reproducibility
     enabled = false

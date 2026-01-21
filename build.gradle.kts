@@ -105,6 +105,10 @@ subprojects {
                 finalizedBy(jacocoTestReport)
             }
 
+            compileTestJava {
+                options.release = 17 // jdk 17 is baseline for junit v6
+            }
+
             jacocoTestReport {
                 dependsOn(test)
                 reports.xml.required.set(true)
