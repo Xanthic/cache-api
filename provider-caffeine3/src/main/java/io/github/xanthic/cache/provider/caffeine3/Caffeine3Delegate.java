@@ -35,6 +35,12 @@ class Caffeine3Delegate<K, V> extends GenericMapCacheDelegate<K, V> {
 	}
 
 	@Override
+	public void close() {
+		cache.invalidateAll();
+		cache.cleanUp();
+	}
+
+	@Override
 	public long size() {
 		cache.cleanUp();
 		return cache.estimatedSize();
