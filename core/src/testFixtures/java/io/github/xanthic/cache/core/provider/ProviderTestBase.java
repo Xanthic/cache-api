@@ -63,6 +63,8 @@ public abstract class ProviderTestBase {
 		for (int i = 0; i < 4; i++) {
 			Assertions.assertEquals(i, m.get(String.valueOf(i)));
 		}
+
+		cache.close();
 	}
 
 	@Test
@@ -102,6 +104,8 @@ public abstract class ProviderTestBase {
 
 		Assertions.assertNull(cache.compute("a", (k, v) -> null));
 		Assertions.assertNull(cache.get("a"));
+
+		cache.close();
 	}
 
 	@Test
@@ -133,6 +137,8 @@ public abstract class ProviderTestBase {
 
 		Assertions.assertFalse(cache.replace("9", -9));
 		Assertions.assertNull(cache.get("9"));
+
+		cache.close();
 	}
 
 	@Test
@@ -157,6 +163,7 @@ public abstract class ProviderTestBase {
 		expected.put("2", 2);
 
 		Assertions.assertEquals(expected, observed);
+		cache.close();
 	}
 
 	@Test
@@ -166,6 +173,7 @@ public abstract class ProviderTestBase {
 		cache.put("1", 1);
 		Assertions.assertNull(cache.get("1"));
 		Assertions.assertEquals(0, cache.size());
+		cache.close();
 	}
 
 	@Test
@@ -175,6 +183,7 @@ public abstract class ProviderTestBase {
 		cache.put("1", 1);
 		Assertions.assertNull(cache.get("1"));
 		Assertions.assertEquals(0, cache.size());
+		cache.close();
 	}
 
 	@Test
@@ -200,6 +209,8 @@ public abstract class ProviderTestBase {
 		for (int i = 1; i < 5; i++) {
 			Assertions.assertEquals(i, cache.get(String.valueOf(i)));
 		}
+
+		cache.close();
 	}
 
 	@Test
@@ -227,6 +238,7 @@ public abstract class ProviderTestBase {
 
 		// Ensure listener is called the appropriate number of times
 		await().atMost(30, TimeUnit.SECONDS).until(() -> removals.get() == expectedEvictions);
+		cache.close();
 	}
 
 	@Test
@@ -250,6 +262,8 @@ public abstract class ProviderTestBase {
 		await().atLeast(expiry * 3 / 4, TimeUnit.MILLISECONDS)
 			.atMost(90, TimeUnit.SECONDS)
 			.until(() -> cache.size() == 0);
+
+		cache.close();
 	}
 
 	@Test
@@ -280,6 +294,8 @@ public abstract class ProviderTestBase {
 		await().atLeast(expiry * 3 / 4, TimeUnit.MILLISECONDS)
 			.atMost(90, TimeUnit.SECONDS)
 			.until(() -> evictions.get() == n);
+
+		cache.close();
 	}
 
 	@Test
@@ -310,6 +326,7 @@ public abstract class ProviderTestBase {
 
 		// Ensure listener was called the appropriate number of times
 		await().atMost(30, TimeUnit.SECONDS).until(() -> replacements.get() == n);
+		cache.close();
 	}
 
 	@Test
@@ -340,6 +357,7 @@ public abstract class ProviderTestBase {
 
 		// Ensure listener was called the appropriate number of times
 		await().atMost(90, TimeUnit.SECONDS).until(() -> removals.get() == n);
+		cache.close();
 	}
 
 	@Test
@@ -351,12 +369,8 @@ public abstract class ProviderTestBase {
 	@Test
 	@DisplayName("Test whether cache can be built with contention flag and custom executor")
 	public void buildTest() {
-		Assertions.assertNotNull(
-			build(spec -> spec.highContention(true).maxSize(null))
-		);
-		Assertions.assertNotNull(
-			build(spec -> spec.highContention(true).executor(Executors.newSingleThreadScheduledExecutor()))
-		);
+		build(spec -> spec.highContention(true).maxSize(null)).close();
+		build(spec -> spec.highContention(true).executor(Executors.newSingleThreadScheduledExecutor())).close();
 	}
 
 	protected <K, V> Cache<K, V> build(Consumer<CacheApiSpec<K, V>> additionalSpec) {

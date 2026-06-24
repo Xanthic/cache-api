@@ -25,7 +25,7 @@ import java.util.function.Function;
  * @param <K> The type of keys that form the cache
  * @param <V> The type of values contained in the cache
  */
-public interface Cache<K, V> {
+public interface Cache<K, V> extends AutoCloseable {
 
 	/**
 	 * Obtains the value associated with the specified key.
@@ -192,6 +192,17 @@ public interface Cache<K, V> {
 	@ApiStatus.Experimental
 	default void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
 		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Avoid further usage of the cache once it has been closed;
+	 * some implementations may throw exceptions while others are more tolerant.
+	 */
+	@Override
+	default void close() {
+		this.clear();
 	}
 
 }
