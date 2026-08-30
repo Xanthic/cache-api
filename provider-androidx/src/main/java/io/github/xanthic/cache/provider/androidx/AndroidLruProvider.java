@@ -31,8 +31,16 @@ public final class AndroidLruProvider extends AbstractCacheProvider {
 		Duration expiryTime = spec.expiryTime();
 		if (executor == null) handleUnsupportedExpiry(expiryTime);
 		if (expiryTime == null) return new LruDelegate<>(buildSimple(spec.maxSize(), spec.removalListener()));
-		ScheduledExecutorService exec = executor != null ? executor : Executors.newSingleThreadScheduledExecutor();
-		return new ExpiringLruDelegate<>(spec.maxSize(), spec.removalListener(), expiryTime.toNanos(), getExpiryType(spec.expiryType()), exec);
+		ScheduledExecutorService exec;
+		boolean createdExecutor;
+        if (executor != null) {
+            exec = executor;
+			createdExecutor = false;
+        } else {
+            exec = Executors.newSingleThreadScheduledExecutor();
+			createdExecutor = true;
+        }
+        return new ExpiringLruDelegate<>(spec.maxSize(), spec.removalListener(), expiryTime.toNanos(), getExpiryType(spec.expiryType()), exec, createdExecutor);
 	}
 
 	private static <K, V> LruCache<K, V> buildSimple(Long maxSize, RemovalListener<K, V> listener) {

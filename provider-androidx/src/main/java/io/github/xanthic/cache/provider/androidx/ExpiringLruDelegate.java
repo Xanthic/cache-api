@@ -35,6 +35,8 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 	@EqualsAndHashCode.Exclude
 	ScheduledExecutorService exec;
 	@EqualsAndHashCode.Exclude
+	boolean shouldCloseExecutor;
+	@EqualsAndHashCode.Exclude
 	Map<Map.Entry<K, V>, Future<?>> tracker = new ConcurrentHashMap<>();
 
 	LruCache<K, V> cache = new LruCache<K, V>(getMaxSize() != null ? getMaxSize().intValue() : Integer.MAX_VALUE) {
@@ -93,6 +95,14 @@ class ExpiringLruDelegate<K, V> extends AbstractCache<K, V> {
 			cache.evictAll();
 			tracker.values().forEach(fut -> fut.cancel(true));
 			tracker.clear();
+		}
+	}
+
+	@Override
+	public void close() {
+		super.close();
+		if (shouldCloseExecutor) {
+			this.exec.shutdownNow();
 		}
 	}
 
