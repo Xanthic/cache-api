@@ -56,8 +56,8 @@ subprojects {
             testRuntimeOnly(group = "org.junit.platform", name = "junit-platform-launcher")
 
             // logging and tests
-            api(group = "org.slf4j", name = "slf4j-api", version = "2.0.18")
-            testImplementation(group = "org.slf4j", name = "slf4j-simple", version = "2.0.18")
+            api(group = "org.slf4j", name = "slf4j-api", version = "2.0.19")
+            testImplementation(group = "org.slf4j", name = "slf4j-simple", version = "2.0.19")
         }
 
         tasks {
