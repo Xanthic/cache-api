@@ -1,7 +1,7 @@
 dependencies {
     api(project(":cache-core"))
 
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.4")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.3.0")
 
     testImplementation(testFixtures(project(":cache-core")))
 }
