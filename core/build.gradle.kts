@@ -8,7 +8,7 @@ dependencies {
     testFixturesImplementation(platform("org.junit:junit-bom:5.14.4"))
     testFixturesImplementation("org.junit.jupiter:junit-jupiter")
     testFixturesRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testFixturesImplementation("org.awaitility:awaitility:4.3.0")
+    testFixturesImplementation("org.awaitility:awaitility:4.4.0")
 }
 
 publishing.publications.withType<MavenPublication> {
