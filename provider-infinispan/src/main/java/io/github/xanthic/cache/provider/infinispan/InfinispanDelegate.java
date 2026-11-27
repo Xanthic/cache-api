@@ -35,6 +35,12 @@ class InfinispanDelegate<K, V> implements Cache<K, V> {
 	}
 
 	@Override
+	public void close() {
+		cache.clear();
+		cache.shutdown();
+	}
+
+	@Override
 	public long size() {
 		return cache.size();
 	}
